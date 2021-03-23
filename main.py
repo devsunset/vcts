@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ##################################################
 #
 #          virtual coin trade system
@@ -22,7 +23,6 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 from common import constant
 from common import common
-
 
 ##################################################
 # constant

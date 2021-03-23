@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ##################################################
 #
 #                   common 
@@ -30,6 +31,8 @@ TARGET_DB = constant.TARGET_DB
 
 # telegram
 bot = telegram.Bot(token = constant.TELEGRAM_TOKEN)
+
+
 
 ##################################################
 class Common():
