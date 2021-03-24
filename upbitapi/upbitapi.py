@@ -12,7 +12,6 @@ class UpbitApi():
     UPbit Api\n
     https://docs.upbit.com/reference
     """
-
     ###############################################################
     # CONSTRUCTOR
     ###############################################################
@@ -66,7 +65,7 @@ class UpbitApi():
         unit int32 : 분 단위. 가능한 값 : 1, 3, 5, 15, 10, 30, 60, 240\n
         ******************************\n    
         QUERY PARAMS\n
-        market string : 마켓 코드 (ex. KRW-BTC, BTC-BCC)\n
+        market string : 마켓 코드 (ex. KRW-BTC, KRW-ETH)\n
         to string : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX. 비워서 요청시 가장 최근 캔들\n
         count int32 : 캔들 개수(최대 200개까지 요청 가능)\n
         ******************************\n
@@ -103,17 +102,37 @@ class UpbitApi():
             params['count'] = count
         return self.__get(URL, params=params)
 
-
-
-
-    def getCandlesDays(self, market, to=None, count=None):
+    def getCandlesDays(self, market, to=None, count=None,convertingPriceUnit=None):
         '''
-        QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들\n
-        https://docs.upbit.com/reference#%EC%9D%BCday-%EC%BA%94%EB%93%A4-1
-        :param str market: 마켓 코드 (ex. KRW-BTC, BTC-BCC)
-        :param str to: 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX. 비워서 요청시 가장 최근 캔들
-        :param int count: 캔들 개수
-        :return: json array
+        QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들\n
+        https://docs.upbit.com/reference#%EC%9D%BCday-%EC%BA%94%EB%93%A4-1\n
+        ******************************\n
+        QUERY PARAMS\n
+        market string : 마켓 코드 (ex. KRW-BTC, KRW-ETH)\n
+        to string : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX. 비워서 요청시 가장 최근 캔들\n
+        count int32 : 캔들 개수\n
+        convertingPriceUnit string 종가 환산 화폐 단위 (생략 가능, KRW로 명시할 시 원화 환산 가격을 반환.)\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        market	마켓명	String\n
+        candle_date_time_utc	캔들 기준 시각(UTC 기준)	String\n
+        candle_date_time_kst	캔들 기준 시각(KST 기준)	String\n
+        opening_price	시가	Double\n
+        high_price	고가	Double\n
+        low_price	저가	Double\n
+        trade_price	종가	Double\n
+        timestamp	마지막 틱이 저장된 시각	Long\n
+        candle_acc_trade_price	누적 거래 금액	Double\n
+        candle_acc_trade_volume	누적 거래량	Double\n
+        prev_closing_price	전일 종가(UTC 0시 기준)	Double\n
+        change_price	전일 종가 대비 변화 금액	Double\n
+        change_rate	전일 종가 대비 변화량	Double\n
+        converted_trade_price	종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.)	Double\n
+       
+        convertingPriceUnit 파라미터의 경우, 원화 마켓이 아닌 다른 마켓(ex. BTC, ETH)의 일봉 요청시 종가를\n
+        명시된 파라미터 값으로 환산해 converted_trade_price 필드에 추가하여 반환합니다.\n
+        현재는 원화(KRW) 로 변환하는 기능만 제공하며 추후 기능을 확장할 수 있습니다.
         '''
         URL = 'https://api.upbit.com/v1/candles/days'
         if market not in self.markets:
@@ -125,16 +144,33 @@ class UpbitApi():
             params['to'] = to
         if count is not None:
             params['count'] = count
+        if convertingPriceUnit is not None:
+            params['convertingPriceUnit'] = convertingPriceUnit
         return self.__get(URL, params=params)
 
-    def get_weeks_candles(self, market, to=None, count=None):
+    def getCandlesWeeks(self, market, to=None, count=None):
         '''
-        주(Week) 캔들
-        https://docs.upbit.com/v1.0/reference#%EC%A3%BCweek-%EC%BA%94%EB%93%A4-1
-        :param str market: 마켓 코드 (ex. KRW-BTC, BTC-BCC)
-        :param str to: 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX. 비워서 요청시 가장 최근 캔들
-        :param int count: 캔들 개수
-        :return: json array
+        QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들\n
+        https://docs.upbit.com/reference#%EC%A3%BCweek-%EC%BA%94%EB%93%A4-1\n
+        ******************************\n
+        QUERY PARAMS\n
+        market string : 마켓 코드 (ex. KRW-BTC, KRW-ETH)\n
+        to string : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX. 비워서 요청시 가장 최근 캔들\n
+        count int32 : 캔들 개수\n        
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        market	마켓명	String\n
+        candle_date_time_utc	캔들 기준 시각(UTC 기준)	String\n
+        candle_date_time_kst	캔들 기준 시각(KST 기준)	String\n
+        opening_price	시가	Double\n
+        high_price	고가	Double\n
+        low_price	저가	Double\n
+        trade_price	종가	Double\n
+        timestamp	마지막 틱이 저장된 시각	Long\n
+        candle_acc_trade_price	누적 거래 금액	Double\n
+        candle_acc_trade_volume	누적 거래량	Double\n
+        first_day_of_period	캔들 기간의 가장 첫 날	String
         '''
         URL = 'https://api.upbit.com/v1/candles/weeks'
         if market not in self.markets:
@@ -147,14 +183,29 @@ class UpbitApi():
             params['count'] = count
         return self.__get(URL, params=params)
 
-    def get_months_candles(self, market, to=None, count=None):
+    def getCandlesMonths(self, market, to=None, count=None):
         '''
-        월(Month) 캔들
-        https://docs.upbit.com/v1.0/reference#%EC%9B%94month-%EC%BA%94%EB%93%A4-1
-        :param str market: 마켓 코드 (ex. KRW-BTC, BTC-BCC)
-        :param str to: 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX. 비워서 요청시 가장 최근 캔들
-        :param int count: 캔들 개수
-        :return: json array
+        QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들\n
+        https://docs.upbit.com/reference#%EC%9B%94month-%EC%BA%94%EB%93%A4-1\n
+        ******************************\n
+        QUERY PARAMS\n
+        market string : 마켓 코드 (ex. KRW-BTC, KRW-ETH)\n
+        to string : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX. 비워서 요청시 가장 최근 캔들\n
+        count int32 : 캔들 개수\n        
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        market	마켓명	String\n
+        candle_date_time_utc	캔들 기준 시각(UTC 기준)	String\n
+        candle_date_time_kst	캔들 기준 시각(KST 기준)	String\n
+        opening_price	시가	Double\n
+        high_price	고가	Double\n
+        low_price	저가	Double\n
+        trade_price	종가	Double\n
+        timestamp	마지막 틱이 저장된 시각	Long\n
+        candle_acc_trade_price	누적 거래 금액	Double\n
+        candle_acc_trade_volume	누적 거래량	Double\n
+        first_day_of_period	캔들 기간의 가장 첫 날	String
         '''
 
         URL = 'https://api.upbit.com/v1/candles/months'
@@ -168,36 +219,92 @@ class UpbitApi():
             params['count'] = count
         return self.__get(URL, params=params)
 
-    def get_trades_ticks(self, market, to=None, count=None, cursor=None):
+    def getTradesTicks(self, market, to=None, count=None, cursor=None, daysAgo=None):
         '''
-        당일 체결 내역
-        https://docs.upbit.com/v1.0/reference#%EC%8B%9C%EC%84%B8-%EC%B2%B4%EA%B2%B0-%EC%A1%B0%ED%9A%8C
-        :param str market: 마켓 코드 (ex. KRW-BTC, BTC-BCC)
-        :param str to: 마지막 체결 시각. 형식 : [HHmmss 또는 HH:mm:ss]. 비워서 요청시 가장 최근 데이터
-        :param int count: 체결 개수
-        :param str cursor: 페이지네이션 커서 (sequentialId)
-        :return: json array
+        QUOTATION API - 시세 체결 조회 - 최근 체결 내역\n
+        https://docs.upbit.com/reference#%EC%B5%9C%EA%B7%BC-%EC%B2%B4%EA%B2%B0-%EB%82%B4%EC%97%AD\n
+        ******************************\n
+        QUERY PARAMS\n
+        market string : 마켓 코드 (ex. KRW-BTC, KRW-ETH)\n
+        to string : 마지막 캔들 시각 (exclusive). 포맷 : yyyy-MM-dd'T'HH:mm:ssXXX. 비워서 요청시 가장 최근 캔들\n
+        count int32 : 체결 개수\n        
+        cursor string 페이지네이션 커서 (sequentialId)\n
+        daysAgo int32 최근 체결 날짜 기준 7일 이내의 이전 데이터 조회 가능. 비워서 요청 시 가장 최근 체결 날짜 반환. (범위: 1 ~ 7))\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        market	마켓 구분 코드	String\n
+        trade_date_utc	체결 일자(UTC 기준)	String\n
+        trade_time_utc	체결 시각(UTC 기준)	String\n
+        timestamp	체결 타임스탬프	Long\n
+        trade_price	체결 가격	Double\n
+        trade_volume	체결량	Double\n
+        prev_closing_price	전일 종가	Double\n
+        change_price	변화량	Double\n
+        ask_bid	매도/매수	String\n
+        sequential_id	체결 번호(Unique)	Long\n
+        sequential_id 필드는 체결의 유일성 판단을 위한 근거로 쓰일 수 있습니다. 하지만 체결의 순서를 보장하지는 못합니다.\n
         '''
         URL = 'https://api.upbit.com/v1/trades/ticks'
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
+
+        if daysAgo is not None:
+            if daysAgo not in [1, 2, 3, 4, 5, 6, 7]:
+               logging.error('invalid daysAgo: %s' % str(daysAgo))
+               raise Exception('invalid daysAgo: %s' % str(daysAgo))
+
         params = {'market': market}
+        
         if to is not None:
             params['to'] = to
         if count is not None:
             params['count'] = count
         if cursor is not None:
             params['cursor'] = cursor
+        if daysAgo is not None:
+            params['daysAgo'] = daysAgo
         return self.__get(URL, params=params)
 
-    def get_ticker(self, markets):
+    def getTicker(self, markets):
         '''
-        현재가 정보
-        요청 당시 종목의 스냅샷을 반환한다.
-        https://docs.upbit.com/v1.0/reference#%EC%8B%9C%EC%84%B8-ticker-%EC%A1%B0%ED%9A%8C
-        :param str[] markets: 마켓 코드 리스트 (ex. KRW-BTC, BTC-BCC)
-        :return: json array
+        QUOTATION API - 시세 Ticker 조회 - 현재가 정보\n
+        요청 당시 종목의 스냅샷을 반환한다.\n
+        https://docs.upbit.com/reference#ticker%ED%98%84%EC%9E%AC%EA%B0%80-%EB%82%B4%EC%97%AD\n
+        ******************************\n
+        QUERY PARAMS\n        
+        markets array of strings  마켓 코드 목록 (ex. KRW-BTC,KRW-ETH)\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        market	종목 구분 코드	String\n
+        trade_date	최근 거래 일자(UTC)	String\n
+        trade_time	최근 거래 시각(UTC)	String\n
+        trade_date_kst	최근 거래 일자(KST)	String\n
+        trade_time_kst	최근 거래 시각(KST)	String\n
+        opening_price	시가	Double\n
+        high_price	고가	Double\n
+        low_price	저가	Double\n
+        trade_price	종가	Double\n
+        prev_closing_price	전일 종가	Double\n
+        change	EVEN : 보합\n
+        RISE : 상승\n
+        FALL : 하락	String\n
+        change_price	변화액의 절대값	Double\n
+        change_rate	변화율의 절대값	Double\n
+        signed_change_price	부호가 있는 변화액	Double\n
+        signed_change_rate	부호가 있는 변화율	Double\n
+        trade_volume	가장 최근 거래량	Double\n
+        acc_trade_price	누적 거래대금(UTC 0시 기준)	Double\n
+        acc_trade_price_24h	24시간 누적 거래대금	Double\n
+        acc_trade_volume	누적 거래량(UTC 0시 기준)	Double\n
+        acc_trade_volume_24h	24시간 누적 거래량	Double\n
+        highest_52_week_price	52주 신고가	Double\n
+        highest_52_week_date	52주 신고가 달성일	String\n
+        lowest_52_week_price	52주 신저가	Double\n
+        lowest_52_week_date	52주 신저가 달성일	String\n
+        timestamp	타임스탬프	Long
         '''
         URL = 'https://api.upbit.com/v1/ticker'
         if not isinstance(markets, list):
@@ -219,14 +326,29 @@ class UpbitApi():
         params = {'markets': markets_data}
         return self.__get(URL, params=params)
 
-    def get_orderbook(self, markets):
+    def getOrderbook(self, markets):
         '''
-        호가 정보 조회
-        https://docs.upbit.com/v1.0/reference#%ED%98%B8%EA%B0%80-%EC%A0%95%EB%B3%B4-%EC%A1%B0%ED%9A%8C
-        :param str[] markets: 마켓 코드 목록 리스트 (ex. KRW-BTC,KRW-ADA)
-        :return: json array
+        QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회\n
+        요청 당시 종목의 스냅샷을 반환한다.\n
+        https://docs.upbit.com/reference#%ED%98%B8%EA%B0%80-%EC%A0%95%EB%B3%B4-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        QUERY PARAMS\n        
+        markets array of strings  마켓 코드 목록 (ex. KRW-BTC,KRW-ETH)
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        market	마켓 코드	String\n
+        timestamp	호가 생성 시각	Long\n
+        total_ask_size	호가 매도 총 잔량	Double\n
+        total_bid_size	호가 매수 총 잔량	Double\n
+        orderbook_units	호가	List of Objects\n
+        ask_price	매도호가	Double\n
+        bid_price	매수호가	Double\n
+        ask_size	매도 잔량	Double\n
+        bid_size	매수 잔량	Double\n
+        orderbook_unit 리스트에는 15호가 정보가 들어가며 차례대로 1호가, 2호가 ... 15호가의 정보를 담고 있습니다.\n
         '''
-        URL = 'https://api.upbit.com/v1/orderbook?'
+        URL = 'https://api.upbit.com/v1/orderbook'
         if not isinstance(markets, list):
             logging.error('invalid parameter: markets should be list')
             raise Exception('invalid parameter: markets should be list')
@@ -245,26 +367,6 @@ class UpbitApi():
             markets_data += ',%s' % market
         params = {'markets': markets_data}
         return self.__get(URL, params=params)
-
-    def get_remaining_req(self):
-        '''
-        요청 수 제한
-        https://docs.upbit.com/docs/user-request-guide
-        :return: dict
-            ex) {'market': {'min': '582', 'sec': '2', 'update_time': datetime.datetime(2019, 6, 6, 7, 7, 12, 153219)}, 'candles': {'min': '592', 'sec': '6', 'update_time': datetime.datetime(2019, 6, 6, 7, 7, 12, 197177)}}
-            - market 관련 요청은 2019년6월6일 7시7분12.153219초 이후 1분동안 582회, 1초동안 2회 호출 가능
-            - candles 관련 요청은 2019년6월6일 7시7분12.197177초 이후 1분동안 592회, 1초동안 6회 호출 가능
-        '''
-        return self.remaining_req
-
-
-
-
-
-
-
-
-
 
     ###############################################################
     # EXCHANGE API
@@ -648,12 +750,24 @@ class UpbitApi():
             return False
         return True
 
+    def getRemainingReq(self):
+        '''
+        요청 수 제한
+        https://docs.upbit.com/docs/user-request-guide
+        :return: dict
+            ex) {'market': {'min': '599', 'sec': '9', 'update_time': datetime.datetime(2021, 3, 24, 16, 1, 17, 815410)}, 'candles': {'min': '599', 'sec': '9', 'update_time': datetime.datetime(2021, 3, 24, 16, 1, 23, 122025)}}
+        '''
+        return self.remaining_req
+
+
 
 #################################################
 # main
 if __name__ == '__main__':
 
     upbitapi = UpbitApi()
+
+    # QUOTATION API TEST 
     
     # print('QUOTATION API - 시세 종목 조회 - 마켓 코드 조회 : getMarketAll()')
     # print(upbitapi.getMarketAll())
@@ -661,6 +775,24 @@ if __name__ == '__main__':
     # print('QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들 : getCandlesMinutes(1,"KRW-BTC")')
     # print(upbitapi.getCandlesMinutes(1,'KRW-BTC'))
 
-    print('QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들 : getCandlesMinutes(1,"KRW-BTC")')
-    print(upbitapi.getCandlesMinutes(1,'KRW-BTC'))
+    # print('QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들 : getCandlesDays("KRW-BTC")')
+    # print(upbitapi.getCandlesDays('KRW-BTC'))
+
+    # print('QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들 : getCandlesWeeks("KRW-BTC")')
+    # print(upbitapi.getCandlesWeeks('KRW-BTC'))
+
+    # print('QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들 : getCandlesMonths("KRW-BTC")')
+    # print(upbitapi.getCandlesMonths('KRW-BTC'))
+
+    # print('QUOTATION API - 시세 체결 조회 - 최근 체결 내역 : getTradesTicks("KRW-BTC")')
+    # print(upbitapi.getTradesTicks('KRW-BTC'))
+
+    # print('QUOTATION API - 시세 Ticker 조회 - 현재가 정보 : getTicker(["KRW-BTC","KRW-ETH"])')
+    # print(upbitapi.getTicker(['KRW-BTC','KRW-ETH']))
+
+    # print('QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getOrderbook(["KRW-BTC","KRW-ETH"])')
+    # print(upbitapi.getOrderbook(['KRW-BTC','KRW-ETH']))
+
+    print('요청 수 제한')
+    print(upbitapi.getRemainingReq())
 
