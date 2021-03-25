@@ -18,10 +18,10 @@
 # import
 
 import sqlite3
-# from common import config
-# from common import common
-import config
-import common
+from common import config
+from common import common
+# import config
+# import common
 
 ##################################################
 # constant

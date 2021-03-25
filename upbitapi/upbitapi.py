@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 import logging
+import hashlib
 import json
 import jwt
 import requests
 import time
 from urllib.parse import urlencode
+import uuid
 
 class UpbitApi():
     """
@@ -17,10 +19,10 @@ class UpbitApi():
     ###############################################################
     def __init__(self, access_key=None, secret=None):
         '''
-        Constructor\n
-        access_key, secret  이 없으면 인증가능 요청(EXCHANGE API)은 사용할 수 없음\n
-        :param str access_key: 발급 받은 acccess key\n
-        :param str secret: 발급 받은 secret\n
+        Constructor\n      
+        access_key string : 발급 받은 acccess key\n
+        secret string : 발급 받은 secret\n
+        access_key, secret  이 없으면 EXCHANGE API 은 사용할 수 없음\n
         '''
         self.access_key = access_key
         self.secret = secret
@@ -371,17 +373,28 @@ class UpbitApi():
     ###############################################################
     # EXCHANGE API
     ###############################################################
-    """
-    def get_accounts(self):
+    
+    def getExchangeAccounts(self):
         '''
-        전체 계좌 조회
-        내가 보유한 자산 리스트를 보여줍니다.
-        https://docs.upbit.com/v1.0/reference#%EC%9E%90%EC%82%B0-%EC%A0%84%EC%B2%B4-%EC%A1%B0%ED%9A%8C
-        :return: json array
+        EXCHANGE API - 자산 - 전체 계좌 조회\n
+        내가 보유한 자산 리스트를 보여줍니다.\n
+        https://docs.upbit.com/reference#%EC%A0%84%EC%B2%B4-%EA%B3%84%EC%A2%8C-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        balance	주문가능 금액/수량	NumberString\n
+        locked	주문 중 묶여있는 금액/수량	NumberString\n
+        avg_buy_price	매수평균가	NumberString\n
+        avg_buy_price_modified	매수평균가 수정 여부	Boolean\n
+        unit_currency	평단가 기준 화폐	String\n
         '''
         URL = 'https://api.upbit.com/v1/accounts'
         return self.__get(URL, self.__get_headers())
-
+    """
     def get_chance(self, market):
         '''
         주문 가능 정보
@@ -664,7 +677,7 @@ class UpbitApi():
     def __get_token(self, query):
         payload = {
             'access_key': self.access_key,
-            'nonce': int(time.time() * 1000),
+            'nonce': str(uuid.uuid4()),
         }
         if query is not None:
             payload['query'] = urlencode(query)
@@ -758,42 +771,3 @@ class UpbitApi():
             ex) {'market': {'min': '599', 'sec': '9', 'update_time': datetime.datetime(2021, 3, 24, 16, 1, 17, 815410)}, 'candles': {'min': '599', 'sec': '9', 'update_time': datetime.datetime(2021, 3, 24, 16, 1, 23, 122025)}}
         '''
         return self.remaining_req
-
-#################################################
-# main
-if __name__ == '__main__':
-
-    upbitapi = UpbitApi()
-
-    # QUOTATION API TEST 
-    ###############################################################
-    
-    # print('QUOTATION API - 시세 종목 조회 - 마켓 코드 조회 : getQuotationMarketAll()')
-    # print(upbitapi.getQuotationMarketAll())
-
-    # print('QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들 : getQuotationCandlesMinutes(1,"KRW-BTC")')
-    # print(upbitapi.getQuotationCandlesMinutes(1,'KRW-BTC'))
-
-    # print('QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들 : getQuotationCandlesDays("KRW-BTC")')
-    # print(upbitapi.getQuotationCandlesDays('KRW-BTC'))
-
-    # print('QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들 : getQuotationCandlesWeeks("KRW-BTC")')
-    # print(upbitapi.getQuotationCandlesWeeks('KRW-BTC'))
-
-    # print('QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들 : getQuotationCandlesMonths("KRW-BTC")')
-    # print(upbitapi.getQuotationCandlesMonths('KRW-BTC'))
-
-    # print('QUOTATION API - 시세 체결 조회 - 최근 체결 내역 : getQuotationTradesTicks("KRW-BTC")')
-    # print(upbitapi.getQuotationTradesTicks('KRW-BTC'))
-
-    # print('QUOTATION API - 시세 Ticker 조회 - 현재가 정보 : getQuotationTicker(["KRW-BTC","KRW-ETH"])')
-    # print(upbitapi.getQuotationTicker(['KRW-BTC','KRW-ETH']))
-
-    # print('QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getQuotationOrderbook(["KRW-BTC","KRW-ETH"])')
-    # print(upbitapi.getQuotationOrderbook(['KRW-BTC','KRW-ETH']))
-
-    # EXCHANGE API TEST 
-    ###############################################################
-
-    print('요청 수 제한')
-    print(upbitapi.getRemainingReq())
