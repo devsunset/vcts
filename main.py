@@ -21,14 +21,14 @@ import requests
 import json
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-from common import constant
+from common import config
 from common import common
 
 ##################################################
 # constant
 
 # target db
-TARGET_DB = constant.TARGET_DB
+TARGET_DB = config.TARGET_DB
 
 ##################################################
 # biz function
@@ -80,7 +80,7 @@ def main_process():
 # main
 if __name__ == '__main__':
     #scheduler = BlockingScheduler()
-    #scheduler.add_job(main_process, 'interval', seconds=stock_constant.INTERVAL_SECONDS)
+    #scheduler.add_job(main_process, 'interval', seconds=config.INTERVAL_SECONDS)
     main_process()
     #try:
     #    scheduler.start()

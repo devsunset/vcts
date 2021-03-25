@@ -18,19 +18,20 @@ import requests
 import bs4
 import telegram
 
-from common import constant
+from common import config
+# import config
 
 ##################################################
 # constant
 
 # target db
-TARGET_DB = constant.TARGET_DB
+TARGET_DB = config.TARGET_DB
 
 ##################################################
 # delcare 
 
 # telegram
-bot = telegram.Bot(token = constant.TELEGRAM_TOKEN)
+bot = telegram.Bot(token = config.TELEGRAM_TOKEN)
 
 
 
@@ -130,7 +131,7 @@ if __name__=='__main__':
    comm = Common()
    print('--- unit test start ---')
    print("")
-   print('* db - db_init.py')
+   print('* db - db_init.py test skip')
    print('* send_telegram_msg : ',comm.send_telegram_msg(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : send_telegram_msg"))
    print('* log Y : ',comm.log(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : Y","Y"))
    print('* log N : ',comm.log(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : N","N"))

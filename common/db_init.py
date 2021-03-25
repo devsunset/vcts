@@ -18,14 +18,16 @@
 # import
 
 import sqlite3
-from common import constant
-from common import common
+# from common import config
+# from common import common
+import config
+import common
 
 ##################################################
 # constant
 
 # target db
-TARGET_DB = constant.TARGET_DB
+TARGET_DB = config.TARGET_DB
 
 ##################################################
 

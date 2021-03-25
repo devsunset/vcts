@@ -130,3 +130,7 @@ dmypy.json
 
 #Reference 
 BitCatch/
+
+#config
+common/config.py
+
