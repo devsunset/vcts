@@ -30,7 +30,7 @@ class UpbitApi():
     ###############################################################
     # QUOTATION API
     ###############################################################
-    def getMarketAll(self,isDetails=True):
+    def getQuotationMarketAll(self,isDetails=True):
         '''
         QUOTATION API - 시세 종목 조회 - 마켓 코드 조회\n
         ******************************\n
@@ -56,7 +56,7 @@ class UpbitApi():
         params = {'isDetails':  isDetails}
         return self.__get(URL, params=params)
 
-    def getCandlesMinutes(self, unit, market, to=None, count=None):
+    def getQuotationCandlesMinutes(self, unit, market, to=None, count=None):
         '''
         QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들\n
         https://docs.upbit.com/reference#%EB%B6%84minute-%EC%BA%94%EB%93%A4-1\n
@@ -102,7 +102,7 @@ class UpbitApi():
             params['count'] = count
         return self.__get(URL, params=params)
 
-    def getCandlesDays(self, market, to=None, count=None,convertingPriceUnit=None):
+    def getQuotationCandlesDays(self, market, to=None, count=None, convertingPriceUnit=None):
         '''
         QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들\n
         https://docs.upbit.com/reference#%EC%9D%BCday-%EC%BA%94%EB%93%A4-1\n
@@ -148,7 +148,7 @@ class UpbitApi():
             params['convertingPriceUnit'] = convertingPriceUnit
         return self.__get(URL, params=params)
 
-    def getCandlesWeeks(self, market, to=None, count=None):
+    def getQuotationCandlesWeeks(self, market, to=None, count=None):
         '''
         QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들\n
         https://docs.upbit.com/reference#%EC%A3%BCweek-%EC%BA%94%EB%93%A4-1\n
@@ -183,7 +183,7 @@ class UpbitApi():
             params['count'] = count
         return self.__get(URL, params=params)
 
-    def getCandlesMonths(self, market, to=None, count=None):
+    def getQuotationCandlesMonths(self, market, to=None, count=None):
         '''
         QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들\n
         https://docs.upbit.com/reference#%EC%9B%94month-%EC%BA%94%EB%93%A4-1\n
@@ -219,7 +219,7 @@ class UpbitApi():
             params['count'] = count
         return self.__get(URL, params=params)
 
-    def getTradesTicks(self, market, to=None, count=None, cursor=None, daysAgo=None):
+    def getQuotationTradesTicks(self, market, to=None, count=None, cursor=None, daysAgo=None):
         '''
         QUOTATION API - 시세 체결 조회 - 최근 체결 내역\n
         https://docs.upbit.com/reference#%EC%B5%9C%EA%B7%BC-%EC%B2%B4%EA%B2%B0-%EB%82%B4%EC%97%AD\n
@@ -267,7 +267,7 @@ class UpbitApi():
             params['daysAgo'] = daysAgo
         return self.__get(URL, params=params)
 
-    def getTicker(self, markets):
+    def getQuotationTicker(self, markets):
         '''
         QUOTATION API - 시세 Ticker 조회 - 현재가 정보\n
         요청 당시 종목의 스냅샷을 반환한다.\n
@@ -326,7 +326,7 @@ class UpbitApi():
         params = {'markets': markets_data}
         return self.__get(URL, params=params)
 
-    def getOrderbook(self, markets):
+    def getQuotationOrderbook(self, markets):
         '''
         QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회\n
         요청 당시 종목의 스냅샷을 반환한다.\n
@@ -679,7 +679,7 @@ class UpbitApi():
     # ##############################################################
     def __load_markets(self):
         try:
-            market_all = self.getMarketAll()
+            market_all = self.getQuotationMarketAll()
             if market_all is None:
                 return
             markets = []
@@ -759,8 +759,6 @@ class UpbitApi():
         '''
         return self.remaining_req
 
-
-
 #################################################
 # main
 if __name__ == '__main__':
@@ -768,31 +766,34 @@ if __name__ == '__main__':
     upbitapi = UpbitApi()
 
     # QUOTATION API TEST 
+    ###############################################################
     
-    # print('QUOTATION API - 시세 종목 조회 - 마켓 코드 조회 : getMarketAll()')
-    # print(upbitapi.getMarketAll())
+    # print('QUOTATION API - 시세 종목 조회 - 마켓 코드 조회 : getQuotationMarketAll()')
+    # print(upbitapi.getQuotationMarketAll())
 
-    # print('QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들 : getCandlesMinutes(1,"KRW-BTC")')
-    # print(upbitapi.getCandlesMinutes(1,'KRW-BTC'))
+    # print('QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들 : getQuotationCandlesMinutes(1,"KRW-BTC")')
+    # print(upbitapi.getQuotationCandlesMinutes(1,'KRW-BTC'))
 
-    # print('QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들 : getCandlesDays("KRW-BTC")')
-    # print(upbitapi.getCandlesDays('KRW-BTC'))
+    # print('QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들 : getQuotationCandlesDays("KRW-BTC")')
+    # print(upbitapi.getQuotationCandlesDays('KRW-BTC'))
 
-    # print('QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들 : getCandlesWeeks("KRW-BTC")')
-    # print(upbitapi.getCandlesWeeks('KRW-BTC'))
+    # print('QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들 : getQuotationCandlesWeeks("KRW-BTC")')
+    # print(upbitapi.getQuotationCandlesWeeks('KRW-BTC'))
 
-    # print('QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들 : getCandlesMonths("KRW-BTC")')
-    # print(upbitapi.getCandlesMonths('KRW-BTC'))
+    # print('QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들 : getQuotationCandlesMonths("KRW-BTC")')
+    # print(upbitapi.getQuotationCandlesMonths('KRW-BTC'))
 
-    # print('QUOTATION API - 시세 체결 조회 - 최근 체결 내역 : getTradesTicks("KRW-BTC")')
-    # print(upbitapi.getTradesTicks('KRW-BTC'))
+    # print('QUOTATION API - 시세 체결 조회 - 최근 체결 내역 : getQuotationTradesTicks("KRW-BTC")')
+    # print(upbitapi.getQuotationTradesTicks('KRW-BTC'))
 
-    # print('QUOTATION API - 시세 Ticker 조회 - 현재가 정보 : getTicker(["KRW-BTC","KRW-ETH"])')
-    # print(upbitapi.getTicker(['KRW-BTC','KRW-ETH']))
+    # print('QUOTATION API - 시세 Ticker 조회 - 현재가 정보 : getQuotationTicker(["KRW-BTC","KRW-ETH"])')
+    # print(upbitapi.getQuotationTicker(['KRW-BTC','KRW-ETH']))
 
-    # print('QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getOrderbook(["KRW-BTC","KRW-ETH"])')
-    # print(upbitapi.getOrderbook(['KRW-BTC','KRW-ETH']))
+    # print('QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getQuotationOrderbook(["KRW-BTC","KRW-ETH"])')
+    # print(upbitapi.getQuotationOrderbook(['KRW-BTC','KRW-ETH']))
+
+    # EXCHANGE API TEST 
+    ###############################################################
 
     print('요청 수 제한')
     print(upbitapi.getRemainingReq())
-
