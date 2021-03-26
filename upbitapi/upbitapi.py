@@ -446,7 +446,7 @@ class UpbitApi():
         ask_account.avg_buy_price_modified	매수평균가 수정 여부	Boolean\n
         ask_account.unit_currency	평단가 기준 화폐	String\n
         '''       
-        URL = server_url + "/orders/chance"
+        URL = self.server_url + "/orders/chance"
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
