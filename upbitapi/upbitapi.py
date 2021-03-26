@@ -719,13 +719,23 @@ class UpbitApi():
         return json.loads(resp.text)
 
     def __get_token(self, query):
-        payload = {
-            'access_key': self.access_key,
-            'nonce': str(uuid.uuid4()),
-        }
-        if query is not None:
-            payload['query'] = urlencode(query)
-        return jwt.encode(payload, self.secret, algorithm='HS256').decode('utf-8')
+        if query is not None:                        
+            query_string = urlencode(query).encode()
+            m = hashlib.sha512()
+            m.update(query_string)
+            query_hash = m.hexdigest()
+            payload = {
+                'access_key': self.access_key,
+                'nonce': str(uuid.uuid4()),
+                'query_hash': query_hash,
+                'query_hash_alg': 'SHA512',
+            }
+        else:
+            payload = {
+                'access_key': self.access_key,
+                'nonce': str(uuid.uuid4()),
+            }
+        return jwt.encode(payload, self.secret).decode('utf-8')
 
     def __get_headers(self, query=None):
         headers = {'Authorization': 'Bearer %s' % self.__get_token(query)}
