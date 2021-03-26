@@ -14,10 +14,13 @@ class UpbitApi():
     UPbit Api\n
     https://docs.upbit.com/reference
     """
+
+    'https://api.upbit.com/v1'
+
     ###############################################################
     # CONSTRUCTOR
     ###############################################################
-    def __init__(self, access_key=None, secret=None):
+    def __init__(self, access_key=None, secret=None,server_url=None):
         '''
         Constructor\n      
         access_key string : 발급 받은 acccess key\n
@@ -26,6 +29,8 @@ class UpbitApi():
         '''
         self.access_key = access_key
         self.secret = secret
+        if server_url is None:
+            self.server_url = 'https://api.upbit.com/v1'
         self.remaining_req = dict()
         self.markets = self.__load_markets()
 
@@ -85,7 +90,7 @@ class UpbitApi():
         candle_acc_trade_volume	누적 거래량	Double\n
         unit	분 단위(유닛)	Integer\n
         '''
-        URL = 'https://api.upbit.com/v1/candles/minutes/%s' % str(unit)
+        URL = self.server_url+'/candles/minutes/%s' % str(unit)
         if unit not in [1, 3, 5, 10, 15, 30, 60, 240]:
             logging.error('invalid unit: %s' % str(unit))
             raise Exception('invalid unit: %s' % str(unit))
@@ -136,7 +141,7 @@ class UpbitApi():
         명시된 파라미터 값으로 환산해 converted_trade_price 필드에 추가하여 반환합니다.\n
         현재는 원화(KRW) 로 변환하는 기능만 제공하며 추후 기능을 확장할 수 있습니다.
         '''
-        URL = 'https://api.upbit.com/v1/candles/days'
+        URL = self.server_url+'/candles/days'
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
@@ -174,7 +179,7 @@ class UpbitApi():
         candle_acc_trade_volume	누적 거래량	Double\n
         first_day_of_period	캔들 기간의 가장 첫 날	String
         '''
-        URL = 'https://api.upbit.com/v1/candles/weeks'
+        URL = self.server_url+'/candles/weeks'
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
@@ -210,7 +215,7 @@ class UpbitApi():
         first_day_of_period	캔들 기간의 가장 첫 날	String
         '''
 
-        URL = 'https://api.upbit.com/v1/candles/months'
+        URL = self.server_url+'/candles/months'
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
@@ -247,7 +252,7 @@ class UpbitApi():
         sequential_id	체결 번호(Unique)	Long\n
         sequential_id 필드는 체결의 유일성 판단을 위한 근거로 쓰일 수 있습니다. 하지만 체결의 순서를 보장하지는 못합니다.\n
         '''
-        URL = 'https://api.upbit.com/v1/trades/ticks'
+        URL = self.server_url+'/trades/ticks'
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
@@ -308,7 +313,7 @@ class UpbitApi():
         lowest_52_week_date	52주 신저가 달성일	String\n
         timestamp	타임스탬프	Long
         '''
-        URL = 'https://api.upbit.com/v1/ticker'
+        URL = self.server_url+'/ticker'
         if not isinstance(markets, list):
             logging.error('invalid parameter: markets should be list')
             raise Exception('invalid parameter: markets should be list')
@@ -350,7 +355,7 @@ class UpbitApi():
         bid_size	매수 잔량	Double\n
         orderbook_unit 리스트에는 15호가 정보가 들어가며 차례대로 1호가, 2호가 ... 15호가의 정보를 담고 있습니다.\n
         '''
-        URL = 'https://api.upbit.com/v1/orderbook'
+        URL = self.server_url+'/orderbook'
         if not isinstance(markets, list):
             logging.error('invalid parameter: markets should be list')
             raise Exception('invalid parameter: markets should be list')
@@ -392,24 +397,63 @@ class UpbitApi():
         avg_buy_price_modified	매수평균가 수정 여부	Boolean\n
         unit_currency	평단가 기준 화폐	String\n
         '''
-        URL = 'https://api.upbit.com/v1/accounts'
+        URL = self.server_url+'/accounts'
         return self.__get(URL, self.__get_headers())
-    """
-    def get_chance(self, market):
+    
+    def getExchangeOrdersChance(self, market):
         '''
-        주문 가능 정보
-        마켓별 주문 가능 정보를 확인한다.
-        https://docs.upbit.com/v1.0/reference#%EC%A3%BC%EB%AC%B8-%EA%B0%80%EB%8A%A5-%EC%A0%95%EB%B3%B4
-        :param str market: Market ID
-        :return: json object
-        '''
-        URL = 'https://api.upbit.com/v1/orders/chance'
+        EXCHANGE API - 주문 - 주문 가능 정보\n        
+        마켓별 주문 가능 정보를 확인한다.\n
+        https://docs.upbit.com/reference#%EC%A3%BC%EB%AC%B8-%EA%B0%80%EB%8A%A5-%EC%A0%95%EB%B3%B4\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)        
+        ******************************\n
+        QUERY PARAMS\n        
+        market string  Market ID\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        bid_fee	매수 수수료 비율	NumberString\n
+        ask_fee	매도 수수료 비율	NumberString\n
+        market	마켓에 대한 정보	Object\n
+        market.id	마켓의 유일 키	String\n
+        market.name	마켓 이름	String\n
+        market.order_types	지원 주문 방식	Array[String]\n
+        market.order_sides	지원 주문 종류	Array[String]\n
+        market.bid	매수 시 제약사항	Object\n
+        market.bid.currency	화폐를 의미하는 영문 대문자 코드	String\n
+        market.bit.price_unit	주문금액 단위	String\n
+        market.bid.min_total	최소 매도/매수 금액	Number\n
+        market.ask	매도 시 제약사항	Object\n
+        market.ask.currency	화폐를 의미하는 영문 대문자 코드	String\n
+        market.ask.price_unit	주문금액 단위	String\n
+        market.ask.min_total	최소 매도/매수 금액	Number\n
+        market.max_total	최대 매도/매수 금액	NumberString\n
+        market.state	마켓 운영 상태	String\n
+        bid_account	매수 시 사용하는 화폐의 계좌 상태	Object\n
+        bid_account.currency	화폐를 의미하는 영문 대문자 코드	String\n
+        bid_account.balance	주문가능 금액/수량	NumberString\n
+        bid_account.locked	주문 중 묶여있는 금액/수량	NumberString\n
+        bid_account.avg_buy_price	매수평균가	NumberString\n
+        bid_account.avg_buy_price_modified	매수평균가 수정 여부	Boolean\n
+        bid_account.unit_currency	평단가 기준 화폐	String\n
+        ask_account	매도 시 사용하는 화폐의 계좌 상태	Object\n
+        ask_account.currency	화폐를 의미하는 영문 대문자 코드	String\n
+        ask_account.balance	주문가능 금액/수량	NumberString\n
+        ask_account.locked	주문 중 묶여있는 금액/수량	NumberString\n
+        ask_account.avg_buy_price	매수평균가	NumberString\n
+        ask_account.avg_buy_price_modified	매수평균가 수정 여부	Boolean\n
+        ask_account.unit_currency	평단가 기준 화폐	String\n
+        '''       
+        URL = server_url + "/orders/chance"
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
         data = {'market': market}
         return self.__get(URL, self.__get_headers(data), data)
 
+    """
     def get_order(self, uuid):
         '''
         개별 주문 조회
@@ -418,7 +462,7 @@ class UpbitApi():
         :param str uuid: 주문 UUID
         :return: json object
         '''
-        URL = 'https://api.upbit.com/v1/order'
+        URL = self.server_url+'/order'
         try:
             data = {'uuid': uuid}
             return self.__get(URL, self.__get_headers(data), data)
@@ -442,7 +486,7 @@ class UpbitApi():
             desc:내림차순
         :return: json array
         '''
-        URL = 'https://api.upbit.com/v1/orders'
+        URL = self.server_url+'/orders'
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
@@ -477,7 +521,7 @@ class UpbitApi():
             ex) KRW-BTC 마켓에서 1BTC당 1,000 KRW로 거래할 경우, 값은 1000 이 된다.
         :return: json object
         '''
-        URL = 'https://api.upbit.com/v1/orders'
+        URL = self.server_url+'/orders'
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
@@ -507,7 +551,7 @@ class UpbitApi():
         :param str uuid: 주문 UUID
         :return: json object
         '''
-        URL = 'https://api.upbit.com/v1/order'
+        URL = self.server_url+'/order'
         data = {'uuid': uuid}
         return self.__delete(URL, self.__get_headers(data), data)
 
@@ -531,7 +575,7 @@ class UpbitApi():
         LIMIT_MAX = 100
         VALID_STATE = ['submitting', 'submitted', 'almost_accepted',
                        'rejected', 'accepted', 'processing', 'done', 'canceled']
-        URL = 'https://api.upbit.com/v1/withdraws'
+        URL = self.server_url+'/withdraws'
         data = {}
         if currency is not None:
             data['currency'] = currency
@@ -555,7 +599,7 @@ class UpbitApi():
         :param str uuid: 출금 UUID
         :return: json object
         '''
-        URL = 'https://api.upbit.com/v1/withdraw'
+        URL = self.server_url+'/withdraw'
         data = {'uuid': uuid}
         return self.__get(URL, self.__get_headers(data), data)
 
@@ -567,7 +611,7 @@ class UpbitApi():
         :param str currency: Currency symbol
         :return: json object
         '''
-        URL = 'https://api.upbit.com/v1/withdraws/chance'
+        URL = self.server_url+'/withdraws/chance'
         data = {'currency': currency}
         return self.__get(URL, self.__get_headers(data), data)
 
@@ -581,7 +625,7 @@ class UpbitApi():
         :param str address: 출금 지갑 주소
         :param str secondary_address: 2차 출금 주소 (필요한 코인에 한해서)
         '''
-        URL = 'https://api.upbit.com/v1/withdraws/coin'
+        URL = self.server_url+'/withdraws/coin'
         data = {
             'currency': currency,
             'amount': amount,
@@ -598,7 +642,7 @@ class UpbitApi():
         https://docs.upbit.com/v1.0/reference#%EC%9B%90%ED%99%94-%EC%B6%9C%EA%B8%88%ED%95%98%EA%B8%B0
         :param str amount: 출금 원화 수량
         '''
-        URL = 'https://api.upbit.com/v1/withdraws/krw'
+        URL = self.server_url+'/withdraws/krw'
         data = {'amount': amount}
         return self.__post(URL, self.__get_headers(data), data)
 
@@ -612,7 +656,7 @@ class UpbitApi():
         :param str order_by: 정렬 방식
         :return: json array
         '''
-        URL = 'https://api.upbit.com/v1/deposits'
+        URL = self.server_url+'/deposits'
         data = {}
         if currency is not None:
             data['currency'] = currency
@@ -631,7 +675,7 @@ class UpbitApi():
         :param str uuid: 개별 입금의 UUID
         :return: json object
         '''
-        URL = 'https://api.upbit.com/v1/deposit'
+        URL = self.server_url+'/deposit'
         data = {'uuid': uuid}
         return self.__get(URL, self.__get_headers(data), data)
  """

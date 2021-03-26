@@ -91,45 +91,44 @@ if __name__ == '__main__':
     #    print(err)
 
 
-    # QUOTATION API TEST 
-    ###############################################################
-
-    # upbitapi = UpbitApi()
     
-    # print('QUOTATION API - 시세 종목 조회 - 마켓 코드 조회 : getQuotationMarketAll()')
-    # print(upbitapi.getQuotationMarketAll())
+    # upbitapi  API TEST 
+    ###############################################################
+    upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
 
-    # print('QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들 : getQuotationCandlesMinutes(1,"KRW-BTC")')
-    # print(upbitapi.getQuotationCandlesMinutes(1,'KRW-BTC'))
+    # QUOTATION API TEST 
+    ###############################################################    
+    print('QUOTATION API - 시세 종목 조회 - 마켓 코드 조회 : getQuotationMarketAll()')
+    print(upbitapi.getQuotationMarketAll())
 
-    # print('QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들 : getQuotationCandlesDays("KRW-BTC")')
-    # print(upbitapi.getQuotationCandlesDays('KRW-BTC'))
+    print('QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들 : getQuotationCandlesMinutes(1,"KRW-BTC")')
+    print(upbitapi.getQuotationCandlesMinutes(1,'KRW-BTC'))
 
-    # print('QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들 : getQuotationCandlesWeeks("KRW-BTC")')
-    # print(upbitapi.getQuotationCandlesWeeks('KRW-BTC'))
+    print('QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들 : getQuotationCandlesDays("KRW-BTC")')
+    print(upbitapi.getQuotationCandlesDays('KRW-BTC'))
 
-    # print('QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들 : getQuotationCandlesMonths("KRW-BTC")')
-    # print(upbitapi.getQuotationCandlesMonths('KRW-BTC'))
+    print('QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들 : getQuotationCandlesWeeks("KRW-BTC")')
+    print(upbitapi.getQuotationCandlesWeeks('KRW-BTC'))
 
-    # print('QUOTATION API - 시세 체결 조회 - 최근 체결 내역 : getQuotationTradesTicks("KRW-BTC")')
-    # print(upbitapi.getQuotationTradesTicks('KRW-BTC'))
+    print('QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들 : getQuotationCandlesMonths("KRW-BTC")')
+    print(upbitapi.getQuotationCandlesMonths('KRW-BTC'))
 
-    # print('QUOTATION API - 시세 Ticker 조회 - 현재가 정보 : getQuotationTicker(["KRW-BTC","KRW-ETH"])')
-    # print(upbitapi.getQuotationTicker(['KRW-BTC','KRW-ETH']))
+    print('QUOTATION API - 시세 체결 조회 - 최근 체결 내역 : getQuotationTradesTicks("KRW-BTC")')
+    print(upbitapi.getQuotationTradesTicks('KRW-BTC'))
 
-    # print('QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getQuotationOrderbook(["KRW-BTC","KRW-ETH"])')
-    # print(upbitapi.getQuotationOrderbook(['KRW-BTC','KRW-ETH']))
+    print('QUOTATION API - 시세 Ticker 조회 - 현재가 정보 : getQuotationTicker(["KRW-BTC","KRW-ETH"])')
+    print(upbitapi.getQuotationTicker(['KRW-BTC','KRW-ETH']))
 
-    # print('요청 수 제한')
-    # print(upbitapi.getRemainingReq())
+    print('QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getQuotationOrderbook(["KRW-BTC","KRW-ETH"])')
+    print(upbitapi.getQuotationOrderbook(['KRW-BTC','KRW-ETH']))
 
     # EXCHANGE API TEST 
-    ###############################################################
-    
-    upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
-    
-
+    ###############################################################    
     print('EXCHANGE API - 자산 - 전체 계좌 조회 : getExchangeAccounts()')
     print(upbitapi.getExchangeAccounts())
 
+    print('EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
+    print(upbitapi.getExchangeOrdersChance('KRW-BTC'))
 
+    print('요청 수 제한')
+    print(upbitapi.getRemainingReq())
