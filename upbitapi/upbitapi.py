@@ -23,7 +23,8 @@ class UpbitApi():
         Constructor\n      
         access_key string : 발급 받은 acccess key\n
         secret string : 발급 받은 secret\n
-        access_key, secret  이 없으면 EXCHANGE API 은 사용할 수 없음\n
+        server_url string : server url - ex) https://api.upbit.com/v1 \n
+        access_key, secret 값이 존재 해야 만 EXCHANGE API 사용 가능\n
         '''
         self.access_key = access_key
         self.secret = secret
@@ -384,7 +385,7 @@ class UpbitApi():
         https://docs.upbit.com/reference#%EC%A0%84%EC%B2%B4-%EA%B3%84%EC%A2%8C-%EC%A1%B0%ED%9A%8C\n
         ******************************\n
         HEADERS\n        
-        Authorization string Authorization token (JWT)
+        Authorization string Authorization token (JWT)\n
         ******************************\n
         RESPONSE\n
         필드	설명	타입\n
@@ -405,7 +406,7 @@ class UpbitApi():
         https://docs.upbit.com/reference#%EC%A3%BC%EB%AC%B8-%EA%B0%80%EB%8A%A5-%EC%A0%95%EB%B3%B4\n
         ******************************\n
         HEADERS\n        
-        Authorization string Authorization token (JWT)        
+        Authorization string Authorization token (JWT)\n        
         ******************************\n
         QUERY PARAMS\n        
         market string  Market ID\n
@@ -458,7 +459,7 @@ class UpbitApi():
         https://docs.upbit.com/reference#%EA%B0%9C%EB%B3%84-%EC%A3%BC%EB%AC%B8-%EC%A1%B0%ED%9A%8C\n
         ******************************\n
         HEADERS\n        
-        Authorization string Authorization token (JWT)        
+        Authorization string Authorization token (JWT)\n        
         ******************************\n
         QUERY PARAMS\n        
         uuid string 주문 UUID\n
@@ -508,14 +509,14 @@ class UpbitApi():
             logging.error(e)
             raise Exception(e)
 
-    def getExchangeOrders(self, market, state, page=1, order_by='desc' ,states=None, limit=100,uuids=None, identifiers=None):
+    def getExchangeOrders(self, market, page=1, limit=100 ,order_by='desc' ,state=None, states=None, uuids=None, identifiers=None):
         '''
         EXCHANGE API - 주문 - 주문 리스트 조회\n        
         주문 리스트를 조회한다.\n
         https://docs.upbit.com/reference#%EC%A3%BC%EB%AC%B8-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C\n
         ******************************\n
         HEADERS\n        
-        Authorization string Authorization token (JWT)        
+        Authorization string Authorization token (JWT)\n        
         ******************************\n
         QUERY PARAMS\n        
         market string Market ID\n
@@ -559,14 +560,17 @@ class UpbitApi():
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
 
-        if state is not None:
-            if state not in ['wait', 'watch','done', 'cancel']:
-                logging.error('invalid state: %s' % state)
-                raise Exception('invalid state: %s' % state)
-
         if order_by not in ['asc', 'desc']:
             logging.error('invalid order_by: %s' % order_by)
             raise Exception('invalid order_by: %s' % order_by)
+
+        if limit not in list(range(1,101)):
+            logging.error('invalid count: %s' % str(limit))
+            raise Exception('invalid count: %s' % str(limit))
+
+        if state not in ['wait', 'watch', 'done', 'cancel']:
+            logging.error('invalid state: %s' % state)
+            raise Exception('invalid state: %s' % state)
 
         data = {
             'market': market,
@@ -575,28 +579,25 @@ class UpbitApi():
             'order_by': order_by
         }
 
-          query = {
-                'state': 'done',
-            }
-            query_string = urlencode(query)
+        # query = {
+        #     'state': 'done',
+        # }
+        # query_string = urlencode(query)
 
 
-            uuids = [
-                '9ca023a5-851b-4fec-9f0a-48cd83c2eaae',
-                '8ca023a5-851b-4fec-9f0a-48cd83c2eaae',
-                #...
-            ]
-            uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
-            print(uuids_query_string)
+        # uuids = [
+        #     '9ca023a5-851b-4fec-9f0a-48cd83c2eaae',
+        #     '8ca023a5-851b-4fec-9f0a-48cd83c2eaae',
+        #     #...
+        # ]
+        # uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
+        # print(uuids_query_string)
 
-            query['uuids[]'] = uuids
-            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
-            print(query_string)
+        # query['uuids[]'] = uuids
+        # query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
+        # print(query_string)
 
         return self.__get(URL, self.__get_headers(data), data)
-
-
-
 
     """
     def order(self, market, side, volume, price):
@@ -770,7 +771,7 @@ class UpbitApi():
         URL = self.server_url+'/deposit'
         data = {'uuid': uuid}
         return self.__get(URL, self.__get_headers(data), data)
- """
+    """
 
     ###############################################################
     #  HTTP REQUEST COMMON  FUNCTION

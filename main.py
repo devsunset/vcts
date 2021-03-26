@@ -132,12 +132,9 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
     # print(upbitapi.getExchangeOrdersChance('KRW-BTC'))
 
-    # uuid = "uuid value"
-    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uid)')
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
     # print(upbitapi.getExchangeOrder(uuid))
 
-    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders(uid)')
-    # print(upbitapi.getExchangeOrders(uuid))
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
   
-    # print('■■■■■■■■■■ - 요청 수 제한')
-    # print(upbitapi.getRemainingReq())
