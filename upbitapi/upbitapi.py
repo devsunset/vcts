@@ -13,10 +13,8 @@ class UpbitApi():
     """
     UPbit Api\n
     https://docs.upbit.com/reference
+    https://api.upbit.com/v1
     """
-
-    'https://api.upbit.com/v1'
-
     ###############################################################
     # CONSTRUCTOR
     ###############################################################
@@ -453,47 +451,118 @@ class UpbitApi():
         data = {'market': market}
         return self.__get(URL, self.__get_headers(data), data)
 
-    """
-    def get_order(self, uuid):
+    def getExchangeOrder(self, uuid=None, identifier=None):
         '''
-        개별 주문 조회
-        주문 UUID 를 통해 개별 주문건을 조회한다.
-        https://docs.upbit.com/v1.0/reference#%EA%B0%9C%EB%B3%84-%EC%A3%BC%EB%AC%B8-%EC%A1%B0%ED%9A%8C
-        :param str uuid: 주문 UUID
-        :return: json object
+        EXCHANGE API - 주문 - 개별 주문 조회\n        
+        주문 UUID 를 통해 개별 주문건을 조회한다.\n
+        https://docs.upbit.com/reference#%EA%B0%9C%EB%B3%84-%EC%A3%BC%EB%AC%B8-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)        
+        ******************************\n
+        QUERY PARAMS\n        
+        uuid string 주문 UUID\n
+        identifier string 조회용 사용자 지정 값\n
+        uuid 혹은 identifier 둘 중 하나의 값이 반드시 포함되어야 합니다.\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        uuid	주문의 고유 아이디	String\n
+        side	주문 종류	String\n
+        ord_type	주문 방식	String\n
+        price	주문 당시 화폐 가격	NumberString\n
+        state	주문 상태	String\n
+        market	마켓의 유일키	String\n
+        created_at	주문 생성 시간	DateString\n
+        volume	사용자가 입력한 주문 양	NumberString\n
+        remaining_volume	체결 후 남은 주문 양	NumberString\n
+        reserved_fee	수수료로 예약된 비용	NumberString\n
+        remaining_fee	남은 수수료	NumberString\n
+        paid_fee	사용된 수수료	NumberString\n
+        locked	거래에 사용중인 비용	NumberString\n
+        executed_volume	체결된 양	NumberString\n
+        trade_count	해당 주문에 걸린 체결 수	Integer\n
+        trades	체결	Array[Object]\n
+        trades.market	마켓의 유일 키	String\n
+        trades.uuid	체결의 고유 아이디	String\n
+        trades.price	체결 가격	NumberString\n
+        trades.volume	체결 양	NumberString\n
+        trades.funds	체결된 총 가격	NumberString\n
+        trades.side	체결 종류	String\n
+        trades.created_at	체결 시각	DateString\n
         '''
         URL = self.server_url+'/order'
-        try:
-            data = {'uuid': uuid}
+        try:      
+            data = {}
+            if uuid is not None:
+                data['uid'] = uuid
+            if identifier is not None:            
+                data['identifier'] = identifier
+
+            if  len(data) == 0 :
+                logging.error('uuid  or identifier Either value must be included.')                
+                raise Exception('uuid  or identifier Either value must be included.')
+
             return self.__get(URL, self.__get_headers(data), data)
         except Exception as e:
             logging.error(e)
             raise Exception(e)
 
-    def get_orders(self, market, state, page=1, order_by='asc'):
+    def getExchangeOrders(self, market, state, page=1, order_by='desc' ,states=None, limit=100,uuids=None, identifiers=None):
         '''
-        주문 리스트 조회
-        주문 리스트를 조회한다.
-        https://docs.upbit.com/v1.0/reference#%EC%A3%BC%EB%AC%B8-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C
-        :param str market: Market ID
-        :param str state: 주문 상태
-            wait:체결 대기(default)
-            done: 체결 완료
-            cancel: 주문 취소
-        :param int page: 페이지 수, default: 1
-        :param str order_by: 정렬 방식
-            asc: 오름차순(default)
-            desc:내림차순
-        :return: json array
+        EXCHANGE API - 주문 - 주문 리스트 조회\n        
+        주문 리스트를 조회한다.\n
+        https://docs.upbit.com/reference#%EC%A3%BC%EB%AC%B8-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)        
+        ******************************\n
+        QUERY PARAMS\n        
+        market string Market ID\n
+        state string 주문 상태\n
+            - wait : 체결 대기 (default)\n
+            - watch : 예약주문 대기\n
+            - done : 전체 체결 완료\n
+            - cancel : 주문 취소\n
+        states  array of strings  주문 상태 목록\n
+            - 미체결 주문(wait, watch)과 완료 주문(done, cancel)은 혼합하여 조회하실 수 없습니다\n
+            - 예시1) done, cancel 주문을 한 번에 조회 => 가능\n
+            - 예시2) wait, done 주문을 한 번에 조회 => 불가능 (각각 API 호출 필요)\n
+        uuids array of strings 주문 UUID의 목록\n
+        identifiers array of strings 주문 identifier의 목록\n
+        page int32 요청 페이지 , default: 1\n
+        limit int32  요청 개수 (1 ~ 100) , default: 100\n
+        order_by string 정렬\n
+        - asc : 오름차순\n
+        - desc : 내림차순 (default)\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        uuid	주문의 고유 아이디	String\n
+        side	주문 종류	String\n
+        ord_type	주문 방식	String\n
+        price	주문 당시 화폐 가격	NumberString\n
+        state	주문 상태	String\n
+        market	마켓의 유일키	String\n
+        created_at	주문 생성 시간	DateString\n
+        volume	사용자가 입력한 주문 양	NumberString\n
+        remaining_volume	체결 후 남은 주문 양	NumberString\n
+        reserved_fee	수수료로 예약된 비용	NumberString\n
+        remaining_fee	남은 수수료	NumberString\n
+        paid_fee	사용된 수수료	NumberString\n
+        locked	거래에 사용중인 비용	NumberString\n
+        executed_volume	체결된 양	NumberString\n
+        trade_count	해당 주문에 걸린 체결 수	Integer
         '''
         URL = self.server_url+'/orders'
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
 
-        if state not in ['wait', 'done', 'cancel']:
-            logging.error('invalid state: %s' % state)
-            raise Exception('invalid state: %s' % state)
+        if state is not None:
+            if state not in ['wait', 'watch','done', 'cancel']:
+                logging.error('invalid state: %s' % state)
+                raise Exception('invalid state: %s' % state)
 
         if order_by not in ['asc', 'desc']:
             logging.error('invalid order_by: %s' % order_by)
@@ -505,8 +574,31 @@ class UpbitApi():
             'page': page,
             'order_by': order_by
         }
+
+          query = {
+                'state': 'done',
+            }
+            query_string = urlencode(query)
+
+
+            uuids = [
+                '9ca023a5-851b-4fec-9f0a-48cd83c2eaae',
+                '8ca023a5-851b-4fec-9f0a-48cd83c2eaae',
+                #...
+            ]
+            uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
+            print(uuids_query_string)
+
+            query['uuids[]'] = uuids
+            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
+            print(query_string)
+
         return self.__get(URL, self.__get_headers(data), data)
 
+
+
+
+    """
     def order(self, market, side, volume, price):
         '''
         주문하기
