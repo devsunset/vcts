@@ -119,16 +119,16 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - QUOTATION API - 시세 Ticker 조회 - 현재가 정보 : getQuotationTicker(["KRW-BTC","KRW-ETH"])')
     # print(upbitapi.getQuotationTicker(['KRW-BTC','KRW-ETH']))
 
-    # print('■■■■■■■■■■ - QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getQuotationOrderbook(["KRW-BTC","KRW-ETH"])')
-    # print(upbitapi.getQuotationOrderbook(['KRW-BTC','KRW-ETH']))
+    print('■■■■■■■■■■ - QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getQuotationOrderbook(["KRW-BTC","KRW-ETH"])')
+    print(upbitapi.getQuotationOrderbook(['KRW-BTC','KRW-ETH']))
 
     # EXCHANGE API TEST 
     ###############################################################    
     # print('■■■■■■■■■■ - EXCHANGE API - 자산 - 전체 계좌 조회 : getExchangeAccounts()')
     # print(upbitapi.getExchangeAccounts())
 
-    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
-    # print(upbitapi.getExchangeOrdersChance('KRW-BTC'))
+    print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
+    print(upbitapi.getExchangeOrdersChance('KRW-BTC'))
 
     print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
     print(upbitapi.getExchangeOrdersChance('KRW-BTC'))
