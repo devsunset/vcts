@@ -16,7 +16,7 @@ class UpbitApi():
     https://api.upbit.com/v1
     """
     ###############################################################
-    # CONSTRUCTOR
+    # INIT
     ###############################################################
     def __init__(self, access_key=None, secret=None,server_url=None):
         '''
@@ -376,8 +376,7 @@ class UpbitApi():
 
     ###############################################################
     # EXCHANGE API
-    ###############################################################
-    
+    ############################################################### 
     def getExchangeAccounts(self):
         '''
         EXCHANGE API - 자산 - 전체 계좌 조회\n
@@ -509,6 +508,7 @@ class UpbitApi():
             logging.error(e)
             raise Exception(e)
 
+    # TO-DO
     def getExchangeOrders(self, market, page=1, limit=100 ,order_by='desc' ,state=None, states=None, uuids=None, identifiers=None):
         '''
         EXCHANGE API - 주문 - 주문 리스트 조회\n        
@@ -578,24 +578,6 @@ class UpbitApi():
             'page': page,
             'order_by': order_by
         }
-
-        # query = {
-        #     'state': 'done',
-        # }
-        # query_string = urlencode(query)
-
-
-        # uuids = [
-        #     '9ca023a5-851b-4fec-9f0a-48cd83c2eaae',
-        #     '8ca023a5-851b-4fec-9f0a-48cd83c2eaae',
-        #     #...
-        # ]
-        # uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
-        # print(uuids_query_string)
-
-        # query['uuids[]'] = uuids
-        # query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
-        # print(query_string)
 
         return self.__get(URL, self.__get_headers(data), data)
 
@@ -776,7 +758,6 @@ class UpbitApi():
     ###############################################################
     #  HTTP REQUEST COMMON  FUNCTION
     # ##############################################################
-
     def __get(self, url, headers=None, data=None, params=None):
         resp = requests.get(url, headers=headers, data=data, params=params)
         if resp.status_code not in [200, 201]:

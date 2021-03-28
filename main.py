@@ -135,6 +135,7 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
     # print(upbitapi.getExchangeOrder(uuid))
 
+    # TO-DO
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders()')
     # print(upbitapi.getExchangeOrders())
   
