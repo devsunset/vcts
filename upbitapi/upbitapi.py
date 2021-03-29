@@ -36,6 +36,7 @@ class UpbitApi():
     ###############################################################
     # QUOTATION API
     ###############################################################
+    # QUOTATION API - 시세 종목 조회 - 마켓 코드 조회
     def getQuotationMarketAll(self,isDetails=True):
         '''
         QUOTATION API - 시세 종목 조회 - 마켓 코드 조회\n
@@ -62,6 +63,7 @@ class UpbitApi():
         params = {'isDetails':  isDetails}
         return self.__get(URL, params=params)
 
+    # QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들
     def getQuotationCandlesMinutes(self, unit, market, to=None, count=None):
         '''
         QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들\n
@@ -108,6 +110,7 @@ class UpbitApi():
             params['count'] = count
         return self.__get(URL, params=params)
 
+    # QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들
     def getQuotationCandlesDays(self, market, to=None, count=None, convertingPriceUnit=None):
         '''
         QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들\n
@@ -154,6 +157,7 @@ class UpbitApi():
             params['convertingPriceUnit'] = convertingPriceUnit
         return self.__get(URL, params=params)
 
+    # QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들
     def getQuotationCandlesWeeks(self, market, to=None, count=None):
         '''
         QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들\n
@@ -189,6 +193,7 @@ class UpbitApi():
             params['count'] = count
         return self.__get(URL, params=params)
 
+    # QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들
     def getQuotationCandlesMonths(self, market, to=None, count=None):
         '''
         QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들\n
@@ -225,6 +230,7 @@ class UpbitApi():
             params['count'] = count
         return self.__get(URL, params=params)
 
+    # QUOTATION API - 시세 체결 조회 - 최근 체결 내역
     def getQuotationTradesTicks(self, market, to=None, count=None, cursor=None, daysAgo=None):
         '''
         QUOTATION API - 시세 체결 조회 - 최근 체결 내역\n
@@ -273,6 +279,7 @@ class UpbitApi():
             params['daysAgo'] = daysAgo
         return self.__get(URL, params=params)
 
+    # QUOTATION API - 시세 Ticker 조회 - 현재가 정보
     def getQuotationTicker(self, markets):
         '''
         QUOTATION API - 시세 Ticker 조회 - 현재가 정보\n
@@ -332,6 +339,7 @@ class UpbitApi():
         params = {'markets': markets_data}
         return self.__get(URL, params=params)
 
+    # QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회
     def getQuotationOrderbook(self, markets):
         '''
         QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회\n
@@ -377,6 +385,7 @@ class UpbitApi():
     ###############################################################
     # EXCHANGE API
     ############################################################### 
+    # EXCHANGE API - 자산 - 전체 계좌 조회
     def getExchangeAccounts(self):
         '''
         EXCHANGE API - 자산 - 전체 계좌 조회\n
@@ -398,6 +407,7 @@ class UpbitApi():
         URL = self.server_url+'/accounts'
         return self.__get(URL, self.__get_headers())
     
+    # EXCHANGE API - 주문 - 주문 가능 정보
     def getExchangeOrdersChance(self, market):
         '''
         EXCHANGE API - 주문 - 주문 가능 정보\n        
@@ -451,6 +461,7 @@ class UpbitApi():
         data = {'market': market}
         return self.__get(URL, self.__get_headers(data), data)
 
+    # EXCHANGE API - 주문 - 개별 주문 조회
     def getExchangeOrder(self, uuid=None, identifier=None):
         '''
         EXCHANGE API - 주문 - 개별 주문 조회\n        
@@ -504,6 +515,7 @@ class UpbitApi():
 
         return self.__get(URL, self.__get_headers(data), data)
 
+    # EXCHANGE API - 주문 - 주문 리스트 조회
     def getExchangeOrders(self, market, state=None, page=1 ,order_by='desc' , limit=100, states=None, uuids=None, identifiers=None):
         '''
         EXCHANGE API - 주문 - 주문 리스트 조회\n        
@@ -633,6 +645,7 @@ class UpbitApi():
 
         return self.__get(URL, headers, query)
 
+    # EXCHANGE API - 주문 - 주문 취소 접수
     def deleteExchangeOrder(self, uuid=None, identifier=None):
         '''
         EXCHANGE API - 주문 - 주문 취소 접수\n
@@ -678,6 +691,7 @@ class UpbitApi():
 
         return self.__delete(URL, self.__get_headers(data), data)
 
+    # EXCHANGE API - 주문 - 주문하기
     def postExchangeOrder(self, market, side, ord_type='limit', volume=None, price=None, dentifier=None):
         '''
         EXCHANGE API - 주문 - 주문하기\n
@@ -776,132 +790,105 @@ class UpbitApi():
        
         return self.__post(URL, self.__get_headers(data), data)
 
-    """
-    def get_withraws(self, currency, state, limit):
+    # EXCHANGE API - 출금 - 출금 리스트 조회
+    def getExchangeWithdraws(self, currency, state, page=1 ,order_by='desc' , limit=100, uuids=None, txids=None):
         '''
-        출금 리스트 조회
-        https://docs.upbit.com/v1.0/reference#%EC%A0%84%EC%B2%B4-%EC%B6%9C%EA%B8%88-%EC%A1%B0%ED%9A%8C
-        :param str currency: Currency 코드
-        :param str state: 출금 상태
-            submitting : 처리 중
-            submitted : 처리 완료
-            almost_accepted : 출금대기중
-            rejected : 거부
-            accepted : 승인됨
-            processing : 처리 중
-            done : 완료
-            canceled : 취소됨
-        :param int limit: 갯수 제한
-        :return: json array
+        EXCHANGE API - 출금 - 출금 리스트 조회\n        
+        https://docs.upbit.com/reference#%EC%A0%84%EC%B2%B4-%EC%B6%9C%EA%B8%88-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        QUERY PARAMS\n        
+        currency  string  Currency 코드\n
+        state string 출금 상태\n
+            - submitting : 처리 중\n
+            - submitted : 처리 완료\n
+            - almost_accepted : 출금대기중\n
+            - rejected : 거부\n
+            - accepted : 승인됨\n
+            - processing : 처리 중\n
+            - done : 완료\n
+            - canceled : 취소됨\n
+        uuids  array of strings   출금 UUID의 목록\n
+        txids array of strings 출금 TXID의 목록\n
+        limit int32 갯수 제한 (default: 100, max: 100)\n
+        page   int32  페이지 수, default: 1\n
+        order_by  string   정렬\n
+            - asc : 오름차순\n
+            - desc : 내림차순 (default)\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        type	입출금 종류	String\n
+        uuid	출금의 고유 아이디	String\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        txid	출금의 트랜잭션 아이디	String\n
+        state	출금 상태	String\n
+        created_at	출금 생성 시간	DateString\n
+        done_at	출금 완료 시간	DateString\n
+        amount	출금 금액/수량	NumberString\n
+        fee	출금 수수료	NumberString\n
+        transaction_type	출금 유형\n
+        default : 일반출금\n
+        internal : 바로출금	String
         '''
-        LIMIT_MAX = 100
-        VALID_STATE = ['submitting', 'submitted', 'almost_accepted',
-                       'rejected', 'accepted', 'processing', 'done', 'canceled']
         URL = self.server_url+'/withdraws'
-        data = {}
-        if currency is not None:
-            data['currency'] = currency
+        if currency is None:
+            logging.error('invalid currency: %s' % currency)
+            raise Exception('invalid currency: %s' % currency)
+
         if state is not None:
-            if state not in VALID_STATE:
-                logging.error('invalid state(%s)' % state)
-                raise Exception('invalid state(%s)' % state)
-            data['state'] = state
-        if limit is not None:
-            if limit <= 0 or limit > LIMIT_MAX:
-                logging.error('invalid limit(%d)' % limit)
-                raise Exception('invalid limit(%d)' % limit)
-            data['limit'] = limit
-        return self.__get(URL, self.__get_headers(data), data)
+            if state not in ['submitting', 'submitted', 'almost_accepted', 'rejected', 'accepted', 'processing', 'done', 'canceled']:
+                logging.error('invalid state: %s' % state)
+                raise Exception('invalid state: %s' % state)
 
-    def get_withraw(self, uuid):
-        '''
-        개별 출금 조회
-        출금 UUID를 통해 개별 출금 정보를 조회한다.
-        https://docs.upbit.com/v1.0/reference#%EA%B0%9C%EB%B3%84-%EC%B6%9C%EA%B8%88-%EC%A1%B0%ED%9A%8C
-        :param str uuid: 출금 UUID
-        :return: json object
-        '''
-        URL = self.server_url+'/withdraw'
-        data = {'uuid': uuid}
-        return self.__get(URL, self.__get_headers(data), data)
+        if order_by not in ['asc', 'desc']:
+            logging.error('invalid order_by: %s' % order_by)
+            raise Exception('invalid order_by: %s' % order_by)
 
-    def get_withraws_chance(self, currency):
-        '''
-        출금 가능 정보
-        해당 통화의 가능한 출금 정보를 확인한다.
-        https://docs.upbit.com/v1.0/reference#%EC%B6%9C%EA%B8%88-%EA%B0%80%EB%8A%A5-%EC%A0%95%EB%B3%B4
-        :param str currency: Currency symbol
-        :return: json object
-        '''
-        URL = self.server_url+'/withdraws/chance'
-        data = {'currency': currency}
-        return self.__get(URL, self.__get_headers(data), data)
-
-    def withdraws_coin(self, currency, amount, address, secondary_address=None):
-        '''
-        코인 출금하기
-        코인 출금을 요청한다.
-        https://docs.upbit.com/v1.0/reference#%EC%BD%94%EC%9D%B8-%EC%B6%9C%EA%B8%88%ED%95%98%EA%B8%B0
-        :param str currency: Currency symbol
-        :param str amount: 출금 코인 수량
-        :param str address: 출금 지갑 주소
-        :param str secondary_address: 2차 출금 주소 (필요한 코인에 한해서)
-        '''
-        URL = self.server_url+'/withdraws/coin'
-        data = {
+        if limit not in list(range(1,101)):
+            logging.error('invalid count: %s' % str(limit))
+            raise Exception('invalid count: %s' % str(limit))
+        
+        query = {
             'currency': currency,
-            'amount': amount,
-            'address': address
+            'state':state,
+            'page': page,
+            'limit': limit,
+            'order_by': order_by
         }
-        if secondary_address is not None:
-            data['secondary_address'] = secondary_address
-        return self.__post(URL, self.__get_headers(data), data)
 
-    def withdraws_krw(self, amount):
-        '''
-        원화 출금하기
-        원화 출금을 요청한다. 등록된 출금 계좌로 출금된다.
-        https://docs.upbit.com/v1.0/reference#%EC%9B%90%ED%99%94-%EC%B6%9C%EA%B8%88%ED%95%98%EA%B8%B0
-        :param str amount: 출금 원화 수량
-        '''
-        URL = self.server_url+'/withdraws/krw'
-        data = {'amount': amount}
-        return self.__post(URL, self.__get_headers(data), data)
+        query_string = urlencode(query)
 
-    def get_deposits(self, currency=None, limit=None, page=None, order_by=None):
-        '''
-        입금 리스트 조회
-        https://docs.upbit.com/v1.0/reference#%EC%9E%85%EA%B8%88-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C
-        :param str currency: Currency 코드
-        :param int limit: 페이지당 개수
-        :param int page: 페이지 번호
-        :param str order_by: 정렬 방식
-        :return: json array
-        '''
-        URL = self.server_url+'/deposits'
-        data = {}
-        if currency is not None:
-            data['currency'] = currency
-        if limit is not None:
-            data['limit'] = limit
-        if page is not None:
-            data['page'] = page
-        if order_by is not None:
-            data['order_by'] = order_by
-        return self.__get(URL, self.__get_headers(data), data)
+        if uuids is not None:
+            uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
+            query['uuids[]'] = uuids
+            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
+        
+        if txids is not None:
+            txids_query_string = '&'.join(["txids[]={}".format(txid) for txid in txids])
+            query['txids[]'] = txids
+            query_string = "{0}&{1}".format(query_string, txids_query_string).encode()
 
-    def get_deposit(self, uuid):
-        '''
-        개별 입금 조회
-        https://docs.upbit.com/v1.0/reference#%EA%B0%9C%EB%B3%84-%EC%9E%85%EA%B8%88-%EC%A1%B0%ED%9A%8C
-        :param str uuid: 개별 입금의 UUID
-        :return: json object
-        '''
-        URL = self.server_url+'/deposit'
-        data = {'uuid': uuid}
-        return self.__get(URL, self.__get_headers(data), data)
-    """
+        m = hashlib.sha512()
+        m.update(query_string)
+        query_hash = m.hexdigest()
 
+        payload = {
+            'access_key': self.access_key,
+            'nonce': str(uuid.uuid4()),
+            'query_hash': query_hash,
+            'query_hash_alg': 'SHA512',
+        }
+        
+        jwt_token = jwt.encode(payload, secret_key)
+        authorize_token = 'Bearer {}'.format(jwt_token)
+        headers = {"Authorization": authorize_token}
+
+        return self.__get(URL, headers, query)
+  
+    # EXCHANGE API - 서비스 정보 - 입출금 현황
     def getExchangeStatusWallet(self):
         '''
         EXCHANGE API - 서비스 정보 - 입출금 현황\n
@@ -933,6 +920,7 @@ class UpbitApi():
         URL = self.server_url+'/status/wallet'
         return self.__get(URL, self.__get_headers())
 
+    # EXCHANGE API - 서비스 정보 - API 키 리스트 조회
     def getExchangeApiKeys(self):
         '''
         EXCHANGE API - 서비스 정보 - API 키 리스트 조회\n

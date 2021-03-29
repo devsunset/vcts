@@ -91,8 +91,6 @@ if __name__ == '__main__':
     #    scheduler.start()
     #except Exception as err:
     #    print(err)
-
-
     
     # upbitapi  API TEST 
     ###############################################################
@@ -144,10 +142,8 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문하기 : postExchangeOrder(market, side, volume, price, ord_type)')
     # print(upbitapi.postExchangeOrder(market, side, volume, price, ord_type))
 
-
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 리스트 조회 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 리스트 조회 : getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids)')
+    # print(upbitapi.getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids))
 
     # TO-DO
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeOrders()')
@@ -164,7 +160,6 @@ if __name__ == '__main__':
     # TO-DO
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 원화 출금하기 : getExchangeOrders()')
     # print(upbitapi.getExchangeOrders())
-
 
     # TO-DO
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 리스트 조회 : getExchangeOrders()')
@@ -190,12 +185,10 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 원화 입금하기: getExchangeOrders()')
     # print(upbitapi.getExchangeOrders())
 
-
-
-    print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황: getExchangeStatusWallet()')
-    print(upbitapi.getExchangeStatusWallet())
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황: getExchangeStatusWallet()')
+    # print(upbitapi.getExchangeStatusWallet())
     
-    print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회: getExchangeApiKeys()')
-    print(upbitapi.getExchangeApiKeys())
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회: getExchangeApiKeys()')
+    # print(upbitapi.getExchangeApiKeys())
 
     
