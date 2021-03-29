@@ -903,6 +903,54 @@ class UpbitApi():
         return self.__get(URL, self.__get_headers(data), data)
     """
 
+    def getExchangeStatusWallet(self):
+        '''
+        EXCHANGE API - 서비스 정보 - 입출금 현황\n
+        입출금 현황 및 블록 상태를 조회합니다.\n
+        https://docs.upbit.com/reference#%EC%9E%85%EC%B6%9C%EA%B8%88-%ED%98%84%ED%99%A9\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n
+        ******************************\n
+        입출금 현황 데이터는 실제 서비스 상태와 다를 수 있습니다.\n
+        입출금 현황 API에서 제공하는 입출금 상태, 블록 상태 정보는 수 분 정도 지연되어 반영될 수 있습니다. \n
+        본 API는 참고용으로만 사용하시길 바라며 실제 입출금을 수행하기 전에는 반드시 업비트 공지사항 및 입출금 현황 페이지를 참고해주시기 바랍니다.\n
+        RESPONSE\n
+        필드	설명	타입\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        wallet_state	입출금 상태 String\n
+            - working : 입출금 가능\n
+            - withdraw_only : 출금만 가능\n
+            - deposit_only : 입금만 가능\n
+            - paused : 입출금 중단\n
+            - unsupported : 입출금 미지원\n
+        block_state	블록 상태 String\n
+            - normal : 정상\n
+            - delayed : 지연\n
+            - inactive : 비활성 (점검 등)\n
+        block_height	블록 높이	Integer\n
+        block_updated_at	블록 갱신 시각	DateString\n
+        '''
+        URL = self.server_url+'/status/wallet'
+        return self.__get(URL, self.__get_headers())
+
+    def getExchangeApiKeys(self):
+        '''
+        EXCHANGE API - 서비스 정보 - API 키 리스트 조회\n
+        API 키 목록 및 만료 일자를 조회합니다.\n
+        https://docs.upbit.com/reference#open-api-%ED%82%A4-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n
+        ******************************\n        
+        RESPONSE\n
+        필드	설명	타입\n
+        access_key	access_key	String\n
+        expire_at	expire_at String\
+        '''
+        URL = self.server_url+'/api_keys'
+        return self.__get(URL, self.__get_headers())
+
     ###############################################################
     #  HTTP REQUEST COMMON  FUNCTION
     # ##############################################################
