@@ -504,8 +504,7 @@ class UpbitApi():
 
         return self.__get(URL, self.__get_headers(data), data)
 
-    # TO-DO
-    def getExchangeOrders(self, market, state=None, states=None, page=1 ,order_by='desc' , limit=100, uuids=None, identifiers=None):
+    def getExchangeOrders(self, market, state=None, page=1 ,order_by='desc' , limit=100, states=None, uuids=None, identifiers=None):
         '''
         EXCHANGE API - 주문 - 주문 리스트 조회\n        
         주문 리스트를 조회한다.\n
@@ -521,17 +520,17 @@ class UpbitApi():
             - watch : 예약주문 대기\n
             - done : 전체 체결 완료\n
             - cancel : 주문 취소\n
+        page int32 요청 페이지 , default: 1\n
+        order_by string 정렬\n
+            - asc : 오름차순\n
+            - desc : 내림차순 (default)\n
+        limit int32  요청 개수 (1 ~ 100) , default: 100\n
         states  array of strings  주문 상태 목록\n
             - 미체결 주문(wait, watch)과 완료 주문(done, cancel)은 혼합하여 조회하실 수 없습니다\n
             - 예시1) done, cancel 주문을 한 번에 조회 => 가능\n
             - 예시2) wait, done 주문을 한 번에 조회 => 불가능 (각각 API 호출 필요)\n
         uuids array of strings 주문 UUID의 목록\n
-        identifiers array of strings 주문 identifier의 목록\n
-        page int32 요청 페이지 , default: 1\n
-        limit int32  요청 개수 (1 ~ 100) , default: 100\n
-        order_by string 정렬\n
-        - asc : 오름차순\n
-        - desc : 내림차순 (default)\n
+        identifiers array of strings 주문 identifier의 목록\n      
         ******************************\n
         RESPONSE\n
         필드	설명	타입\n
@@ -564,78 +563,176 @@ class UpbitApi():
             logging.error('invalid count: %s' % str(limit))
             raise Exception('invalid count: %s' % str(limit))
 
-        if state not in ['wait', 'watch', 'done', 'cancel']:
-            logging.error('invalid state: %s' % state)
-            raise Exception('invalid state: %s' % state)
+        if state is not None:
+            if state not in ['wait', 'watch', 'done', 'cancel']:
+                logging.error('invalid state: %s' % state)
+                raise Exception('invalid state: %s' % state)
 
-        data = {
+        if states is not None and len(states) > 0:
+            type_temp = 1
+            if states[0] == 'wait':
+                type_temp = 1
+            elif states[0] == 'watch':
+                type_temp = 1
+            elif states[0] == 'done':
+                type_temp = 2
+            else:
+                type_temp = 2
+
+            for(s in states){
+                 if type_temp == 1:
+                    if s not in ['wait', 'watch']:
+                        logging.error('invalid state: %s' % s)
+                        raise Exception('invalid state: %s' % s)
+                 else:                      
+                    if s not in ['done', 'cancel']:
+                        logging.error('invalid state: %s' % s)
+                        raise Exception('invalid state: %s' % s)
+           }
+
+        query = {
             'market': market,
-            'state': state,
             'page': page,
             'limit': limit,
             'order_by': order_by
         }
 
-        return self.__get(URL, self.__get_headers(data), data)
+        if state is not None:
+            query['state'] = query
+
+        query_string = urlencode(query)
+
+        if states is not None:
+            states_query_string = '&'.join(["states[]={}".format(state_temp) for state_temp in states])
+            query['states[]'] = states
+            query_string = "{0}&{1}".format(query_string, states_query_string).encode()
+
+        if uuids is not None:
+            uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
+            query['uuids[]'] = uuids
+            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
+        
+        if identifiers is not None:
+            identifiers_query_string = '&'.join(["identifiers[]={}".format(identifier) for uuid in identifiers])
+            query['identifiers[]'] = identifiers
+            query_string = "{0}&{1}".format(query_string, identifiers_query_string).encode()
+
+        m = hashlib.sha512()
+        m.update(query_string)
+        query_hash = m.hexdigest()
+
+        payload = {
+            'access_key': self.access_key,
+            'nonce': str(uuid.uuid4()),
+            'query_hash': query_hash,
+            'query_hash_alg': 'SHA512',
+        }
+        
+        jwt_token = jwt.encode(payload, secret_key)
+        authorize_token = 'Bearer {}'.format(jwt_token)
+        headers = {"Authorization": authorize_token}
+
+        return self.__get(URL, headers, query)
 
     def deleteExchangeOrder(self, uuid=None, identifier=None):
-            '''
-            EXCHANGE API - 주문 - 주문 취소 접수\n
-            주문 UUID를 통해 해당 주문에 대한 취소 접수를 한다.\n
-            https://docs.upbit.com/reference#%EC%A3%BC%EB%AC%B8-%EC%B7%A8%EC%86%8C\n
-            ******************************\n
-            HEADERS\n        
-            Authorization string Authorization token (JWT)\n        
-            ******************************\n
-            QUERY PARAMS\n        
-            uuid string 주문 UUID\n
-            identifier string 조회용 사용자 지정 값\n
-            uuid 혹은 identifier 둘 중 하나의 값이 반드시 포함되어야 합니다.\n
-            ******************************\n
-            RESPONSE\n
-            필드	설명	타입\n
-            uuid	주문의 고유 아이디	String\n
-            side	주문 종류	String\n
-            ord_type	주문 방식	String\n
-            price	주문 당시 화폐 가격	NumberString\n
-            state	주문 상태	String\n
-            market	마켓의 유일키	String\n
-            created_at	주문 생성 시간	String\n
-            volume	사용자가 입력한 주문 양	NumberString\n
-            remaining_volume	체결 후 남은 주문 양	NumberString\n
-            reserved_fee	수수료로 예약된 비용	NumberString\n
-            remaing_fee	남은 수수료	NumberString\n
-            paid_fee	사용된 수수료	NumberString\n
-            locked	거래에 사용중인 비용	NumberString\n
-            executed_volume	체결된 양	NumberString\n
-            trade_count	해당 주문에 걸린 체결 수	Integer\n
-            '''
-            URL = self.server_url+'/order'
-            data = {}
-            if uuid is not None:
-                data['uuid'] = uuid
-            if identifier is not None:            
-                data['identifier'] = identifier
-
-            if  len(data) == 0 :
-                logging.error('uuid  or identifier Either value must be included.')                
-                raise Exception('uuid  or identifier Either value must be included.')
-
-            return self.__delete(URL, self.__get_headers(data), data)
-
-    def order(self, market, side, volume, price):
         '''
-        주문하기
-        주문 요청을 한다.
-        https://docs.upbit.com/v1.0/reference#%EC%A3%BC%EB%AC%B8%ED%95%98%EA%B8%B0-1
-        :param str market: 마켓 ID (필수)
-        :param str side: 주문 종류 (필수)
-            bid : 매수
-            ask : 매도
-        :param str volume: 주문량 (필수)
-        :param str price: 유닛당 주문 가격. (필수)
-            ex) KRW-BTC 마켓에서 1BTC당 1,000 KRW로 거래할 경우, 값은 1000 이 된다.
-        :return: json object
+        EXCHANGE API - 주문 - 주문 취소 접수\n
+        주문 UUID를 통해 해당 주문에 대한 취소 접수를 한다.\n
+        https://docs.upbit.com/reference#%EC%A3%BC%EB%AC%B8-%EC%B7%A8%EC%86%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        QUERY PARAMS\n        
+        uuid string 주문 UUID\n
+        identifier string 조회용 사용자 지정 값\n
+        uuid 혹은 identifier 둘 중 하나의 값이 반드시 포함되어야 합니다.\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        uuid	주문의 고유 아이디	String\n
+        side	주문 종류	String\n
+        ord_type	주문 방식	String\n
+        price	주문 당시 화폐 가격	NumberString\n
+        state	주문 상태	String\n
+        market	마켓의 유일키	String\n
+        created_at	주문 생성 시간	String\n
+        volume	사용자가 입력한 주문 양	NumberString\n
+        remaining_volume	체결 후 남은 주문 양	NumberString\n
+        reserved_fee	수수료로 예약된 비용	NumberString\n
+        remaing_fee	남은 수수료	NumberString\n
+        paid_fee	사용된 수수료	NumberString\n
+        locked	거래에 사용중인 비용	NumberString\n
+        executed_volume	체결된 양	NumberString\n
+        trade_count	해당 주문에 걸린 체결 수	Integer\n
+        '''
+        URL = self.server_url+'/order'
+        data = {}
+        if uuid is not None:
+            data['uuid'] = uuid
+        if identifier is not None:            
+            data['identifier'] = identifier
+
+        if  len(data) == 0 :
+            logging.error('uuid  or identifier Either value must be included.')                
+            raise Exception('uuid  or identifier Either value must be included.')
+
+        return self.__delete(URL, self.__get_headers(data), data)
+
+    def postExchangeOrder(self, market, side, ord_type='limit', volume=None, price=None, dentifier=None):
+        '''
+        EXCHANGE API - 주문 - 주문하기\n
+        주문 요청을 한다.\n
+        https://docs.upbit.com/reference#%EC%A3%BC%EB%AC%B8%ED%95%98%EA%B8%B0\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        BODY PARAMS\n        
+        market  string   Market ID\n
+        side  string  주문 종류\n
+            - bid : 매수\n
+            - ask : 매도\n
+        volume  string  주문 수량  (지정가, 시장가 매도 시 필수)\n
+        price  string  유닛당 주문 가격 (지정가, 시장가 매수 시 필수)\n
+            - ex) KRW-BTC 마켓에서 1BTC당 1,000 KRW로 거래할 경우, 값은 1000 이 된다.\n
+            - ex) KRW-BTC 마켓에서 1BTC당 매도 1호가가 500 KRW 인 경우, 시장가 매수 시 값을 1000으로 세팅하면 2BTC가 매수된다.\n
+            - (수수료가 존재하거나 매도 1호가의 수량에 따라 상이할 수 있음)\n
+        ord_type  string  주문 타입\n
+            - limit : 지정가 주문\n
+            - price : 시장가 주문(매수)\n
+            - market : 시장가 주문(매도)\n
+        identifier string 조회용 사용자 지정 값\n
+
+        🚧 원화 마켓 가격 단위를 확인하세요.\n
+        원화 마켓에서 주문을 요청 할 경우, 원화 마켓 주문 가격 단위 를 확인하여 값을 입력해주세요.\n
+        🚧 identifier 파라미터 사용\n
+        identifier는 서비스에서 발급하는 uuid가 아닌 이용자가 직접 발급하는 키값으로, 주문을 조회하기 위해 할당하는 값입니다.\n
+        해당 값은 사용자의 전체 주문 내 유일한 값을 전달해야하며, 비록 주문 요청시 오류가 발생하더라도 같은 값으로 다시 요청을 보낼 수 없습니다.\n
+        주문의 성공 / 실패 여부와 관계없이 중복해서 들어온 identifier 값에서는 중복 오류가 발생하니, 매 요청시 새로운 값을 생성해주세요.\n
+        🚧 시장가 주문\n
+        시장가 주문은 ord_type 필드를 price or market 으로 설정해야됩니다.\n
+        매수 주문의 경우 ord_type을 price로 설정하고 volume을 null 혹은 제외해야됩니다.\n
+        매도 주문의 경우 ord_type을 market로 설정하고 price을 null 혹은 제외해야됩니다.\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        uuid	주문의 고유 아이디	String\n
+        side	주문 종류	String\n
+        ord_type	주문 방식	String\n
+        price	주문 당시 화폐 가격	NumberString\n
+        avg_price	체결 가격의 평균가	NumberString\n
+        state	주문 상태	String\n
+        market	마켓의 유일키	String\n
+        created_at	주문 생성 시간	String\n
+        volume	사용자가 입력한 주문 양	NumberString\n
+        remaining_volume	체결 후 남은 주문 양	NumberString\n
+        reserved_fee	수수료로 예약된 비용	NumberString\n
+        remaining_fee	남은 수수료	NumberString\n
+        paid_fee	사용된 수수료	NumberString\n
+        locked	거래에 사용중인 비용	NumberString\n
+        executed_volume	체결된 양	NumberString\n
+        trade_count	해당 주문에 걸린 체결 수	Integer
         '''
         URL = self.server_url+'/orders'
         if market not in self.markets:
@@ -646,17 +743,38 @@ class UpbitApi():
             logging.error('invalid side: %s' % side)
             raise Exception('invalid side: %s' % side)
 
-        if market.startswith('KRW') and not self.__is_valid_price(price):
-            logging.error('invalid price: %.2f' % price)
-            raise Exception('invalid price: %.2f' % price)
+        if ord_type not in ['limit', 'price','market']:
+            logging.error('invalid ord_type: %s' % ord_type)
+            raise Exception('invalid ord_type: %s' % ord_type)
 
         data = {
             'market': market,
             'side': side,
-            'volume': str(volume),
-            'price': str(price),
-            'ord_type': 'limit'
+            'ord_type': ord_type
         }
+
+        if ord_type == 'limit':
+            if market.startswith('KRW') and not self.__is_valid_price(price):
+                logging.error('invalid price: %.2f' % price)
+                raise Exception('invalid price: %.2f' % price)
+            if volume is None:
+                logging.error('invalid volume: %.2f' % volume)
+                raise Exception('invalid volume: %.2f' % volume)
+            data['volume'] = str(volume)
+            data['price'] = str(price)
+
+        if ord_type == 'price':
+            if market.startswith('KRW') and not self.__is_valid_price(price):
+                logging.error('invalid price: %.2f' % price)
+                raise Exception('invalid price: %.2f' % price)
+            data['price'] = str(price)
+
+        if ord_type == 'market':
+            if volume is None:
+                logging.error('invalid volume: %.2f' % volume)
+                raise Exception('invalid volume: %.2f' % volume)
+            data['volume'] = str(volume)
+       
         return self.__post(URL, self.__get_headers(data), data)
 
     """
@@ -880,20 +998,26 @@ class UpbitApi():
 
     def __is_valid_price(self, price):
         '''
-        원화 마켓 주문 가격 단위
-        원화 마켓은 호가 별 주문 가격의 단위가 다릅니다. 아래 표를 참고하여 해당 단위로 주문하여 주세요.
-        https://docs.upbit.com/v1.0/docs/%EC%9B%90%ED%99%94-%EB%A7%88%EC%BC%93-%EC%A3%BC%EB%AC%B8-%EA%B0%80%EA%B2%A9-%EB%8B%A8%EC%9C%84
-        ~10         : 0.01
-        ~100        : 0.1
-        ~1,000      : 1
-        ~10,000     : 5
-        ~100,000    : 10
-        ~500,000    : 50
-        ~1,000,000  : 100
-        ~2,000,000  : 500
-        +2,000,000  : 1,000
+            https://docs.upbit.com/docs/market-info-trade-price-detail
+
+            원화 마켓은 호가 별 주문 가격의 단위가 다릅니다. 아래 표를 참고하여 해당 단위로 주문하여 주세요.
+
+            최소 호가 (이상)	최대 호가 (미만)	주문 가격 단위 (원)
+            2,000,000		                                            1,000
+            1,000,000	               2,000,000	               500
+            500,000	                    1,000,000	                100
+            100,000	                       500,000	                   50
+            10,000	                        100,000	                    10
+            1,000	                           10,000	                    5
+            100	                                   1,000	                   1
+            10	                                       100	                  0.1
+            0	                                          10	              0.01
+            예를 들어, 호가가 20,000원 일 경우 19,950원, 20,000원, 20,050원 으로 주문을 넣을 수 있으며,
+            20,007원, 20,105원 등의 가격으로는 주문이 불가능 합니다.
         '''
-        if price <= 10:
+        if price is None:
+            return False
+        elif price <= 10:
             if (price*100) != int(price*100):
                 return False
         elif price <= 100:
@@ -921,7 +1045,7 @@ class UpbitApi():
             return False
         return True
 
-    def getRemainingReq(self):
+    def getRemainingReq(self): 
         '''
         요청 수 제한
         https://docs.upbit.com/docs/user-request-guide

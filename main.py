@@ -124,7 +124,7 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getQuotationOrderbook(["KRW-BTC","KRW-ETH"])')
     # print(upbitapi.getQuotationOrderbook(['KRW-BTC','KRW-ETH']))
 
-    # EXCHANGE API TEST 
+    # EXCHANGE API TEST (TO-DO)
     ###############################################################    
     # print('■■■■■■■■■■ - EXCHANGE API - 자산 - 전체 계좌 조회 : getExchangeAccounts()')
     # print(upbitapi.getExchangeAccounts())
@@ -135,16 +135,17 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
     # print(upbitapi.getExchangeOrder(uuid))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders(market, state, page ,order_by)')
+    # print(upbitapi.getExchangeOrders(market, state, page ,order_by))
 
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 취소 접수 : deleteExchangeOrder(uuid)')
     # print(upbitapi.deleteExchangeOrder(uuid))
   
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문하기 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문하기 : postExchangeOrder(market, side, volume, price, ord_type)')
+    # print(upbitapi.postExchangeOrder(market, side, volume, price, ord_type))
+
+
+    
 
     # TO-DO
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 리스트 조회 : getExchangeOrders()')
