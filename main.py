@@ -138,4 +138,64 @@ if __name__ == '__main__':
     # TO-DO
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders()')
     # print(upbitapi.getExchangeOrders())
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 취소 접수 : deleteExchangeOrder(uuid)')
+    # print(upbitapi.deleteExchangeOrder(uuid))
   
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문하기 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 리스트 조회 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 코인 출금하기 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 원화 출금하기 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 리스트 조회 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 조회 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 주소 생성 요청 : getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회: getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회: getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 원화 입금하기: getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황: getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    # TO-DO
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회: getExchangeOrders()')
+    # print(upbitapi.getExchangeOrders())
+
+    

@@ -492,24 +492,20 @@ class UpbitApi():
         trades.created_at	체결 시각	DateString\n
         '''
         URL = self.server_url+'/order'
-        try:      
-            data = {}
-            if uuid is not None:
-                data['uid'] = uuid
-            if identifier is not None:            
-                data['identifier'] = identifier
+        data = {}
+        if uuid is not None:
+            data['uuid'] = uuid
+        if identifier is not None:            
+            data['identifier'] = identifier
 
-            if  len(data) == 0 :
-                logging.error('uuid  or identifier Either value must be included.')                
-                raise Exception('uuid  or identifier Either value must be included.')
+        if  len(data) == 0 :
+            logging.error('uuid  or identifier Either value must be included.')                
+            raise Exception('uuid  or identifier Either value must be included.')
 
-            return self.__get(URL, self.__get_headers(data), data)
-        except Exception as e:
-            logging.error(e)
-            raise Exception(e)
+        return self.__get(URL, self.__get_headers(data), data)
 
     # TO-DO
-    def getExchangeOrders(self, market, page=1, limit=100 ,order_by='desc' ,state=None, states=None, uuids=None, identifiers=None):
+    def getExchangeOrders(self, market, state=None, states=None, page=1 ,order_by='desc' , limit=100, uuids=None, identifiers=None):
         '''
         EXCHANGE API - 주문 - 주문 리스트 조회\n        
         주문 리스트를 조회한다.\n
@@ -576,12 +572,57 @@ class UpbitApi():
             'market': market,
             'state': state,
             'page': page,
+            'limit': limit,
             'order_by': order_by
         }
 
         return self.__get(URL, self.__get_headers(data), data)
 
-    """
+    def deleteExchangeOrder(self, uuid=None, identifier=None):
+            '''
+            EXCHANGE API - 주문 - 주문 취소 접수\n
+            주문 UUID를 통해 해당 주문에 대한 취소 접수를 한다.\n
+            https://docs.upbit.com/reference#%EC%A3%BC%EB%AC%B8-%EC%B7%A8%EC%86%8C\n
+            ******************************\n
+            HEADERS\n        
+            Authorization string Authorization token (JWT)\n        
+            ******************************\n
+            QUERY PARAMS\n        
+            uuid string 주문 UUID\n
+            identifier string 조회용 사용자 지정 값\n
+            uuid 혹은 identifier 둘 중 하나의 값이 반드시 포함되어야 합니다.\n
+            ******************************\n
+            RESPONSE\n
+            필드	설명	타입\n
+            uuid	주문의 고유 아이디	String\n
+            side	주문 종류	String\n
+            ord_type	주문 방식	String\n
+            price	주문 당시 화폐 가격	NumberString\n
+            state	주문 상태	String\n
+            market	마켓의 유일키	String\n
+            created_at	주문 생성 시간	String\n
+            volume	사용자가 입력한 주문 양	NumberString\n
+            remaining_volume	체결 후 남은 주문 양	NumberString\n
+            reserved_fee	수수료로 예약된 비용	NumberString\n
+            remaing_fee	남은 수수료	NumberString\n
+            paid_fee	사용된 수수료	NumberString\n
+            locked	거래에 사용중인 비용	NumberString\n
+            executed_volume	체결된 양	NumberString\n
+            trade_count	해당 주문에 걸린 체결 수	Integer\n
+            '''
+            URL = self.server_url+'/order'
+            data = {}
+            if uuid is not None:
+                data['uuid'] = uuid
+            if identifier is not None:            
+                data['identifier'] = identifier
+
+            if  len(data) == 0 :
+                logging.error('uuid  or identifier Either value must be included.')                
+                raise Exception('uuid  or identifier Either value must be included.')
+
+            return self.__delete(URL, self.__get_headers(data), data)
+
     def order(self, market, side, volume, price):
         '''
         주문하기
@@ -618,18 +659,7 @@ class UpbitApi():
         }
         return self.__post(URL, self.__get_headers(data), data)
 
-    def cancel_order(self, uuid):
-        '''
-        주문 취소
-        주문 UUID를 통해 해당 주문을 취소한다.
-        https://docs.upbit.com/v1.0/reference#%EC%A3%BC%EB%AC%B8-%EC%B7%A8%EC%86%8C
-        :param str uuid: 주문 UUID
-        :return: json object
-        '''
-        URL = self.server_url+'/order'
-        data = {'uuid': uuid}
-        return self.__delete(URL, self.__get_headers(data), data)
-
+    """
     def get_withraws(self, currency, state, limit):
         '''
         출금 리스트 조회
