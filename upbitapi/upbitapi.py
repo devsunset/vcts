@@ -579,7 +579,7 @@ class UpbitApi():
             else:
                 type_temp = 2
 
-            for(s in states):
+            for s in states:
                  if type_temp == 1:
                     if s not in ['wait', 'watch']:
                         logging.error('invalid state: %s' % s)
