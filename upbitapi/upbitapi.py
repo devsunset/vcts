@@ -1686,3 +1686,4 @@ if __name__ == '__main__':
     
     # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회 : getExchangeApiKeys()')
     # print(upbitapi.getExchangeApiKeys())
+    print('test completed...')
