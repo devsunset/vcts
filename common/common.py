@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##################################################
 #
-#                   common
+#                   common.py
 #
 ##################################################
 
@@ -45,7 +45,6 @@ logging.config.fileConfig(log_file_path)
 logger = logging.getLogger('vcts')
 
 ##################################################
-
 
 class Common():
     # search sql query - select
@@ -165,14 +164,11 @@ if __name__ == '__main__':
     comm = Common()
     print('* db - db_init.py test skip')
     print()
-    print('* send_telegram_msg : ', comm.send_telegram_msg(
-        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : send_telegram_msg"))
+    print('* send_telegram_msg : ', comm.send_telegram_msg(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : send_telegram_msg"))
     print()
-    print('* log push_yn -> Y : ',
-          comm.log(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : Y", "Y"))
+    print('* log push_yn -> Y : ', comm.log(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : Y", "Y"))
     print()
-    print('* log push_yn -> N : ',
-          comm.log(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : N", "N"))
+    print('* log push_yn -> N : ',  comm.log(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : N", "N"))
     print()
     print('* rpad : ', comm.rpad("1234", 10, "0"))
     print()
