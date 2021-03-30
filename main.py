@@ -148,16 +148,14 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeWithdraw(uuid, txid, currency)')
     # print(upbitapi.getExchangeWithdraw(uuid, txid, currency))
 
-    print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeWithdrawsChance("BTC")')
-    print(upbitapi.getExchangeWithdrawsChance('BTC'))
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeWithdrawsChance("BTC")')
+    # print(upbitapi.getExchangeWithdrawsChance('BTC'))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 코인 출금하기 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 코인 출금하기 : postExchangeWithdrawsCoin(currency, amount, address)')
+    # print(upbitapi.postExchangeWithdrawsCoin(currency, amount, address))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 원화 출금하기 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 원화 출금하기 : postExchangeWithdrawsKrw(amount)')
+    # print(upbitapi.postExchangeWithdrawsKrw(amount))
 
     # TO-DO
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 리스트 조회 : getExchangeOrders()')

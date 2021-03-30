@@ -28,8 +28,12 @@ class UpbitApi():
         '''
         self.access_key = access_key
         self.secret = secret
+
         if server_url is None:
             self.server_url = 'https://api.upbit.com/v1'
+        else:
+            self.server_url = server_url
+
         self.remaining_req = dict()
         self.markets = self.__markets_info()
  
@@ -121,6 +125,7 @@ class UpbitApi():
             raise Exception('invalid isDetails: %s' % isDetails)
             
         params = {'isDetails':  isDetails}
+
         return self.__get(URL, params=params)
 
     # QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들
@@ -152,22 +157,28 @@ class UpbitApi():
         unit	분 단위(유닛)	Integer\n
         '''
         URL = self.server_url+'/candles/minutes/%s' % str(unit)
+
         if unit not in [1, 3, 5, 10, 15, 30, 60, 240]:
             logging.error('invalid unit: %s' % str(unit))
             raise Exception('invalid unit: %s' % str(unit))
+
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
+
         if count is not None:            
             if count not in list(range(1,201)):
                 logging.error('invalid count: %s' % str(count))
                 raise Exception('invalid count: %s' % str(count))
 
         params = {'market': market}
+
         if to is not None:
             params['to'] = to
+
         if count is not None:
             params['count'] = count
+
         return self.__get(URL, params=params)
 
     # QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들
@@ -204,17 +215,22 @@ class UpbitApi():
         현재는 원화(KRW) 로 변환하는 기능만 제공하며 추후 기능을 확장할 수 있습니다.
         '''
         URL = self.server_url+'/candles/days'
+
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
 
         params = {'market': market}
+
         if to is not None:
             params['to'] = to
+
         if count is not None:
             params['count'] = count
+
         if convertingPriceUnit is not None:
             params['convertingPriceUnit'] = convertingPriceUnit
+
         return self.__get(URL, params=params)
 
     # QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들
@@ -243,14 +259,19 @@ class UpbitApi():
         first_day_of_period	캔들 기간의 가장 첫 날	String
         '''
         URL = self.server_url+'/candles/weeks'
+
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
+
         params = {'market': market}
+
         if to is not None:
             params['to'] = to
+
         if count is not None:
             params['count'] = count
+
         return self.__get(URL, params=params)
 
     # QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들
@@ -278,16 +299,20 @@ class UpbitApi():
         candle_acc_trade_volume	누적 거래량	Double\n
         first_day_of_period	캔들 기간의 가장 첫 날	String
         '''
-
         URL = self.server_url+'/candles/months'
+
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
+
         params = {'market': market}
+
         if to is not None:
             params['to'] = to
+
         if count is not None:
             params['count'] = count
+
         return self.__get(URL, params=params)
 
     # QUOTATION API - 시세 체결 조회 - 최근 체결 내역
@@ -318,6 +343,7 @@ class UpbitApi():
         sequential_id 필드는 체결의 유일성 판단을 위한 근거로 쓰일 수 있습니다. 하지만 체결의 순서를 보장하지는 못합니다.\n
         '''
         URL = self.server_url+'/trades/ticks'
+
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
@@ -331,12 +357,16 @@ class UpbitApi():
         
         if to is not None:
             params['to'] = to
+
         if count is not None:
             params['count'] = count
+
         if cursor is not None:
             params['cursor'] = cursor
+
         if daysAgo is not None:
             params['daysAgo'] = daysAgo
+
         return self.__get(URL, params=params)
 
     # QUOTATION API - 시세 Ticker 조회 - 현재가 정보
@@ -380,6 +410,7 @@ class UpbitApi():
         timestamp	타임스탬프	Long
         '''
         URL = self.server_url+'/ticker'
+
         if not isinstance(markets, list):
             logging.error('invalid parameter: markets should be list')
             raise Exception('invalid parameter: markets should be list')
@@ -394,9 +425,11 @@ class UpbitApi():
                 raise Exception('invalid market: %s' % market)
 
         markets_data = markets[0]
+
         for market in markets[1:]:
             markets_data += ',%s' % market
         params = {'markets': markets_data}
+        
         return self.__get(URL, params=params)
 
     # QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회
@@ -423,6 +456,7 @@ class UpbitApi():
         orderbook_unit 리스트에는 15호가 정보가 들어가며 차례대로 1호가, 2호가 ... 15호가의 정보를 담고 있습니다.\n
         '''
         URL = self.server_url+'/orderbook'
+
         if not isinstance(markets, list):
             logging.error('invalid parameter: markets should be list')
             raise Exception('invalid parameter: markets should be list')
@@ -437,9 +471,12 @@ class UpbitApi():
                 raise Exception('invalid market: %s' % market)
 
         markets_data = markets[0]
+
         for market in markets[1:]:
             markets_data += ',%s' % market
+
         params = {'markets': markets_data}
+
         return self.__get(URL, params=params)
 
     ###############################################################
@@ -465,6 +502,7 @@ class UpbitApi():
         unit_currency	평단가 기준 화폐	String\n
         '''
         URL = self.server_url+'/accounts'
+
         return self.__get(URL, self.__get_headers())
     
     # EXCHANGE API - 주문 - 주문 가능 정보
@@ -515,10 +553,13 @@ class UpbitApi():
         ask_account.unit_currency	평단가 기준 화폐	String\n
         '''       
         URL = self.server_url + "/orders/chance"
+
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
+
         data = {'market': market}
+
         return self.__get(URL, self.__get_headers(data), data)
 
     # EXCHANGE API - 주문 - 개별 주문 조회
@@ -563,9 +604,12 @@ class UpbitApi():
         trades.created_at	체결 시각	DateString\n
         '''
         URL = self.server_url+'/order'
+
         data = {}
+
         if uuid is not None:
             data['uuid'] = uuid
+
         if identifier is not None:            
             data['identifier'] = identifier
 
@@ -623,6 +667,7 @@ class UpbitApi():
         trade_count	해당 주문에 걸린 체결 수	Integer
         '''
         URL = self.server_url+'/orders'
+
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
@@ -681,8 +726,8 @@ class UpbitApi():
         if uuids is not None:
             uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
             query['uuids[]'] = uuids
-            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
-        
+            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()    
+
         if identifiers is not None:
             identifiers_query_string = '&'.join(["identifiers[]={}".format(identifier) for uuid in identifiers])
             query['identifiers[]'] = identifiers
@@ -739,9 +784,12 @@ class UpbitApi():
         trade_count	해당 주문에 걸린 체결 수	Integer\n
         '''
         URL = self.server_url+'/order'
+
         data = {}
+
         if uuid is not None:
             data['uuid'] = uuid
+
         if identifier is not None:            
             data['identifier'] = identifier
 
@@ -808,6 +856,7 @@ class UpbitApi():
         trade_count	해당 주문에 걸린 체결 수	Integer
         '''
         URL = self.server_url+'/orders'
+
         if market not in self.markets:
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
@@ -830,16 +879,18 @@ class UpbitApi():
             if market.startswith('KRW') and not self.__is_valid_price(price):
                 logging.error('invalid price: %.2f' % price)
                 raise Exception('invalid price: %.2f' % price)
+
             if volume is None:
                 logging.error('invalid volume: %.2f' % volume)
                 raise Exception('invalid volume: %.2f' % volume)
+
             data['volume'] = str(volume)
             data['price'] = str(price)
 
         if ord_type == 'price':
             if market.startswith('KRW') and not self.__is_valid_price(price):
                 logging.error('invalid price: %.2f' % price)
-                raise Exception('invalid price: %.2f' % price)
+                raise Exception('invalid price: %.2f' % price)                
             data['price'] = str(price)
 
         if ord_type == 'market':
@@ -894,6 +945,7 @@ class UpbitApi():
         internal : 바로출금	String
         '''
         URL = self.server_url+'/withdraws'
+
         if currency is None:
             logging.error('invalid currency: %s' % currency)
             raise Exception('invalid currency: %s' % currency)
@@ -979,14 +1031,19 @@ class UpbitApi():
             - internal : 바로출금	
         '''
         URL = self.server_url+'/withdraw'
+
         data = {}
+
         if uuid is not None:
             data['uuid'] = uuid
+
         if txid is not None:            
             data['txid'] = txid
+
         if  len(data) == 0 :
             logging.error('uuid  or txid Either value must be included.')                
             raise Exception('uuid  or txid Either value must be included.')
+
         if currency is not None:            
             data['currency'] = currency
 
@@ -1040,9 +1097,97 @@ class UpbitApi():
         withdraw_limit.can_withdraw	출금 지원 여부	Boolean
         '''
         URL = self.server_url+'/withdraws/chance'
+
         data = {'currency':currency}
 
         return self.__get(URL, self.__get_headers(data), data)
+
+    # EXCHANGE API - 출금 - 코인 출금하기
+    def postExchangeWithdrawsCoin(self, currency, amount, address, secondary_address=None, transaction_type='default'):
+        '''
+        EXCHANGE API - 출금 - 코인 출금하기\n        
+        코인 출금을 요청한다.\n
+        https://docs.upbit.com/reference#%EC%BD%94%EC%9D%B8-%EC%B6%9C%EA%B8%88%ED%95%98%EA%B8%B0\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        BODY PARAMS\n        
+        currency  string  Currency symbol\n
+        amount   string  출금 코인 수량\n
+        address   string  출금 지갑 주소\n
+        secondary_address  string  2차 출금주소 (필요한 코인에 한해서)\n
+        transaction_type   string   출금 유형\n
+            - default : 일반출금\n
+            - internal : 바로출금\n
+        바로출금 이용 시 유의사항\n
+        업비트 회원의 주소가 아닌 주소로 바로출금을 요청하는 경우, 출금이 정상적으로 수행되지 않습니다. 반드시 주소를 확인 후 출금을 진행하시기 바랍니다.\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        type	입출금 종류	String\n
+        uuid	출금의 고유 아이디	String\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        txid	출금의 트랜잭션 아이디	String\n
+        state	출금 상태	String\n
+        created_at	출금 생성 시간	DateString\n
+        done_at	출금 완료 시간	DateString\n
+        amount	출금 금액/수량	NumberString\n
+        fee	출금 수수료	NumberString\n
+        krw_amount	원화 환산 가격	NumberString\n
+        transaction_type	출금 유형	String
+        '''
+        URL = self.server_url+'/withdraws/coin'
+
+        if transaction_type not in ['default', 'internal']:
+            logging.error('invalid transaction_type: %s' % transaction_type)
+            raise Exception('invalid transaction_type: %s' % transaction_type)
+
+        data =  {
+            'currency': currency,
+            'amount': amount,
+            'address': address,
+            'transaction_type': transaction_type
+        }
+
+        if secondary_address is not None:
+            data['secondary_address'] = secondary_address
+
+        return self.__post(URL, self.__get_headers(data), data)
+
+    # EXCHANGE API - 출금 - 원화 출금하기
+    def postExchangeWithdrawsKrw(self,  amount):
+        '''
+        EXCHANGE API - 출금 - 원화 출금하기\n        
+        원화 출금을 요청한다. 등록된 출금 계좌로 출금된다.\n
+        https://docs.upbit.com/reference#%EC%9B%90%ED%99%94-%EC%B6%9C%EA%B8%88%ED%95%98%EA%B8%B0\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        BODY PARAMS\n        
+        amount   string  출금 원화 수량\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        type	입출금 종류	String\n
+        uuid	출금의 고유 아이디	String\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        txid	출금의 트랜잭션 아이디	String\n
+        state	출금 상태	String\n
+        created_at	출금 생성 시간	DateString\n
+        done_at	출금 완료 시간	DateString\n
+        amount	출금 금액/수량	NumberString\n
+        fee	출금 수수료	NumberString\n
+        transaction_type	출금 유형\n
+        default : 일반출금\n
+        internal : 바로출금	String
+        '''
+        URL = self.server_url+'/withdraws/krw'
+
+        data =  {'amount': amount}
+
+        return self.__post(URL, self.__get_headers(data), data)
 
     # EXCHANGE API - 서비스 정보 - 입출금 현황
     def getExchangeStatusWallet(self):
