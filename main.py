@@ -33,14 +33,14 @@ from urllib.parse import urlencode
 # target db
 TARGET_DB = config.TARGET_DB
 
+common = common.Common()
 upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
 
 ##################################################
 # biz function
 
-# get market info save to db (vcts_meta table).
-def getMarketSaveToDb():
-    # Request  마켓 코드 조회    
+# load market info save to db (vcts_meta table).
+def loadMarketSaveToDb():
     market_dict = upbitapi.getQuotationMarketAll()
 
     try:
@@ -48,30 +48,37 @@ def getMarketSaveToDb():
 
       try:
         sqlText = 'drop table vcts_meta'
-        common.Common().executeTxDB(conn,sqlText)
+        common.executeTxDB(conn,sqlText)
       except Exception as err:
         pass
 
       sqlText = 'create table vcts_meta (id integer primary key autoincrement, market text , korean_name text, english_name, market_warning)'
-      common.Common().executeTxDB(conn,sqlText)
+      common.executeTxDB(conn,sqlText)
       
       for data in market_dict:
         #print(data)
         data.setdefault('market_warning','')
         sqlText = 'insert into vcts_meta  (market,korean_name,english_name,market_warning)'
         sqlText+= ' values ("'+data.get('market')+'","'+data.get('korean_name')+'","'+data.get('english_name')+'","'+data.get('market_warning')+'")'
-        common.Common().executeTxDB(conn,sqlText)
+        common.executeTxDB(conn,sqlText)
     
       conn.commit()
       conn.close()
     except Exception as err:
       print(err)
 
+def getMarkets():
+  df = common.searchDB("SELECT * FROM VCTS_META")
+  print(df)
+
+  for i in df.index:
+    print(df['market'][i])
+
 
 # main process
 def main_process():   
-    print("hello world ---------------") 
-    getMarketSaveToDb()
+    # loadMarketSaveToDb()
+    getMarkets()    
 
 #################################################
 # main

@@ -17,6 +17,7 @@ import random
 import requests
 import bs4
 import telegram
+from pandas import DataFrame
 
 from common import config
 # import config
@@ -33,8 +34,6 @@ TARGET_DB = config.TARGET_DB
 # telegram
 bot = telegram.Bot(token = config.TELEGRAM_TOKEN)
 
-
-
 ##################################################
 class Common():
     # search sql query - select 
@@ -50,8 +49,9 @@ class Common():
          else:
            cur.execute(sql,sqlParam)
         columns = list(map(lambda x: x[0], cur.description))
-        result = cur.fetchall()    
-        return columns,result
+        result = cur.fetchall()            
+        df = DataFrame.from_records(data=result, columns=columns)
+        return df
 
     # execute sql query - insert/update/delete
     def executeDB(self,sqlText,sqlParam=None,targetDB=TARGET_DB):
@@ -64,6 +64,7 @@ class Common():
          cur.execute(sql, sqlParam)
         conn.commit()        
         conn.close()
+        return cur.lastrowid
 
     # search sql query - select 
     def searchTxDB(self,conn,sqlText,sqlParam=None):
@@ -78,7 +79,8 @@ class Common():
            cur.execute(sql,sqlParam)
         columns = list(map(lambda x: x[0], cur.description))
         result = cur.fetchall()    
-        return columns,result
+        df = DataFrame.from_records(data=result, columns=columns)
+        return df
 
     # execute sql query - insert/update/delete
     def executeTxDB(self,conn,sqlText,sqlParam=None):
@@ -88,6 +90,7 @@ class Common():
           cur.execute(sql)
         else:
           cur.execute(sql, sqlParam)
+        return cur.lastrowid
 
     # telegram message send
     def send_telegram_msg(self,msg):
