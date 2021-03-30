@@ -131,6 +131,9 @@ dmypy.json
 #Reference 
 BitCatch/
 
+#db
+db/vcts.db
+
 #config
 common/config.py
 
