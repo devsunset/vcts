@@ -33,22 +33,16 @@ from urllib.parse import urlencode
 # target db
 TARGET_DB = config.TARGET_DB
 
+upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
+
 ##################################################
 # biz function
 
 # get market info save to db (vcts_meta table).
 def getMarketSaveToDb():
-    # Request  마켓 코드 조회
-    url = "https://api.upbit.com/v1/market/all" 
-    querystring = {"isDetails":"true"} 
-    response = requests.request("GET", url, params=querystring) 
-    market_dict = json.loads(response.text)
-    
-    # Response 
-    # market         업비트에서 제공중인 시장 정보 String
-    # korean_name    거래 대상 암호화폐 한글명String
-    # english_name   거래 대상 암호화폐 영문명String
-    # market_warning 유의 종목 여부 NONE (해당 사항 없음), CAUTION(투자유의) String
+    # Request  마켓 코드 조회    
+    market_dict = upbitapi.getQuotationMarketAll()
+
     try:
       conn = sqlite3.connect(TARGET_DB)
 
@@ -85,7 +79,7 @@ if __name__ == '__main__':
     #scheduler = BlockingScheduler()
     #scheduler.add_job(main_process, 'interval', seconds=config.INTERVAL_SECONDS)
 
-    # main_process()
+    main_process()
 
     #try:
     #    scheduler.start()
@@ -94,7 +88,7 @@ if __name__ == '__main__':
     
     # upbitapi  API TEST 
     ###############################################################
-    upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
+    # upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
 
     # QUOTATION API TEST 
     ###############################################################    
@@ -166,8 +160,8 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 주소 생성 요청 : postExchangeDepositsGenerate_coin_address(currency)')
     # print(upbitapi.postExchangeDepositsGenerate_coin_address(currency))
 
-    print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회 : getExchangeDepositsCoin_addresses()')
-    print(upbitapi.getExchangeDepositsCoin_addresses())
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회 : getExchangeDepositsCoin_addresses()')
+    # print(upbitapi.getExchangeDepositsCoin_addresses())
 
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회 : getExchangeDepositsCoin_address(currency)')
     # print(upbitapi.getExchangeDepositsCoin_address(currency))
