@@ -31,7 +31,70 @@ class UpbitApi():
         if server_url is None:
             self.server_url = 'https://api.upbit.com/v1'
         self.remaining_req = dict()
-        self.markets = self.__load_markets()
+        self.markets = self.__markets_info()
+
+    
+        ###############################################################
+  
+    # ##############################################################
+    #  HTTP REQUEST COMMON  FUNCTION
+    # ##############################################################
+    def __get(self, url, headers=None, data=None, params=None):
+        resp = requests.get(url, headers=headers, data=data, params=params)
+        if resp.status_code not in [200, 201]:
+            logging.error('get(%s) failed(%d)' % (url, resp.status_code))
+            if resp.text is not None:
+                logging.error('resp: %s' % resp.text)
+                raise Exception('request.get() failed(%s)' % resp.text)
+            raise Exception(
+                'request.get() failed(status_code:%d)' % resp.status_code)
+        self.__set_req_remaining(resp)
+        return json.loads(resp.text)
+
+    def __post(self, url, headers, data):
+        resp = requests.post(url, headers=headers, data=data)
+        if resp.status_code not in [200, 201]:
+            logging.error('post(%s) failed(%d)' % (url, resp.status_code))
+            if resp.text is not None:
+                raise Exception('request.post() failed(%s)' % resp.text)
+            raise Exception(
+                'request.post() failed(status_code:%d)' % resp.status_code)
+        self.__set_req_remaining(resp)
+        return json.loads(resp.text)
+
+    def __delete(self, url, headers, data):
+        resp = requests.delete(url, headers=headers, data=data)
+        if resp.status_code not in [200, 201]:
+            logging.error('delete(%s) failed(%d)' % (url, resp.status_code))
+            if resp.text is not None:
+                raise Exception('request.delete() failed(%s)' % resp.text)
+            raise Exception(
+                'request.delete() failed(status_code:%d)' % resp.status_code)
+        self.__set_req_remaining(resp)
+        return json.loads(resp.text)
+
+    def __get_token(self, query):
+        if query is not None:                        
+            query_string = urlencode(query).encode()
+            m = hashlib.sha512()
+            m.update(query_string)
+            query_hash = m.hexdigest()
+            payload = {
+                'access_key': self.access_key,
+                'nonce': str(uuid.uuid4()),
+                'query_hash': query_hash,
+                'query_hash_alg': 'SHA512',
+            }
+        else:
+            payload = {
+                'access_key': self.access_key,
+                'nonce': str(uuid.uuid4()),
+            }
+        return jwt.encode(payload, self.secret).decode('utf-8')
+
+    def __get_headers(self, query=None):
+        headers = {'Authorization': 'Bearer %s' % self.__get_token(query)}
+        return headers
 
     ###############################################################
     # QUOTATION API
@@ -888,6 +951,50 @@ class UpbitApi():
 
         return self.__get(URL, headers, query)
   
+    # EXCHANGE API - 출금 - 개별 출금 조회
+    def getExchangeWithdraw(self, uuid=None, txid=None, currency=None):
+        '''
+        EXCHANGE API - 출금 - 개별 출금 조회\n        
+        출금 UUID를 통해 개별 출금 정보를 조회한다.\n
+        https://docs.upbit.com/reference#%EA%B0%9C%EB%B3%84-%EC%B6%9C%EA%B8%88-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        QUERY PARAMS\n        
+        uuid  string  출금 UUID\n
+        txid   string  출금 TXID\n
+        currency  string Currency 코드\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        type	입출금 종류	String\n
+        uuid	출금의 고유 아이디	String\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        txid	출금의 트랜잭션 아이디	String\n
+        state	출금 상태	String\n
+        created_at	출금 생성 시간	DateString\n
+        done_at	출금 완료 시간	DateString\n
+        amount	출금 금액/수량	NumberString\n
+        fee	출금 수수료	NumberString\n
+        transaction_type	출금 유형 String\n
+            - default : 일반출금\n
+            - internal : 바로출금	
+        '''
+        URL = self.server_url+'/withdraw'
+        data = {}
+        if uuid is not None:
+            data['uuid'] = uuid
+        if txid is not None:            
+            data['txid'] = txid
+        if  len(data) == 0 :
+            logging.error('uuid  or txid Either value must be included.')                
+            raise Exception('uuid  or txid Either value must be included.')
+        if currency is not None:            
+            data['currency'] = currency
+
+        return self.__get(URL, self.__get_headers(data), data)
+
     # EXCHANGE API - 서비스 정보 - 입출금 현황
     def getExchangeStatusWallet(self):
         '''
@@ -937,71 +1044,11 @@ class UpbitApi():
         '''
         URL = self.server_url+'/api_keys'
         return self.__get(URL, self.__get_headers())
-
-    ###############################################################
-    #  HTTP REQUEST COMMON  FUNCTION
-    # ##############################################################
-    def __get(self, url, headers=None, data=None, params=None):
-        resp = requests.get(url, headers=headers, data=data, params=params)
-        if resp.status_code not in [200, 201]:
-            logging.error('get(%s) failed(%d)' % (url, resp.status_code))
-            if resp.text is not None:
-                logging.error('resp: %s' % resp.text)
-                raise Exception('request.get() failed(%s)' % resp.text)
-            raise Exception(
-                'request.get() failed(status_code:%d)' % resp.status_code)
-        self.__update_remaining_req(resp)
-        return json.loads(resp.text)
-
-    def __post(self, url, headers, data):
-        resp = requests.post(url, headers=headers, data=data)
-        if resp.status_code not in [200, 201]:
-            logging.error('post(%s) failed(%d)' % (url, resp.status_code))
-            if resp.text is not None:
-                raise Exception('request.post() failed(%s)' % resp.text)
-            raise Exception(
-                'request.post() failed(status_code:%d)' % resp.status_code)
-        self.__update_remaining_req(resp)
-        return json.loads(resp.text)
-
-    def __delete(self, url, headers, data):
-        resp = requests.delete(url, headers=headers, data=data)
-        if resp.status_code not in [200, 201]:
-            logging.error('delete(%s) failed(%d)' % (url, resp.status_code))
-            if resp.text is not None:
-                raise Exception('request.delete() failed(%s)' % resp.text)
-            raise Exception(
-                'request.delete() failed(status_code:%d)' % resp.status_code)
-        self.__update_remaining_req(resp)
-        return json.loads(resp.text)
-
-    def __get_token(self, query):
-        if query is not None:                        
-            query_string = urlencode(query).encode()
-            m = hashlib.sha512()
-            m.update(query_string)
-            query_hash = m.hexdigest()
-            payload = {
-                'access_key': self.access_key,
-                'nonce': str(uuid.uuid4()),
-                'query_hash': query_hash,
-                'query_hash_alg': 'SHA512',
-            }
-        else:
-            payload = {
-                'access_key': self.access_key,
-                'nonce': str(uuid.uuid4()),
-            }
-        return jwt.encode(payload, self.secret).decode('utf-8')
-
-    def __get_headers(self, query=None):
-        headers = {'Authorization': 'Bearer %s' % self.__get_token(query)}
-        return headers
-
+        
     ###############################################################
     # ETC  FUNCTION
     # ##############################################################
-    def __load_markets(self):
+    def __markets_info(self):
         try:
             market_all = self.getQuotationMarketAll()
             if market_all is None:
@@ -1014,7 +1061,7 @@ class UpbitApi():
             logging.error(e)
             raise Exception(e)
 
-    def __update_remaining_req(self, resp):
+    def __set_req_remaining(self, resp):
         if 'Remaining-Req' not in resp.headers.keys():
             return None
         keyvals = resp.headers['Remaining-Req'].split('; ')

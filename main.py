@@ -145,9 +145,8 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 리스트 조회 : getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids)')
     # print(upbitapi.getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeWithdraw(uuid, txid, currency)')
+    # print(upbitapi.getExchangeWithdraw(uuid, txid, currency))
 
     # TO-DO
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeOrders()')
