@@ -166,8 +166,8 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 주소 생성 요청 : postExchangeDepositsGenerate_coin_address(currency)')
     # print(upbitapi.postExchangeDepositsGenerate_coin_address(currency))
 
-    print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회 : getExchangeDepositsCoin_addressess()')
-    print(upbitapi.getExchangeDepositsCoin_addressess())
+    print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회 : getExchangeDepositsCoin_addresses()')
+    print(upbitapi.getExchangeDepositsCoin_addresses())
 
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회 : getExchangeDepositsCoin_address(currency)')
     # print(upbitapi.getExchangeDepositsCoin_address(currency))
