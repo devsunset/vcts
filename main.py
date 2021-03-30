@@ -148,9 +148,8 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeWithdraw(uuid, txid, currency)')
     # print(upbitapi.getExchangeWithdraw(uuid, txid, currency))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeWithdrawsChance("BTC")')
+    print(upbitapi.getExchangeWithdrawsChance('BTC'))
 
     # TO-DO
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 코인 출금하기 : getExchangeOrders()')

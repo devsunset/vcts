@@ -32,10 +32,7 @@ class UpbitApi():
             self.server_url = 'https://api.upbit.com/v1'
         self.remaining_req = dict()
         self.markets = self.__markets_info()
-
-    
-        ###############################################################
-  
+ 
     # ##############################################################
     #  HTTP REQUEST COMMON  FUNCTION
     # ##############################################################
@@ -995,6 +992,58 @@ class UpbitApi():
 
         return self.__get(URL, self.__get_headers(data), data)
 
+    # EXCHANGE API - 출금 - 출금 가능 정보
+    def getExchangeWithdrawsChance(self, currency):
+        '''
+        EXCHANGE API - 출금 - 출금 가능 정보\n        
+        해당 통화의 가능한 출금 정보를 확인한다.\n
+        https://docs.upbit.com/reference#%EC%B6%9C%EA%B8%88-%EA%B0%80%EB%8A%A5-%EC%A0%95%EB%B3%B4\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        QUERY PARAMS\n        
+        currency  string Currency symbol\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        member_level	사용자의 보안등급 정보	Object\n
+        member_level.security_level	사용자의 보안등급	Integer\n
+        member_level.fee_level	사용자의 수수료등급	Integer\n
+        member_level.email_verified	사용자의 이메일 인증 여부	Boolean\n
+        member_level.identity_auth_verified	사용자의 실명 인증 여부	Boolean\n
+        member_level.bank_account_verified	사용자의 계좌 인증 여부	Boolean\n
+        member_level.kakao_pay_auth_verified	사용자의 카카오페이 인증 여부	Boolean\n
+        member_level.locked	사용자의 계정 보호 상태	Boolean\n
+        member_level.wallet_locked	사용자의 출금 보호 상태	Boolean\n
+        currency	화폐 정보	Object\n
+        currency.code	화폐를 의미하는 영문 대문자 코드	String\n
+        currency.withdraw_fee	해당 화폐의 출금 수수료	NumberString\n
+        currency.is_coin	화폐의 코인 여부	Boolean\n
+        currency.wallet_state	해당 화폐의 지갑 상태	String\n
+        currency.wallet_support	해당 화폐가 지원하는 입출금 정보	Array[String]\n
+        account	사용자의 계좌 정보	Object\n
+        account.currency	화폐를 의미하는 영문 대문자 코드	String\n
+        account.balance	주문가능 금액/수량	NumberString\n
+        account.locked	주문 중 묶여있는 금액/수량	NumberString\n
+        account.avg_buy_price	매수평균가	NumberString\n
+        account.avg_buy_price_modified	매수평균가 수정 여부	Boolean\n
+        account.unit_currency	평단가 기준 화폐	String\n
+        withdraw_limit	출금 제약 정보	Object\n
+        withdraw_limit.currency	화폐를 의미하는 영문 대문자 코드	String\n
+        withdraw_limit.minimum	출금 최소 금액/수량	NumberString\n
+        withdraw_limit.onetime	1회 출금 한도	NumberString\n
+        withdraw_limit.daily	1일 출금 한도	NumberString\n
+        withdraw_limit.remaining_daily	1일 잔여 출금 한도	NumberString\n
+        withdraw_limit.remaining_daily_krw	통합 1일 잔여 출금 한도	NumberString\n
+        withdraw_limit.fixed	출금 금액/수량 소수점 자리 수	Integer\n
+        withdraw_limit.can_withdraw	출금 지원 여부	Boolean
+        '''
+        URL = self.server_url+'/withdraws/chance'
+        data = {'currency':currency}
+
+        return self.__get(URL, self.__get_headers(data), data)
+
     # EXCHANGE API - 서비스 정보 - 입출금 현황
     def getExchangeStatusWallet(self):
         '''
@@ -1044,7 +1093,7 @@ class UpbitApi():
         '''
         URL = self.server_url+'/api_keys'
         return self.__get(URL, self.__get_headers())
-        
+
     ###############################################################
     # ETC  FUNCTION
     # ##############################################################
