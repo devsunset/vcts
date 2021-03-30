@@ -157,34 +157,28 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 원화 출금하기 : postExchangeWithdrawsKrw(amount)')
     # print(upbitapi.postExchangeWithdrawsKrw(amount))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 리스트 조회 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 리스트 조회 : getExchangeDeposits(currency, state, page , order_by, limit, uuids, txids)')
+    # print(upbitapi.getExchangeDeposits(currency, state, page , order_by, limit, uuids, txids))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 조회 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 조회 : getExchangeDeposit(uuid, txid, currency)')
+    # print(upbitapi.getExchangeDeposit(uuid, txid, currency))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 주소 생성 요청 : getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 주소 생성 요청 : postExchangeDepositsGenerate_coin_address(currency)')
+    # print(upbitapi.postExchangeDepositsGenerate_coin_address(currency))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회: getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회 : getExchangeDepositsCoin_addressess()')
+    print(upbitapi.getExchangeDepositsCoin_addressess())
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회: getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회 : getExchangeDepositsCoin_address(currency)')
+    # print(upbitapi.getExchangeDepositsCoin_address(currency))
 
-    # TO-DO
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 원화 입금하기: getExchangeOrders()')
-    # print(upbitapi.getExchangeOrders())
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 원화 입금하기 : postExchangeDepositsKrw(currency)')
+    # print(upbitapi.postExchangeDepositsKrw(currency))
 
-    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황: getExchangeStatusWallet()')
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황 : getExchangeStatusWallet()')
     # print(upbitapi.getExchangeStatusWallet())
     
-    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회: getExchangeApiKeys()')
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회 : getExchangeApiKeys()')
     # print(upbitapi.getExchangeApiKeys())
 
     

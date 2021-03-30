@@ -1189,6 +1189,270 @@ class UpbitApi():
 
         return self.__post(URL, self.__get_headers(data), data)
 
+    # EXCHANGE API - 입금 - 입금 리스트 조회
+    def getExchangeDeposits(self, currency, state, page=1 ,order_by='desc' , limit=100, uuids=None, txids=None):
+        '''
+        EXCHANGE API - 입금 - 입금 리스트 조회\n        
+        https://docs.upbit.com/reference#%EC%9E%85%EA%B8%88-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        QUERY PARAMS\n        
+        currency  string  Currency 코드\n
+        state string 입금 상태\n
+            - submitting : 처리 중\n
+            - submitted : 처리완료\n
+            - almost_accepted : 입금 대기 중\n
+            - rejected : 거절\n
+            - accepted : 승인됨\n
+            - processing : 처리 중\n
+        uuids  array of strings   입금 UUID의 목록\n
+        txids array of strings 입금 TXID의 목록\n
+        limit int32 갯수 제한 (default: 100, max: 100)\n
+        page   int32  페이지 수, default: 1\n
+        order_by  string   정렬\n
+            - asc : 오름차순\n
+            - desc : 내림차순 (default)\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        type	입출금 종류	String\n
+        uuid	입금에 대한 고유 아이디	String\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        txid	입금의 트랜잭션 아이디	String\n
+        state	입금 상태	String\n
+        created_at	입금 생성 시간	DateString\n
+        done_at	입금 완료 시간	DateString\n
+        amount	입금 수량	NumberString\n
+        fee	입금 수수료	NumberString\n
+        transaction_type	입금 유형\n
+            - default : 일반입금\n
+            - internal : 바로입금	String
+        '''
+        URL = self.server_url+'/deposits'
+
+        if currency is None:
+            logging.error('invalid currency: %s' % currency)
+            raise Exception('invalid currency: %s' % currency)
+
+        if state is not None:
+            if state not in ['submitting', 'submitted', 'almost_accepted', 'rejected', 'accepted', 'processing']:
+                logging.error('invalid state: %s' % state)
+                raise Exception('invalid state: %s' % state)
+
+        if order_by not in ['asc', 'desc']:
+            logging.error('invalid order_by: %s' % order_by)
+            raise Exception('invalid order_by: %s' % order_by)
+
+        if limit not in list(range(1,101)):
+            logging.error('invalid count: %s' % str(limit))
+            raise Exception('invalid count: %s' % str(limit))
+        
+        query = {
+            'currency': currency,
+            'state':state,
+            'page': page,
+            'limit': limit,
+            'order_by': order_by
+        }
+
+        query_string = urlencode(query)
+
+        if uuids is not None:
+            uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
+            query['uuids[]'] = uuids
+            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
+        
+        if txids is not None:
+            txids_query_string = '&'.join(["txids[]={}".format(txid) for txid in txids])
+            query['txids[]'] = txids
+            query_string = "{0}&{1}".format(query_string, txids_query_string).encode()
+
+        m = hashlib.sha512()
+        m.update(query_string)
+        query_hash = m.hexdigest()
+
+        payload = {
+            'access_key': self.access_key,
+            'nonce': str(uuid.uuid4()),
+            'query_hash': query_hash,
+            'query_hash_alg': 'SHA512',
+        }
+        
+        jwt_token = jwt.encode(payload, secret_key)
+        authorize_token = 'Bearer {}'.format(jwt_token)
+        headers = {"Authorization": authorize_token}
+
+        return self.__get(URL, headers, query)
+
+    # EXCHANGE API - 입금 - 개별 입금 조회
+    def getExchangeDeposit(self, uuid=None, txid=None, currency=None):
+        '''
+        EXCHANGE API - 입금 - 개별 입금 조회\n                
+        https://docs.upbit.com/reference#%EA%B0%9C%EB%B3%84-%EC%9E%85%EA%B8%88-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        QUERY PARAMS\n        
+        uuid  string  입금 UUID\n
+        txid   string  입금 TXID\n
+        currency  string Currency 코드\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        type	입출금 종류	String\n
+        uuid	입금에 대한 고유 아이디	String\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        txid	입금의 트랜잭션 아이디	String\n
+        state	입금 상태	String\n
+        created_at	입금 생성 시간	DateString\n
+        done_at	입금 완료 시간	DateString\n
+        amount	입금 수량	NumberString\n
+        fee	입금 수수료	NumberString\n
+        transaction_type	입금 유형 String\n
+            - default : 일반입금\n
+            - internal : 바로입금	
+        '''
+        URL = self.server_url+'/deposit'
+
+        data = {}
+
+        if uuid is not None:
+            data['uuid'] = uuid
+
+        if txid is not None:            
+            data['txid'] = txid
+
+        if  len(data) == 0 :
+            logging.error('uuid  or txid Either value must be included.')                
+            raise Exception('uuid  or txid Either value must be included.')
+
+        if currency is not None:            
+            data['currency'] = currency
+
+        return self.__get(URL, self.__get_headers(data), data)
+
+        # EXCHANGE API - 입금 - 개별 입금 조회
+    
+    # EXCHANGE API - 입금 - 입금 주소 생성 요청
+    def postExchangeDepositsGenerate_coin_address(self, currency):
+        '''
+        EXCHANGE API - 입금 - 입금 주소 생성 요청\n       
+        입금 주소 생성을 요청한다.\n         
+        https://docs.upbit.com/reference#%EC%9E%85%EA%B8%88-%EC%A3%BC%EC%86%8C-%EC%83%9D%EC%84%B1-%EC%9A%94%EC%B2%AD\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        BODY PARAMS\n                
+        currency string Currency symbol\n
+        ******************************\n
+        RESPONSE1 \n
+        필드	설명	타입\n
+        success	요청 성공 여부	Boolean\n
+        message	요청 결과에 대한 메세지	String\n
+        RESPONSE2 \n
+        필드	설명	타입\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        deposit_address	입금 주소	String\n
+        secondary_address	2차 입금 주소	String\n
+        입금 주소 생성 요청 API 유의사항\n
+        입금 주소의 생성은 서버에서 비동기적으로 이뤄집니다.\n
+        비동기적 생성 특성상 요청과 동시에 입금 주소가 발급되지 않을 수 있습니다.\n
+        주소 발급 요청 시 결과로 Response1이 반환되며 주소 발급 완료 이전까지 계속 Response1이 반환됩니다.\n
+        주소가 발급된 이후부터는 새로운 주소가 발급되는 것이 아닌 이전에 발급된 주소가 Response2 형태로 반환됩니다.\n
+        정상적으로 주소가 생성되지 않는다면 일정 시간 이후 해당 API를 다시 호출해주시길 부탁드립니다.
+        '''
+        URL = self.server_url+'/deposits/generate_coin_address'
+
+        data = {'currency':currency}
+
+        return self.__post(URL, self.__get_headers(data), data)
+
+    # EXCHANGE API - 입금 - 전체 입금 주소 조회
+    def getExchangeDepositsCoin_addresses(self):
+        '''
+        EXCHANGE API - 입금 - 전체 입금 주소 조회\n
+        내가 보유한 자산 리스트를 보여줍니다.\n
+        https://docs.upbit.com/reference#%EC%A0%84%EC%B2%B4-%EC%9E%85%EA%B8%88-%EC%A3%BC%EC%86%8C-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n
+        ******************************\n
+        RESPONSE\n
+        필드	설명	타입\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        deposit_address	입금 주소	String\n
+        secondary_address	2차 입금 주소	String\n
+        입금 주소 조회 요청 API 유의사항\n
+        입금 주소 생성 요청 이후 아직 발급되지 않은 상태일 경우 deposit_address가 null일 수 있습니다.
+        '''
+        URL = self.server_url+'/deposits/coin_addresses'
+
+        return self.__get(URL, self.__get_headers())
+
+    # EXCHANGE API - 입금 - 개별 입금 주소 조회
+    def getExchangeDepositsCoin_address(self, currency):
+        '''
+        EXCHANGE API - 입금 - 개별 입금 주소 조회\n               
+        https://docs.upbit.com/reference#%EA%B0%9C%EB%B3%84-%EC%9E%85%EA%B8%88-%EC%A4%8F-%EC%A1%B0%ED%9A%8C\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        QUERY PARAMS\n                
+        currency string Currency symbol\n
+        ******************************\n
+        RESPONSE \n
+        필드	설명	타입\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        deposit_address	입금 주소	String\n
+        secondary_address	2차 입금 주소	String\n
+        입금 주소 조회 요청 API 유의사항\n
+        입금 주소 생성 요청 이후 아직 발급되지 않은 상태일 경우 deposit_address가 null일 수 있습니다.
+        '''
+        URL = self.server_url+'/deposits/coin_address'
+
+        data = {'currency':currency}
+
+        return self.__get(URL, self.__get_headers(data), data)
+
+    # EXCHANGE API - 입금 - 원화 입금하기
+    def postExchangeDepositsKrw(self, currency):
+        '''
+        EXCHANGE API - 입금 - 원화 입금하기\n       
+        원화 입금을 요청한다.\n         
+        https://docs.upbit.com/reference#%EC%9B%90%ED%99%94-%EC%9E%85%EA%B8%88%ED%95%98%EA%B8%B0\n
+        ******************************\n
+        HEADERS\n        
+        Authorization string Authorization token (JWT)\n        
+        ******************************\n
+        BODY PARAMS\n                
+        amount string 입금 원화 수량\n
+        ******************************\n
+        RESPONSE \n
+        필드	설명	타입\n
+        type	입출금 종류	String\n
+        uuid	입금의 고유 아이디	String\n
+        currency	화폐를 의미하는 영문 대문자 코드	String\n
+        txid	입금의 트랜잭션 아이디	String\n
+        state	입금 상태	String\n
+        created_at	입금 생성 시간	DateString\n
+        done_at	입금 완료 시간	DateString\n
+        amount	입금 금액/수량	NumberString\n
+        fee	입금 수수료	NumberString\n
+        transaction_type	트랜잭션 유형 String\n
+            - default : 일반출금\n
+            - internal : 바로출금	
+        '''
+        URL = self.server_url+'/deposits/krw'
+
+        data = {'amount':amount}
+
+        return self.__post(URL, self.__get_headers(data), data)
+
     # EXCHANGE API - 서비스 정보 - 입출금 현황
     def getExchangeStatusWallet(self):
         '''
@@ -1321,7 +1585,7 @@ class UpbitApi():
             return False
         return True
 
-    def getRemainingReq(self): 
+    def getRemainingReq(self):         
         '''
         요청 수 제한
         https://docs.upbit.com/docs/user-request-guide
@@ -1329,3 +1593,96 @@ class UpbitApi():
             ex) {'market': {'min': '599', 'sec': '9', 'update_time': datetime.datetime(2021, 3, 24, 16, 1, 17, 815410)}, 'candles': {'min': '599', 'sec': '9', 'update_time': datetime.datetime(2021, 3, 24, 16, 1, 23, 122025)}}
         '''
         return self.remaining_req
+
+#################################################
+# main
+if __name__ == '__main__':
+    # upbitapi  API TEST 
+    ###############################################################
+    # upbitapi = upbitapi.UpbitApi()
+    # upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
+
+    # QUOTATION API TEST 
+    ###############################################################    
+    # print('■■■■■■■■■■ - QUOTATION API - 시세 종목 조회 - 마켓 코드 조회 : getQuotationMarketAll()')
+    # print(upbitapi.getQuotationMarketAll())
+
+    # print('■■■■■■■■■■ - QUOTATION API - 시세 캔들 조회 - 분(Minute) 캔들 : getQuotationCandlesMinutes(1,"KRW-BTC")')
+    # print(upbitapi.getQuotationCandlesMinutes(1,'KRW-BTC'))
+
+    # print('■■■■■■■■■■ - QUOTATION API - 시세 캔들 조회 - 일(Day) 캔들 : getQuotationCandlesDays("KRW-BTC")')
+    # print(upbitapi.getQuotationCandlesDays('KRW-BTC'))
+
+    # print('■■■■■■■■■■ - QUOTATION API - 시세 캔들 조회 - 주(Week) 캔들 : getQuotationCandlesWeeks("KRW-BTC")')
+    # print(upbitapi.getQuotationCandlesWeeks('KRW-BTC'))
+
+    # print('■■■■■■■■■■ - QUOTATION API - 시세 캔들 조회 - 월(Month) 캔들 : getQuotationCandlesMonths("KRW-BTC")')
+    # print(upbitapi.getQuotationCandlesMonths('KRW-BTC'))
+
+    # print('■■■■■■■■■■ - QUOTATION API - 시세 체결 조회 - 최근 체결 내역 : getQuotationTradesTicks("KRW-BTC")')
+    # print(upbitapi.getQuotationTradesTicks('KRW-BTC'))
+
+    # print('■■■■■■■■■■ - QUOTATION API - 시세 Ticker 조회 - 현재가 정보 : getQuotationTicker(["KRW-BTC","KRW-ETH"])')
+    # print(upbitapi.getQuotationTicker(['KRW-BTC','KRW-ETH']))
+
+    # print('■■■■■■■■■■ - QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회 : getQuotationOrderbook(["KRW-BTC","KRW-ETH"])')
+    # print(upbitapi.getQuotationOrderbook(['KRW-BTC','KRW-ETH']))
+
+    # EXCHANGE API TEST (TO-DO)
+    ###############################################################    
+    # print('■■■■■■■■■■ - EXCHANGE API - 자산 - 전체 계좌 조회 : getExchangeAccounts()')
+    # print(upbitapi.getExchangeAccounts())
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
+    # print(upbitapi.getExchangeOrdersChance('KRW-BTC'))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
+    # print(upbitapi.getExchangeOrder(uuid))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders(market, state, page ,order_by)')
+    # print(upbitapi.getExchangeOrders(market, state, page ,order_by))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 취소 접수 : deleteExchangeOrder(uuid)')
+    # print(upbitapi.deleteExchangeOrder(uuid))
+  
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문하기 : postExchangeOrder(market, side, volume, price, ord_type)')
+    # print(upbitapi.postExchangeOrder(market, side, volume, price, ord_type))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 리스트 조회 : getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids)')
+    # print(upbitapi.getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeWithdraw(uuid, txid, currency)')
+    # print(upbitapi.getExchangeWithdraw(uuid, txid, currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeWithdrawsChance("BTC")')
+    # print(upbitapi.getExchangeWithdrawsChance('BTC'))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 코인 출금하기 : postExchangeWithdrawsCoin(currency, amount, address)')
+    # print(upbitapi.postExchangeWithdrawsCoin(currency, amount, address))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 원화 출금하기 : postExchangeWithdrawsKrw(amount)')
+    # print(upbitapi.postExchangeWithdrawsKrw(amount))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 리스트 조회 : getExchangeDeposits(currency, state, page , order_by, limit, uuids, txids)')
+    # print(upbitapi.getExchangeDeposits(currency, state, page , order_by, limit, uuids, txids))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 조회 : getExchangeDeposit(uuid, txid, currency)')
+    # print(upbitapi.getExchangeDeposit(uuid, txid, currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 주소 생성 요청 : postExchangeDepositsGenerate_coin_address(currency)')
+    # print(upbitapi.postExchangeDepositsGenerate_coin_address(currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회 : getExchangeDepositsCoin_addressess()')
+    # print(upbitapi.getExchangeDepositsCoin_addressess())
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회 : getExchangeDepositsCoin_address(currency)')
+    # print(upbitapi.getExchangeDepositsCoin_address(currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 원화 입금하기 : postExchangeDepositsKrw(currency)')
+    # print(upbitapi.postExchangeDepositsKrw(currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황 : getExchangeStatusWallet()')
+    # print(upbitapi.getExchangeStatusWallet())
+    
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회 : getExchangeApiKeys()')
+    # print(upbitapi.getExchangeApiKeys())
