@@ -9,6 +9,7 @@ import time
 from urllib.parse import urlencode
 import uuid
 
+
 class UpbitApi():
     """
     UPbit Api\n
@@ -18,7 +19,8 @@ class UpbitApi():
     ###############################################################
     # INIT
     ###############################################################
-    def __init__(self, access_key=None, secret=None,server_url=None):
+
+    def __init__(self, access_key=None, secret=None, server_url=None):
         '''
         Constructor\n      
         access_key string : 발급 받은 acccess key\n
@@ -36,7 +38,7 @@ class UpbitApi():
 
         self.remaining_req = dict()
         self.markets = self.__markets_info()
- 
+
     # ##############################################################
     #  HTTP REQUEST COMMON  FUNCTION
     # ##############################################################
@@ -75,7 +77,7 @@ class UpbitApi():
         return json.loads(resp.text)
 
     def __get_token(self, query):
-        if query is not None:                        
+        if query is not None:
             query_string = urlencode(query).encode()
             m = hashlib.sha512()
             m.update(query_string)
@@ -101,7 +103,7 @@ class UpbitApi():
     # QUOTATION API
     ###############################################################
     # QUOTATION API - 시세 종목 조회 - 마켓 코드 조회
-    def getQuotationMarketAll(self,isDetails=True):
+    def getQuotationMarketAll(self, isDetails=True):
         '''
         QUOTATION API - 시세 종목 조회 - 마켓 코드 조회\n
         ******************************\n
@@ -118,12 +120,12 @@ class UpbitApi():
         english_name	거래 대상 암호화폐 영문명	String \n
         market_warning	유의 종목 여부  NONE (해당 사항 없음), CAUTION(투자유의)	String 
         '''
-        URL = 'https://api.upbit.com/v1/market/all'        
+        URL = 'https://api.upbit.com/v1/market/all'
 
-        if isDetails not in [True,False]:
+        if isDetails not in [True, False]:
             logging.error('invalid isDetails: %s' % isDetails)
             raise Exception('invalid isDetails: %s' % isDetails)
-            
+
         params = {'isDetails':  isDetails}
 
         return self.__get(URL, params=params)
@@ -166,8 +168,8 @@ class UpbitApi():
             logging.error('invalid market: %s' % market)
             raise Exception('invalid market: %s' % market)
 
-        if count is not None:            
-            if count not in list(range(1,201)):
+        if count is not None:
+            if count not in list(range(1, 201)):
                 logging.error('invalid count: %s' % str(count))
                 raise Exception('invalid count: %s' % str(count))
 
@@ -209,7 +211,7 @@ class UpbitApi():
         change_price	전일 종가 대비 변화 금액	Double\n
         change_rate	전일 종가 대비 변화량	Double\n
         converted_trade_price	종가 환산 화폐 단위로 환산된 가격(요청에 convertingPriceUnit 파라미터 없을 시 해당 필드 포함되지 않음.)	Double\n
-       
+
         convertingPriceUnit 파라미터의 경우, 원화 마켓이 아닌 다른 마켓(ex. BTC, ETH)의 일봉 요청시 종가를\n
         명시된 파라미터 값으로 환산해 converted_trade_price 필드에 추가하여 반환합니다.\n
         현재는 원화(KRW) 로 변환하는 기능만 제공하며 추후 기능을 확장할 수 있습니다.
@@ -350,11 +352,11 @@ class UpbitApi():
 
         if daysAgo is not None:
             if daysAgo not in [1, 2, 3, 4, 5, 6, 7]:
-               logging.error('invalid daysAgo: %s' % str(daysAgo))
-               raise Exception('invalid daysAgo: %s' % str(daysAgo))
+                logging.error('invalid daysAgo: %s' % str(daysAgo))
+                raise Exception('invalid daysAgo: %s' % str(daysAgo))
 
         params = {'market': market}
-        
+
         if to is not None:
             params['to'] = to
 
@@ -429,7 +431,7 @@ class UpbitApi():
         for market in markets[1:]:
             markets_data += ',%s' % market
         params = {'markets': markets_data}
-        
+
         return self.__get(URL, params=params)
 
     # QUOTATION API - 시세 호가 정보(Orderbook) 조회 - 호가 정보 조회
@@ -481,7 +483,7 @@ class UpbitApi():
 
     ###############################################################
     # EXCHANGE API
-    ############################################################### 
+    ###############################################################
     # EXCHANGE API - 자산 - 전체 계좌 조회
     def getExchangeAccounts(self):
         '''
@@ -504,7 +506,7 @@ class UpbitApi():
         URL = self.server_url+'/accounts'
 
         return self.__get(URL, self.__get_headers())
-    
+
     # EXCHANGE API - 주문 - 주문 가능 정보
     def getExchangeOrdersChance(self, market):
         '''
@@ -551,7 +553,7 @@ class UpbitApi():
         ask_account.avg_buy_price	매수평균가	NumberString\n
         ask_account.avg_buy_price_modified	매수평균가 수정 여부	Boolean\n
         ask_account.unit_currency	평단가 기준 화폐	String\n
-        '''       
+        '''
         URL = self.server_url + "/orders/chance"
 
         if market not in self.markets:
@@ -610,17 +612,18 @@ class UpbitApi():
         if uuid is not None:
             data['uuid'] = uuid
 
-        if identifier is not None:            
+        if identifier is not None:
             data['identifier'] = identifier
 
-        if  len(data) == 0 :
-            logging.error('uuid  or identifier Either value must be included.')                
-            raise Exception('uuid  or identifier Either value must be included.')
+        if len(data) == 0:
+            logging.error('uuid  or identifier Either value must be included.')
+            raise Exception(
+                'uuid  or identifier Either value must be included.')
 
         return self.__get(URL, self.__get_headers(data), data)
 
     # EXCHANGE API - 주문 - 주문 리스트 조회
-    def getExchangeOrders(self, market, state=None, page=1 ,order_by='desc' , limit=100, states=None, uuids=None, identifiers=None):
+    def getExchangeOrders(self, market, state=None, page=1, order_by='desc', limit=100, states=None, uuids=None, identifiers=None):
         '''
         EXCHANGE API - 주문 - 주문 리스트 조회\n        
         주문 리스트를 조회한다.\n
@@ -676,7 +679,7 @@ class UpbitApi():
             logging.error('invalid order_by: %s' % order_by)
             raise Exception('invalid order_by: %s' % order_by)
 
-        if limit not in list(range(1,101)):
+        if limit not in list(range(1, 101)):
             logging.error('invalid count: %s' % str(limit))
             raise Exception('invalid count: %s' % str(limit))
 
@@ -697,15 +700,15 @@ class UpbitApi():
                 type_temp = 2
 
             for s in states:
-                 if type_temp == 1:
+                if type_temp == 1:
                     if s not in ['wait', 'watch']:
                         logging.error('invalid state: %s' % s)
                         raise Exception('invalid state: %s' % s)
-                 else:                      
+                else:
                     if s not in ['done', 'cancel']:
                         logging.error('invalid state: %s' % s)
                         raise Exception('invalid state: %s' % s)
-           
+
         query = {
             'market': market,
             'page': page,
@@ -719,19 +722,25 @@ class UpbitApi():
         query_string = urlencode(query)
 
         if states is not None:
-            states_query_string = '&'.join(["states[]={}".format(state_temp) for state_temp in states])
+            states_query_string = '&'.join(
+                ["states[]={}".format(state_temp) for state_temp in states])
             query['states[]'] = states
-            query_string = "{0}&{1}".format(query_string, states_query_string).encode()
+            query_string = "{0}&{1}".format(
+                query_string, states_query_string).encode()
 
         if uuids is not None:
-            uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
+            uuids_query_string = '&'.join(
+                ["uuids[]={}".format(uuid) for uuid in uuids])
             query['uuids[]'] = uuids
-            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()    
+            query_string = "{0}&{1}".format(
+                query_string, uuids_query_string).encode()
 
         if identifiers is not None:
-            identifiers_query_string = '&'.join(["identifiers[]={}".format(identifier) for uuid in identifiers])
+            identifiers_query_string = '&'.join(
+                ["identifiers[]={}".format(identifier) for uuid in identifiers])
             query['identifiers[]'] = identifiers
-            query_string = "{0}&{1}".format(query_string, identifiers_query_string).encode()
+            query_string = "{0}&{1}".format(
+                query_string, identifiers_query_string).encode()
 
         m = hashlib.sha512()
         m.update(query_string)
@@ -743,7 +752,7 @@ class UpbitApi():
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
-        
+
         jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
@@ -790,12 +799,13 @@ class UpbitApi():
         if uuid is not None:
             data['uuid'] = uuid
 
-        if identifier is not None:            
+        if identifier is not None:
             data['identifier'] = identifier
 
-        if  len(data) == 0 :
-            logging.error('uuid  or identifier Either value must be included.')                
-            raise Exception('uuid  or identifier Either value must be included.')
+        if len(data) == 0:
+            logging.error('uuid  or identifier Either value must be included.')
+            raise Exception(
+                'uuid  or identifier Either value must be included.')
 
         return self.__delete(URL, self.__get_headers(data), data)
 
@@ -865,7 +875,7 @@ class UpbitApi():
             logging.error('invalid side: %s' % side)
             raise Exception('invalid side: %s' % side)
 
-        if ord_type not in ['limit', 'price','market']:
+        if ord_type not in ['limit', 'price', 'market']:
             logging.error('invalid ord_type: %s' % ord_type)
             raise Exception('invalid ord_type: %s' % ord_type)
 
@@ -890,7 +900,7 @@ class UpbitApi():
         if ord_type == 'price':
             if market.startswith('KRW') and not self.__is_valid_price(price):
                 logging.error('invalid price: %.2f' % price)
-                raise Exception('invalid price: %.2f' % price)                
+                raise Exception('invalid price: %.2f' % price)
             data['price'] = str(price)
 
         if ord_type == 'market':
@@ -898,11 +908,11 @@ class UpbitApi():
                 logging.error('invalid volume: %.2f' % volume)
                 raise Exception('invalid volume: %.2f' % volume)
             data['volume'] = str(volume)
-       
+
         return self.__post(URL, self.__get_headers(data), data)
 
     # EXCHANGE API - 출금 - 출금 리스트 조회
-    def getExchangeWithdraws(self, currency, state, page=1 ,order_by='desc' , limit=100, uuids=None, txids=None):
+    def getExchangeWithdraws(self, currency, state, page=1, order_by='desc', limit=100, uuids=None, txids=None):
         '''
         EXCHANGE API - 출금 - 출금 리스트 조회\n        
         https://docs.upbit.com/reference#%EC%A0%84%EC%B2%B4-%EC%B6%9C%EA%B8%88-%EC%A1%B0%ED%9A%8C\n
@@ -959,13 +969,13 @@ class UpbitApi():
             logging.error('invalid order_by: %s' % order_by)
             raise Exception('invalid order_by: %s' % order_by)
 
-        if limit not in list(range(1,101)):
+        if limit not in list(range(1, 101)):
             logging.error('invalid count: %s' % str(limit))
             raise Exception('invalid count: %s' % str(limit))
-        
+
         query = {
             'currency': currency,
-            'state':state,
+            'state': state,
             'page': page,
             'limit': limit,
             'order_by': order_by
@@ -974,14 +984,18 @@ class UpbitApi():
         query_string = urlencode(query)
 
         if uuids is not None:
-            uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
+            uuids_query_string = '&'.join(
+                ["uuids[]={}".format(uuid) for uuid in uuids])
             query['uuids[]'] = uuids
-            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
-        
+            query_string = "{0}&{1}".format(
+                query_string, uuids_query_string).encode()
+
         if txids is not None:
-            txids_query_string = '&'.join(["txids[]={}".format(txid) for txid in txids])
+            txids_query_string = '&'.join(
+                ["txids[]={}".format(txid) for txid in txids])
             query['txids[]'] = txids
-            query_string = "{0}&{1}".format(query_string, txids_query_string).encode()
+            query_string = "{0}&{1}".format(
+                query_string, txids_query_string).encode()
 
         m = hashlib.sha512()
         m.update(query_string)
@@ -993,13 +1007,13 @@ class UpbitApi():
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
-        
+
         jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
         return self.__get(URL, headers, query)
-  
+
     # EXCHANGE API - 출금 - 개별 출금 조회
     def getExchangeWithdraw(self, uuid=None, txid=None, currency=None):
         '''
@@ -1037,14 +1051,14 @@ class UpbitApi():
         if uuid is not None:
             data['uuid'] = uuid
 
-        if txid is not None:            
+        if txid is not None:
             data['txid'] = txid
 
-        if  len(data) == 0 :
-            logging.error('uuid  or txid Either value must be included.')                
+        if len(data) == 0:
+            logging.error('uuid  or txid Either value must be included.')
             raise Exception('uuid  or txid Either value must be included.')
 
-        if currency is not None:            
+        if currency is not None:
             data['currency'] = currency
 
         return self.__get(URL, self.__get_headers(data), data)
@@ -1098,7 +1112,7 @@ class UpbitApi():
         '''
         URL = self.server_url+'/withdraws/chance'
 
-        data = {'currency':currency}
+        data = {'currency': currency}
 
         return self.__get(URL, self.__get_headers(data), data)
 
@@ -1143,7 +1157,7 @@ class UpbitApi():
             logging.error('invalid transaction_type: %s' % transaction_type)
             raise Exception('invalid transaction_type: %s' % transaction_type)
 
-        data =  {
+        data = {
             'currency': currency,
             'amount': amount,
             'address': address,
@@ -1185,12 +1199,12 @@ class UpbitApi():
         '''
         URL = self.server_url+'/withdraws/krw'
 
-        data =  {'amount': amount}
+        data = {'amount': amount}
 
         return self.__post(URL, self.__get_headers(data), data)
 
     # EXCHANGE API - 입금 - 입금 리스트 조회
-    def getExchangeDeposits(self, currency, state, page=1 ,order_by='desc' , limit=100, uuids=None, txids=None):
+    def getExchangeDeposits(self, currency, state, page=1, order_by='desc', limit=100, uuids=None, txids=None):
         '''
         EXCHANGE API - 입금 - 입금 리스트 조회\n        
         https://docs.upbit.com/reference#%EC%9E%85%EA%B8%88-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C\n
@@ -1245,13 +1259,13 @@ class UpbitApi():
             logging.error('invalid order_by: %s' % order_by)
             raise Exception('invalid order_by: %s' % order_by)
 
-        if limit not in list(range(1,101)):
+        if limit not in list(range(1, 101)):
             logging.error('invalid count: %s' % str(limit))
             raise Exception('invalid count: %s' % str(limit))
-        
+
         query = {
             'currency': currency,
-            'state':state,
+            'state': state,
             'page': page,
             'limit': limit,
             'order_by': order_by
@@ -1260,14 +1274,18 @@ class UpbitApi():
         query_string = urlencode(query)
 
         if uuids is not None:
-            uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
+            uuids_query_string = '&'.join(
+                ["uuids[]={}".format(uuid) for uuid in uuids])
             query['uuids[]'] = uuids
-            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
-        
+            query_string = "{0}&{1}".format(
+                query_string, uuids_query_string).encode()
+
         if txids is not None:
-            txids_query_string = '&'.join(["txids[]={}".format(txid) for txid in txids])
+            txids_query_string = '&'.join(
+                ["txids[]={}".format(txid) for txid in txids])
             query['txids[]'] = txids
-            query_string = "{0}&{1}".format(query_string, txids_query_string).encode()
+            query_string = "{0}&{1}".format(
+                query_string, txids_query_string).encode()
 
         m = hashlib.sha512()
         m.update(query_string)
@@ -1279,7 +1297,7 @@ class UpbitApi():
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
-        
+
         jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
@@ -1322,20 +1340,20 @@ class UpbitApi():
         if uuid is not None:
             data['uuid'] = uuid
 
-        if txid is not None:            
+        if txid is not None:
             data['txid'] = txid
 
-        if  len(data) == 0 :
-            logging.error('uuid  or txid Either value must be included.')                
+        if len(data) == 0:
+            logging.error('uuid  or txid Either value must be included.')
             raise Exception('uuid  or txid Either value must be included.')
 
-        if currency is not None:            
+        if currency is not None:
             data['currency'] = currency
 
         return self.__get(URL, self.__get_headers(data), data)
 
         # EXCHANGE API - 입금 - 개별 입금 조회
-    
+
     # EXCHANGE API - 입금 - 입금 주소 생성 요청
     def postExchangeDepositsGenerate_coin_address(self, currency):
         '''
@@ -1367,7 +1385,7 @@ class UpbitApi():
         '''
         URL = self.server_url+'/deposits/generate_coin_address'
 
-        data = {'currency':currency}
+        data = {'currency': currency}
 
         return self.__post(URL, self.__get_headers(data), data)
 
@@ -1415,7 +1433,7 @@ class UpbitApi():
         '''
         URL = self.server_url+'/deposits/coin_address'
 
-        data = {'currency':currency}
+        data = {'currency': currency}
 
         return self.__get(URL, self.__get_headers(data), data)
 
@@ -1449,7 +1467,7 @@ class UpbitApi():
         '''
         URL = self.server_url+'/deposits/krw'
 
-        data = {'amount':amount}
+        data = {'amount': amount}
 
         return self.__post(URL, self.__get_headers(data), data)
 
@@ -1585,7 +1603,7 @@ class UpbitApi():
             return False
         return True
 
-    def getRemainingReq(self):         
+    def getRemainingReq(self):
         '''
         요청 수 제한
         https://docs.upbit.com/docs/user-request-guide
@@ -1594,16 +1612,17 @@ class UpbitApi():
         '''
         return self.remaining_req
 
+
 #################################################
 # main
 if __name__ == '__main__':
-    # upbitapi  API TEST 
+    # upbitapi  API TEST
     ###############################################################
     # upbitapi = upbitapi.UpbitApi()
     # upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
 
-    # QUOTATION API TEST 
-    ###############################################################    
+    # QUOTATION API TEST
+    ###############################################################
     # print('■■■■■■■■■■ - QUOTATION API - 시세 종목 조회 - 마켓 코드 조회 : getQuotationMarketAll()')
     # print(upbitapi.getQuotationMarketAll())
 
@@ -1629,7 +1648,7 @@ if __name__ == '__main__':
     # print(upbitapi.getQuotationOrderbook(['KRW-BTC','KRW-ETH']))
 
     # EXCHANGE API TEST (TO-DO)
-    ###############################################################    
+    ###############################################################
     # print('■■■■■■■■■■ - EXCHANGE API - 자산 - 전체 계좌 조회 : getExchangeAccounts()')
     # print(upbitapi.getExchangeAccounts())
 
@@ -1644,7 +1663,7 @@ if __name__ == '__main__':
 
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 취소 접수 : deleteExchangeOrder(uuid)')
     # print(upbitapi.deleteExchangeOrder(uuid))
-  
+
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문하기 : postExchangeOrder(market, side, volume, price, ord_type)')
     # print(upbitapi.postExchangeOrder(market, side, volume, price, ord_type))
 
@@ -1683,8 +1702,8 @@ if __name__ == '__main__':
 
     # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황 : getExchangeStatusWallet()')
     # print(upbitapi.getExchangeStatusWallet())
-    
+
     # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회 : getExchangeApiKeys()')
     # print(upbitapi.getExchangeApiKeys())
-    
+
     print('upbitapi test completed ...')
