@@ -31,7 +31,7 @@ logging.config.fileConfig(log_file_path)
 # create logger
 logger = logging.getLogger('vcts')
 
-common = common.Common()
+comm = common.Common()
 upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY, config.SECRET)
 
 ##################################################
@@ -48,19 +48,19 @@ class Trade():
 
             try:
                 sqlText = 'drop table vcts_meta'
-                common.executeTxDB(conn, sqlText)
+                comm.executeTxDB(conn, sqlText)
             except Exception as e:
                 logging.error(' Exception : %s' % e)
 
             sqlText = 'create table vcts_meta (id integer primary key autoincrement, market text , korean_name text, english_name, market_warning)'
-            common.executeTxDB(conn, sqlText)
+            comm.executeTxDB(conn, sqlText)
 
             for data in market_dict:
                 data.setdefault('market_warning', '')
                 sqlText = 'insert into vcts_meta  (market,korean_name,english_name,market_warning)'
                 sqlText += ' values ("'+data.get('market')+'","'+data.get(
                     'korean_name')+'","'+data.get('english_name')+'","'+data.get('market_warning')+'")'
-                common.executeTxDB(conn, sqlText)
+                comm.executeTxDB(conn, sqlText)
 
             conn.commit()
         except Exception as e:
@@ -70,8 +70,8 @@ class Trade():
                 conn.close()
 
     def getMarkets(self):
-        df = common.searchDB("SELECT * FROM VCTS_META")
+        df = comm.searchDB("SELECT * FROM VCTS_META")
         print(df)
 
-        for i in df.index:
-            print(df['market'][i])
+        # for i in df.index:
+        #     print(df['market'][i])

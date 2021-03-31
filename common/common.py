@@ -123,7 +123,11 @@ class Common():
     def send_telegram_msg(self, msg):
         try:
             bot.deleteWebhook()
-            chat_id = bot.getUpdates()[-1].message.chat.id
+            try:
+                chat_id = bot.getUpdates()[-1].message.chat.id
+            except Exception as e:
+                chat_id = config.TELEGRAM_CHAT_ID
+
             # bot sendMessage
             bot.sendMessage(chat_id=chat_id, text=msg)
         except Exception as e:
