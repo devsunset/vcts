@@ -52,7 +52,7 @@ class Trade():
             except Exception as e:
                 logging.error(' Exception : %s' % e)
 
-            sqlText = 'create table vcts_meta (id integer primary key autoincrement, market text , korean_name text, english_name, market_warning)'
+            sqlText = 'create table vcts_meta (id integer primary key autoincrement, market text , korean_name text, english_name text, market_warning text)'
             comm.executeTxDB(conn, sqlText)
 
             for data in market_dict:
