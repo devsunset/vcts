@@ -38,7 +38,7 @@ trade = trade.Trade()
 
 # main process
 def main_process():   
-  print('Hello World')  
+  logger.warning('hello world')
   trade.getMarkets()
 
 #################################################
