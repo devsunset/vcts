@@ -92,12 +92,13 @@ class Trade():
             logger.warn('loadMarketCandlesDaySaveToDb db_init')
 
             markets = self.getMarkets()
+   
             for i in markets.index:
                 logger.warn(markets['market'][i])
                 data_json = upbitapi.getQuotationCandlesDays(market=markets['market'][i],count=180,convertingPriceUnit='KRW')
                 for data in data_json:                
                     sqlText = 'insert into vcts_candles_day  (market, candle_date_time_utc, candle_date_time_kst, opening_price, high_price, low_price, trade_price, timestamp, candle_acc_trade_price, candle_acc_trade_volume, prev_closing_price, change_price,  change_rate, converted_trade_price)'
-                    sqlText += ' values ("'+data.get('market')+'","'+data.get('candle_date_time_utc')+'","'+data.get('candle_date_time_kst')+'","'+data.get('opening_price')+'","'+data.get('high_price')+'","'+data.get('low_price')+'","'+data.get('timestamp')+'","'+data.get('trade_price')+'","'+data.get('candle_acc_trade_price')+'","'+data.get('candle_acc_trade_volume')+'","'+data.get('prev_closing_price')+'","'+data.get('change_price')+'","'+data.get('change_rate')+'","'+data.get('converted_trade_price')+'")'
+                    sqlText += ' values ("'+data.get('market')+'","'+data.get('candle_date_time_utc')+'","'+data.get('candle_date_time_kst')+'","'+str(data.get('opening_price'))+'","'+str(data.get('high_price'))+'","'+str(data.get('low_price'))+'","'+str(data.get('timestamp'))+'","'+str(data.get('trade_price'))+'","'+str(data.get('candle_acc_trade_price'))+'","'+str(data.get('candle_acc_trade_volume'))+'","'+str(data.get('prev_closing_price'))+'","'+str(data.get('change_price'))+'","'+str(data.get('change_rate'))+'","'+str(data.get('converted_trade_price'))+'")'
                     comm.executeTxDB(conn, sqlText)
 
             conn.commit()
