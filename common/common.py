@@ -21,6 +21,7 @@ import sqlite3
 import sys
 import telegram
 import unicodedata
+import urllib3
 
 from common import config
 # import config
@@ -42,7 +43,7 @@ log_file_path = path.join(path.dirname(path.abspath(__file__)), 'logging.conf')
 logging.config.fileConfig(log_file_path)
 
 # create logger
-logger = logging.getLogger('vcts')
+logger = logging.getLogger('camping-reservation')
 
 ##################################################
 
@@ -58,7 +59,10 @@ class Common():
             if sqlParam == None:
                 cur.execute(sql)
             else:
+              if str(type(sqlParam)) == "<class 'tuple'>":    
                 cur.execute(sql, sqlParam)
+              else:
+                cur.executemany(sql,sqlParam)
             columns = list(map(lambda x: x[0], cur.description))
             result = cur.fetchall()
             df = DataFrame.from_records(data=result, columns=columns)
@@ -78,7 +82,10 @@ class Common():
           if sqlParam == None:
               cur.execute(sql)
           else:
-              cur.execute(sql, sqlParam)
+              if str(type(sqlParam)) == "<class 'tuple'>":    
+                cur.execute(sql, sqlParam)
+              else:
+                cur.executemany(sql,sqlParam)
           conn.commit()
         except Exception as e:
           logger.error(' executeDB Exception : %s' % e)
@@ -97,7 +104,10 @@ class Common():
             if sqlParam == None:
                 cur.execute(sql)
             else:
-                cur.execute(sql, sqlParam)
+                if str(type(sqlParam)) == "<class 'tuple'>":    
+                    cur.execute(sql, sqlParam)
+                else:
+                    cur.executemany(sql,sqlParam)
             columns = list(map(lambda x: x[0], cur.description))
             result = cur.fetchall()
             df = DataFrame.from_records(data=result, columns=columns)
@@ -113,7 +123,10 @@ class Common():
           if sqlParam == None:
               cur.execute(sql)
           else:
-              cur.execute(sql, sqlParam)
+                if str(type(sqlParam)) == "<class 'tuple'>":    
+                    cur.execute(sql, sqlParam)
+                else:
+                    cur.executemany(sql,sqlParam)
           conn.commit()
         except Exception as e:
           logger.error(' executeDB Exception : %s' % e)
@@ -122,14 +135,14 @@ class Common():
     # telegram message send
     def send_telegram_msg(self, msg):
         try:
-            bot.deleteWebhook()
-            try:
-                chat_id = bot.getUpdates()[-1].message.chat.id
-            except Exception as e:
-                chat_id = config.TELEGRAM_CHAT_ID
-
+            # bot.deleteWebhook()
+            # try:
+            #     chat_id = bot.getUpdates()[-1].message.chat.id                
+            # except Exception as e:
+            #     chat_id = config.TELEGRAM_CHAT_ID
             # bot sendMessage
-            bot.sendMessage(chat_id=chat_id, text=msg)
+            bot.sendMessage(chat_id=config.TELEGRAM_CHAT_ID, text=msg)
+            logger.warn(msg)
         except Exception as e:
             logger.error(' send_telegram_msg Exception : %s' % e)
 
@@ -141,16 +154,6 @@ class Common():
         else:
             logger.warning(msg)
 
-    # rpad
-    def rpad(self, input_s="", max_size=10, fill_char=" "):
-        l = 0
-        for c in input_s:
-            if unicodedata.east_asian_width(c) in ['F', 'W']:
-                l += 2
-            else:
-                l += 1
-        return input_s+fill_char*(max_size-l)
-
     # crawling
     def getCrawling(self, url):
         html = ""
@@ -161,20 +164,33 @@ class Common():
             logger.error(' getCrawling Exception : %s' % e)
         return html
 
+    # sert crawling
+    def getSertCrawling(self, url, cookies=None):
+        html = ""
+        try:
+            requests.packages.urllib3.disable_warnings()
+            requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        except AttributeError:
+            # no pyopenssl support used / needed / available
+            pass
+
+        try:
+            resp = requests.get(url, cookies=cookies,verify=False)
+            html = resp.text
+        except Exception as e:
+            logger.error(' getHttpsCrawling Exception : %s' % e)
+        return html
 
 ##################################################
 # main
 if __name__ == '__main__':
     comm = Common()
-    print('* db - db_init.py test skip')
-    print()
     print('* send_telegram_msg : ', comm.send_telegram_msg(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : send_telegram_msg"))
     print()
     print('* log push_yn -> Y : ', comm.log(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : Y", "Y"))
     print()
     print('* log push_yn -> N : ',  comm.log(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" : N", "N"))
-    print()
-    print('* rpad : ', comm.rpad("1234", 10, "0"))
     print()
     print('* getCrawling html : ', comm.getCrawling("https://devsunset.github.io/"))
     print()

@@ -70,7 +70,6 @@ class Trade():
     def getMarkets(self):
         df = comm.searchDB("SELECT * FROM VCTS_META")
         # print(df)
-
         # for i in df.index:
         #     print(df['market'][i])
         return df
@@ -86,20 +85,25 @@ class Trade():
             except Exception as e:
                 logging.error(' Exception : %s' % e)
 
-            sqlText = 'create table vcts_candles_day (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price text, high_price text, low_price text, trade_price text, timestamp text, candle_acc_trade_price text, candle_acc_trade_volume text, prev_closing_price text, change_price text,  change_rate text, converted_trade_price text)'
+            sqlText = 'create table vcts_candles_day (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price real, high_price real, low_price real, trade_price real, timestamp integer, candle_acc_trade_price real, candle_acc_trade_volume real, prev_closing_price real, change_price real,  change_rate real, converted_trade_price real)'
             comm.executeTxDB(conn, sqlText)
 
             logger.warn('loadMarketCandlesDaySaveToDb db_init')
 
             markets = self.getMarkets()
    
+            sqlText = 'insert into vcts_candles_day  (market, candle_date_time_utc, candle_date_time_kst, opening_price, high_price, low_price, trade_price, timestamp, candle_acc_trade_price, candle_acc_trade_volume, prev_closing_price, change_price,  change_rate, converted_trade_price)'
+            sqlText += ' values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  ?, ?)'
+
             for i in markets.index:
-                logger.warn(markets['market'][i])
-                data_json = upbitapi.getQuotationCandlesDays(market=markets['market'][i],count=180,convertingPriceUnit='KRW')
+                logger.warn(markets['market'][i]+" : "+markets['korean_name'][i])
+                data_json = upbitapi.getQuotationCandlesDays(market=markets['market'][i],count=config.CANDLES_DAY_COUNT,convertingPriceUnit=config.CONVERTING_PRICE_UNIT)
+
+                sqlParam = []
                 for data in data_json:                
-                    sqlText = 'insert into vcts_candles_day  (market, candle_date_time_utc, candle_date_time_kst, opening_price, high_price, low_price, trade_price, timestamp, candle_acc_trade_price, candle_acc_trade_volume, prev_closing_price, change_price,  change_rate, converted_trade_price)'
-                    sqlText += ' values ("'+data.get('market')+'","'+data.get('candle_date_time_utc')+'","'+data.get('candle_date_time_kst')+'","'+str(data.get('opening_price'))+'","'+str(data.get('high_price'))+'","'+str(data.get('low_price'))+'","'+str(data.get('timestamp'))+'","'+str(data.get('trade_price'))+'","'+str(data.get('candle_acc_trade_price'))+'","'+str(data.get('candle_acc_trade_volume'))+'","'+str(data.get('prev_closing_price'))+'","'+str(data.get('change_price'))+'","'+str(data.get('change_rate'))+'","'+str(data.get('converted_trade_price'))+'")'
-                    comm.executeTxDB(conn, sqlText)
+                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('prev_closing_price'),data.get('change_price'),data.get('change_rate'),data.get('converted_trade_price')))
+
+                comm.executeTxDB(conn, sqlText, sqlParam)
 
             conn.commit()
         except Exception as e:
