@@ -37,18 +37,21 @@ trade = trade.Trade()
 ##################################################
 
 # main process
-def main_process():   
-  logger.warning('hello world')
+def main_process():     
   trade.getMarkets()
 
 #################################################
 # main
 if __name__ == '__main__':
+    
+    trade.loadMarketSaveToDb()
+    trade.loadMarketCandlesDaySaveToDb()
+
+    # trade.test()
+
     #scheduler = BlockingScheduler()
     #scheduler.add_job(main_process, 'interval', seconds=config.INTERVAL_SECONDS)
-    trade.loadMarketSaveToDb()
-    main_process()
     #try:
     #    scheduler.start()
     #except Exception as err:
-    #    logger.error(' main Exception : %s' % e)      
+    #    logger.error(' main Exception : %s' % e)    
