@@ -151,7 +151,6 @@ class Trade():
                     sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('first_day_of_period')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
-                break
 
             conn.commit()
             logger.warn('loadMarketCandlesWeeksSaveToDb db_save')
@@ -191,7 +190,6 @@ class Trade():
                     sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('first_day_of_period')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
-                break
 
             conn.commit()
             logger.warn('loadMarketCandlesMonthsSaveToDb db_save')
