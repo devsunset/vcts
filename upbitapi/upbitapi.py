@@ -54,7 +54,7 @@ class UpbitApi():
                         time.sleep(TOO_MANY_API_REQUESTS_INTERVAL) 
                         TOO_MANY_API_REQUESTS_INTERVAL = TOO_MANY_API_REQUESTS_INTERVAL+0.5
                         resp = requests.get(url, headers=headers, data=data, params=params)
-                        logging.error('Too many API Requests : resp: %s' % resp.text)
+                        logging.error('Too many API Requests : resp.status_code: %s' % resp.status_code)
                         if resp.status_code  != 429 :
                             break
                 else:                    
