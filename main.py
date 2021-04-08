@@ -44,8 +44,8 @@ def main_process():
 # main
 if __name__ == '__main__':
     
-    # trade.loadMarketSaveToDb()
-    # trade.loadMarketCandlesDaysSaveToDb()
+    trade.loadMarketSaveToDb()
+    trade.loadMarketCandlesDaysSaveToDb()
     trade.loadMarketCandlesWeeksSaveToDb()
     trade.loadMarketCandlesMonthsSaveToDb()
 
