@@ -20,7 +20,7 @@ class UpbitApi():
     # INIT
     ###############################################################
 
-    def __init__(self, access_key=None, secret=None, server_url=None):
+    def __init__(self, access_key=None, secret=None, server_url=None,TOO_MANY_API_REQUESTS_INTERVAL=None):
         '''
         Constructor\n      
         access_key string : 발급 받은 acccess key\n
@@ -36,6 +36,11 @@ class UpbitApi():
         else:
             self.server_url = server_url
 
+        if TOO_MANY_API_REQUESTS_INTERVAL is None:
+            self.TOO_MANY_API_REQUESTS_INTERVAL = 0.5
+        else:
+            self.TOO_MANY_API_REQUESTS_INTERVAL = TOO_MANY_API_REQUESTS_INTERVAL
+
         self.remaining_req = dict()
         self.markets = self.__markets_info()
 
@@ -49,7 +54,7 @@ class UpbitApi():
             if resp.text is not None:
                 logging.error('resp: %s' % resp.text)
                 if resp.text.find('Too many API requests') > -1:
-                    time.sleep(bConfig.TOO_MANY_API_REQUESTS_INTERVAL) 
+                    time.sleep(self.TOO_MANY_API_REQUESTS_INTERVAL) 
                     __get(url, headers, data, params)
                 else:
                     raise Exception('request.get() failed(%s)' % resp.text)
