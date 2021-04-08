@@ -55,13 +55,15 @@ class Trade():
 
             logger.warn('loadMarketSaveToDb db_init')
 
-            for data in data_json:
-                data.setdefault('market_warning', '')
-                sqlText = 'insert into vcts_meta  (market,korean_name,english_name,market_warning)'
-                sqlText += ' values ("'+data.get('market')+'","'+data.get(
-                    'korean_name')+'","'+data.get('english_name')+'","'+data.get('market_warning')+'")'
-                comm.executeTxDB(conn, sqlText)
+            sqlText = 'insert into vcts_meta  (market,korean_name,english_name,market_warning)'
+            sqlText += ' values (?, ?, ?, ?)'
 
+            sqlParam = []
+            for data in data_json:       
+                data.setdefault('market_warning', '')         
+                sqlParam.append((data.get('market'),data.get('korean_name'),data.get('english_name'),data.get('market_warning')))
+
+            comm.executeTxDB(conn, sqlText, sqlParam)
             conn.commit()
             logger.warn('loadMarketSaveToDb db_save')
         except Exception as e:
@@ -109,6 +111,7 @@ class Trade():
                     sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('prev_closing_price'),data.get('change_price'),data.get('change_rate'),data.get('converted_trade_price')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
+                break
 
             conn.commit()
             logger.warn('loadMarketCandlesDaysSaveToDb db_save')
@@ -137,7 +140,7 @@ class Trade():
             markets = self.getMarkets()
    
             sqlText = 'insert into vcts_candles_weeks  (market, candle_date_time_utc, candle_date_time_kst, opening_price, high_price, low_price, trade_price, timestamp, candle_acc_trade_price, candle_acc_trade_volume, first_day_of_period)'
-            sqlText += ' values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  ?, ?)'
+            sqlText += ' values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 
             for i in markets.index:
                 logger.warn(markets['market'][i]+" : "+markets['korean_name'][i])
@@ -148,6 +151,7 @@ class Trade():
                     sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('first_day_of_period')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
+                break
 
             conn.commit()
             logger.warn('loadMarketCandlesWeeksSaveToDb db_save')
@@ -176,20 +180,21 @@ class Trade():
             markets = self.getMarkets()
    
             sqlText = 'insert into vcts_candles_months  (market, candle_date_time_utc, candle_date_time_kst, opening_price, high_price, low_price, trade_price, timestamp, candle_acc_trade_price, candle_acc_trade_volume, first_day_of_period)'
-            sqlText += ' values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  ?, ?)'
+            sqlText += ' values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 
             for i in markets.index:
                 logger.warn(markets['market'][i]+" : "+markets['korean_name'][i])
-                data_json = upbitapi.getQuotationCandlesWeeks(market=markets['market'][i],count=config.CANDLES_MONTH_COUNT)
+                data_json = upbitapi.getQuotationCandlesMonths(market=markets['market'][i],count=config.CANDLES_MONTH_COUNT)
 
                 sqlParam = []
                 for data in data_json:                
                     sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('first_day_of_period')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
+                break
 
             conn.commit()
-            logger.warn('loadMarketCandlesWeeksSaveToDb db_save')
+            logger.warn('loadMarketCandlesMonthsSaveToDb db_save')
         except Exception as e:
             logging.error(' Exception : %s' % e)
         finally:

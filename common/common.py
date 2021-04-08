@@ -123,11 +123,10 @@ class Common():
           if sqlParam == None:
               cur.execute(sql)
           else:
-                if str(type(sqlParam)) == "<class 'tuple'>":    
-                    cur.execute(sql, sqlParam)
-                else:
-                    cur.executemany(sql,sqlParam)
-          conn.commit()
+             if str(type(sqlParam)) == "<class 'tuple'>":    
+                cur.execute(sql, sqlParam)
+             else:   
+                cur.executemany(sql,sqlParam)
         except Exception as e:
           logger.error(' executeDB Exception : %s' % e)
         return cur.lastrowid
