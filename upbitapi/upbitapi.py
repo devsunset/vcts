@@ -54,13 +54,15 @@ class UpbitApi():
                         time.sleep(TOO_MANY_API_REQUESTS_INTERVAL) 
                         TOO_MANY_API_REQUESTS_INTERVAL = TOO_MANY_API_REQUESTS_INTERVAL+0.5
                         resp = requests.get(url, headers=headers, data=data, params=params)
-                        logging.error('Too many API Requests : resp.status_code: %s' % resp.status_code)
-                        if resp.status_code  != 429 :
-                            break
+                        logging.error('Too many API Requests  retry: resp.status_code: %s' % resp.status_code)
+                        if resp.status_code in [200, 201]:
+                            return json.loads(resp.text)
+                        elif resp.status_code != 429           
+                            logging.error('get(%s) failed(%d)' % (url, resp.status_code))                 
+                            raise Exception('request.get() failed(%s)' % resp.text)
                 else:                    
                     raise Exception('request.get() failed(%s)' % resp.text)
-            raise Exception(
-                'request.get() failed(status_code:%d)' % resp.status_code)
+            raise Exception('request.get() failed(status_code:%d)' % resp.status_code)
         self.__set_req_remaining(resp)
         return json.loads(resp.text)
 
