@@ -9,7 +9,6 @@ import time
 from urllib.parse import urlencode
 import uuid
 
-
 class UpbitApi():
     """
     UPbit Api\n
@@ -36,7 +35,6 @@ class UpbitApi():
         else:
             self.server_url = server_url
 
-        self.remaining_req = dict()
         self.markets = self.__markets_info()
 
     # ##############################################################
@@ -63,7 +61,6 @@ class UpbitApi():
                 else:                    
                     raise Exception('request.get() failed(%s)' % resp.text)
             raise Exception('request.get() failed(status_code:%d)' % resp.status_code)
-        self.__set_req_remaining(resp)
         return json.loads(resp.text)
 
     def __post(self, url, headers, data):
@@ -71,10 +68,22 @@ class UpbitApi():
         if resp.status_code not in [200, 201]:
             logging.error('post(%s) failed(%d)' % (url, resp.status_code))
             if resp.text is not None:
-                raise Exception('request.post() failed(%s)' % resp.text)
-            raise Exception(
-                'request.post() failed(status_code:%d)' % resp.status_code)
-        self.__set_req_remaining(resp)
+                logging.error('resp: %s' % resp.text)
+                if resp.status_code == 429 :
+                    TOO_MANY_API_REQUESTS_INTERVAL = 0.5
+                    while True:
+                        time.sleep(TOO_MANY_API_REQUESTS_INTERVAL) 
+                        TOO_MANY_API_REQUESTS_INTERVAL = TOO_MANY_API_REQUESTS_INTERVAL+0.5
+                        resp = requests.post(url, headers=headers, data=data)
+                        logging.error('Too many API Requests  retry: resp.status_code: %s' % resp.status_code)
+                        if resp.status_code in [200, 201]:
+                            return json.loads(resp.text)
+                        elif resp.status_code != 429:           
+                            logging.error('post(%s) failed(%d)' % (url, resp.status_code))                 
+                            raise Exception('request.post() failed(%s)' % resp.text)
+                else:                    
+                    raise Exception('request.post() failed(%s)' % resp.text)
+            raise Exception('request.post() failed(status_code:%d)' % resp.status_code)
         return json.loads(resp.text)
 
     def __delete(self, url, headers, data):
@@ -82,10 +91,22 @@ class UpbitApi():
         if resp.status_code not in [200, 201]:
             logging.error('delete(%s) failed(%d)' % (url, resp.status_code))
             if resp.text is not None:
-                raise Exception('request.delete() failed(%s)' % resp.text)
-            raise Exception(
-                'request.delete() failed(status_code:%d)' % resp.status_code)
-        self.__set_req_remaining(resp)
+                logging.error('resp: %s' % resp.text)
+                if resp.status_code == 429 :
+                    TOO_MANY_API_REQUESTS_INTERVAL = 0.5
+                    while True:
+                        time.sleep(TOO_MANY_API_REQUESTS_INTERVAL) 
+                        TOO_MANY_API_REQUESTS_INTERVAL = TOO_MANY_API_REQUESTS_INTERVAL+0.5
+                        resp = requests.delete(url, headers=headers, data=data)
+                        logging.error('Too many API Requests  retry: resp.status_code: %s' % resp.status_code)
+                        if resp.status_code in [200, 201]:
+                            return json.loads(resp.text)
+                        elif resp.status_code != 429:           
+                            logging.error('delete(%s) failed(%d)' % (url, resp.status_code))                 
+                            raise Exception('request.delete() failed(%s)' % resp.text)
+                else:                    
+                    raise Exception('request.delete() failed(%s)' % resp.text)
+            raise Exception('request.delete() failed(status_code:%d)' % resp.status_code)
         return json.loads(resp.text)
 
     def __get_token(self, query):
@@ -1549,23 +1570,6 @@ class UpbitApi():
             logging.error(e)
             raise Exception(e)
 
-    def __set_req_remaining(self, resp):
-        if 'Remaining-Req' not in resp.headers.keys():
-            return None
-        keyvals = resp.headers['Remaining-Req'].split('; ')
-        group = None
-        keyval = dict()
-        for _keyval in keyvals:
-            kv = _keyval.split('=')
-            if kv[0] == 'group':
-                group = kv[1]
-            else:
-                keyval[kv[0]] = kv[1]
-        if group is None:
-            return
-        keyval['update_time'] = datetime.now()
-        self.remaining_req[group] = keyval
-
     def __is_valid_price(self, price):
         '''
             https://docs.upbit.com/docs/market-info-trade-price-detail
@@ -1614,16 +1618,6 @@ class UpbitApi():
         elif (price % 1000) != 0:
             return False
         return True
-
-    def getRemainingReq(self):
-        '''
-        요청 수 제한
-        https://docs.upbit.com/docs/user-request-guide
-        :return: dict
-            ex) {'market': {'min': '599', 'sec': '9', 'update_time': datetime.datetime(2021, 3, 24, 16, 1, 17, 815410)}, 'candles': {'min': '599', 'sec': '9', 'update_time': datetime.datetime(2021, 3, 24, 16, 1, 23, 122025)}}
-        '''
-        return self.remaining_req
-
 
 #################################################
 # main
