@@ -111,7 +111,6 @@ class Trade():
                     sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('prev_closing_price'),data.get('change_price'),data.get('change_rate'),data.get('converted_trade_price')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
-                break
 
             conn.commit()
             logger.warn('loadMarketCandlesDaysSaveToDb db_save')
