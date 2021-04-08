@@ -57,7 +57,7 @@ class UpbitApi():
                         logging.error('Too many API Requests  retry: resp.status_code: %s' % resp.status_code)
                         if resp.status_code in [200, 201]:
                             return json.loads(resp.text)
-                        elif resp.status_code != 429           
+                        elif resp.status_code != 429:           
                             logging.error('get(%s) failed(%d)' % (url, resp.status_code))                 
                             raise Exception('request.get() failed(%s)' % resp.text)
                 else:                    
