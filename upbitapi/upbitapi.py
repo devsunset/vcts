@@ -53,10 +53,12 @@ class UpbitApi():
             logging.error('get(%s) failed(%d)' % (url, resp.status_code))
             if resp.text is not None:
                 logging.error('resp: %s' % resp.text)
-                if resp.text.find('Too many API requests') > -1:
+                if resp.text.find('Too many') > -1:
+                    logging.error('xxxxxxxxxxxxx')
                     time.sleep(self.TOO_MANY_API_REQUESTS_INTERVAL) 
                     self.__get(url, headers, data, params)
                 else:
+                    logging.error('------------------------')
                     raise Exception('request.get() failed(%s)' % resp.text)
             raise Exception(
                 'request.get() failed(status_code:%d)' % resp.status_code)
