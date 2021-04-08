@@ -20,7 +20,7 @@ class UpbitApi():
     # INIT
     ###############################################################
 
-    def __init__(self, access_key=None, secret=None, server_url=None,TOO_MANY_API_REQUESTS_INTERVAL=None):
+    def __init__(self, access_key=None, secret=None, server_url=None):
         '''
         Constructor\n      
         access_key string : 발급 받은 acccess key\n
@@ -36,11 +36,6 @@ class UpbitApi():
         else:
             self.server_url = server_url
 
-        if TOO_MANY_API_REQUESTS_INTERVAL is None:
-            self.TOO_MANY_API_REQUESTS_INTERVAL = 0.5
-        else:
-            self.TOO_MANY_API_REQUESTS_INTERVAL = TOO_MANY_API_REQUESTS_INTERVAL
-
         self.remaining_req = dict()
         self.markets = self.__markets_info()
 
@@ -53,12 +48,16 @@ class UpbitApi():
             logging.error('get(%s) failed(%d)' % (url, resp.status_code))
             if resp.text is not None:
                 logging.error('resp: %s' % resp.text)
-                if resp.text.find('Too many') > -1:
-                    logging.error('xxxxxxxxxxxxx')
-                    time.sleep(self.TOO_MANY_API_REQUESTS_INTERVAL) 
-                    self.__get(url, headers, data, params)
-                else:
-                    logging.error('------------------------')
+                if resp.status_code == 429 :
+                    float TOO_MANY_API_REQUESTS_INTERVAL = 0.5
+                    while True:
+                        time.sleep(TOO_MANY_API_REQUESTS_INTERVAL) 
+                        TOO_MANY_API_REQUESTS_INTERVAL = TOO_MANY_API_REQUESTS_INTERVAL+0.5
+                        resp = requests.get(url, headers=headers, data=data, params=params)
+                        logging.error('Too many API Requests : resp: %s' % resp.text)
+                        if resp.status_code  != 429 :
+                            break
+                else:                    
                     raise Exception('request.get() failed(%s)' % resp.text)
             raise Exception(
                 'request.get() failed(status_code:%d)' % resp.status_code)
