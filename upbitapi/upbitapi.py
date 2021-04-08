@@ -55,7 +55,7 @@ class UpbitApi():
                 logging.error('resp: %s' % resp.text)
                 if resp.text.find('Too many API requests') > -1:
                     time.sleep(self.TOO_MANY_API_REQUESTS_INTERVAL) 
-                    __get(url, headers, data, params)
+                    self.__get(url, headers, data, params)
                 else:
                     raise Exception('request.get() failed(%s)' % resp.text)
             raise Exception(
