@@ -47,7 +47,13 @@ if __name__ == '__main__':
     trade.loadMarketCandlesMonthsSaveToDb()
     trade.loadMarketCandlesWeeksSaveToDb()
     trade.loadMarketCandlesDaysSaveToDb()
-
+    
+    # print(type(1.475e-05))
+    # print(format(float('1.475e-05'), '.8f'))
+    # # code
+    # x = 1.475e-05
+    # print("{:f}".format(x))  # f represents float
+    
     # trade.test()
 
     #scheduler = BlockingScheduler()
