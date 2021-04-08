@@ -49,7 +49,7 @@ class UpbitApi():
             if resp.text is not None:
                 logging.error('resp: %s' % resp.text)
                 if resp.status_code == 429 :
-                    float TOO_MANY_API_REQUESTS_INTERVAL = 0.5
+                    TOO_MANY_API_REQUESTS_INTERVAL = 0.5
                     while True:
                         time.sleep(TOO_MANY_API_REQUESTS_INTERVAL) 
                         TOO_MANY_API_REQUESTS_INTERVAL = TOO_MANY_API_REQUESTS_INTERVAL+0.5
