@@ -39,6 +39,12 @@ upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY, config.SECRET)
 # biz function
 
 class Trade():
+    def loadInit(self):
+        self.loadMarketSaveToDb()
+        self.loadMarketCandlesMonthsSaveToDb()
+        self.loadMarketCandlesWeeksSaveToDb()
+        self.loadMarketCandlesDaysSaveToDb()
+
     # load market info save to db (vcts_meta table).
     def loadMarketSaveToDb(self):
         logger.warn('loadMarketSaveToDb start')
