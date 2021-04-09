@@ -7,7 +7,6 @@
 
 ##################################################
 # import
-import decimal
 from pandas import DataFrame
 import logging
 import logging.config
@@ -99,7 +98,7 @@ class Trade():
             except Exception as e:
                 logging.error(' Exception : %s' % e)
 
-            sqlText = 'create table vcts_candles_days (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price text, high_price text, low_price text, trade_price text, timestamp text, candle_acc_trade_price text, candle_acc_trade_volume text, prev_closing_price text, change_price text,  change_rate text, converted_trade_price text)'
+            sqlText = 'create table vcts_candles_days (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price real, high_price real, low_price real, trade_price real, timestamp integer, candle_acc_trade_price real, candle_acc_trade_volume real, prev_closing_price real, change_price real,  change_rate real, converted_trade_price real)'
             comm.executeTxDB(conn, sqlText)
 
             logger.warn('loadMarketCandlesDaysSaveToDb db_init')
@@ -115,7 +114,7 @@ class Trade():
 
                 sqlParam = []
                 for data in data_json:                
-                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),self.convertToDecimal(data.get('opening_price')),self.convertToDecimal(data.get('high_price')),self.convertToDecimal(data.get('low_price')),self.convertToDecimal(data.get('trade_price')),data.get('timestamp'),self.convertToDecimal(data.get('candle_acc_trade_price')),self.convertToDecimal(data.get('candle_acc_trade_volume')),self.convertToDecimal(data.get('prev_closing_price')),self.convertToDecimal(data.get('change_price')),self.convertToDecimal(data.get('change_rate')),self.convertToDecimal(data.get('converted_trade_price'))))
+                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('prev_closing_price'),data.get('change_price'),data.get('change_rate'),data.get('converted_trade_price')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
 
@@ -138,7 +137,7 @@ class Trade():
             except Exception as e:
                 logging.error(' Exception : %s' % e)
 
-            sqlText = 'create table vcts_candles_weeks (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price text, high_price text, low_price text, trade_price text, timestamp text, candle_acc_trade_price text, candle_acc_trade_volume text, first_day_of_period  text)'
+            sqlText = 'create table vcts_candles_weeks (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price real, high_price real, low_price real, trade_price real, timestamp integer, candle_acc_trade_price real, candle_acc_trade_volume real, first_day_of_period  text)'
             comm.executeTxDB(conn, sqlText)
 
             logger.warn('loadMarketCandlesWeeksSaveToDb db_init')
@@ -154,7 +153,7 @@ class Trade():
 
                 sqlParam = []
                 for data in data_json:                
-                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),self.convertToDecimal(data.get('opening_price')),self.convertToDecimal(data.get('high_price')),self.convertToDecimal(data.get('low_price')),self.convertToDecimal(data.get('trade_price')),data.get('timestamp'),self.convertToDecimal(data.get('candle_acc_trade_price')),self.convertToDecimal(data.get('candle_acc_trade_volume')),data.get('first_day_of_period')))
+                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('first_day_of_period')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
 
@@ -177,7 +176,7 @@ class Trade():
             except Exception as e:
                 logging.error(' Exception : %s' % e)
 
-            sqlText = 'create table vcts_candles_months (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price text, high_price text, low_price text, trade_price text, timestamp text, candle_acc_trade_price text, candle_acc_trade_volume text, first_day_of_period  text)'
+            sqlText = 'create table vcts_candles_months (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price real, high_price real, low_price real, trade_price real, timestamp integer, candle_acc_trade_price real, candle_acc_trade_volume real, first_day_of_period  text)'
             comm.executeTxDB(conn, sqlText)
 
             logger.warn('loadMarketCandlesMonthsSaveToDb db_init')
@@ -193,7 +192,7 @@ class Trade():
 
                 sqlParam = []
                 for data in data_json:                
-                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),self.convertToDecimal(data.get('opening_price')),self.convertToDecimal(data.get('high_price')),self.convertToDecimal(data.get('low_price')),self.convertToDecimal(data.get('trade_price')),data.get('timestamp'),self.convertToDecimal(data.get('candle_acc_trade_price')),self.convertToDecimal(data.get('candle_acc_trade_volume')),data.get('first_day_of_period')))
+                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('first_day_of_period')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
 
@@ -204,12 +203,6 @@ class Trade():
         finally:
             if conn is not None:
                 conn.close()     
-
-    def convertToDecimal(self,value):        
-        if value is not None:
-            return str(decimal.Decimal(str(value)))
-        else:
-            return value
 
     def test(self):
         pass
