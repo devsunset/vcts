@@ -45,14 +45,8 @@ def main_process():
 if __name__ == '__main__':
     trade.loadMarketSaveToDb()
     trade.loadMarketCandlesMonthsSaveToDb()
-    trade.loadMarketCandlesWeeksSaveToDb()
-    trade.loadMarketCandlesDaysSaveToDb()
-    
-    # print(type(1.475e-05))
-    # print(format(float('1.475e-05'), '.8f'))
-    # # code
-    # x = 1.475e-05
-    # print("{:f}".format(x))  # f represents float
+    # trade.loadMarketCandlesWeeksSaveToDb()
+    # trade.loadMarketCandlesDaysSaveToDb()
     
     # trade.test()
 

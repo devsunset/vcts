@@ -7,6 +7,7 @@
 
 ##################################################
 # import
+import decimal
 from pandas import DataFrame
 import logging
 import logging.config
@@ -108,7 +109,7 @@ class Trade():
 
                 sqlParam = []
                 for data in data_json:                
-                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('prev_closing_price'),data.get('change_price'),data.get('change_rate'),data.get('converted_trade_price')))
+                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),self.convertToDecimal(data.get('opening_price')),self.convertToDecimal(data.get('high_price')),self.convertToDecimal(data.get('low_price')),self.convertToDecimal(data.get('trade_price')),data.get('timestamp'),self.convertToDecimal(data.get('candle_acc_trade_price')),self.convertToDecimal(data.get('candle_acc_trade_volume')),self.convertToDecimal(data.get('prev_closing_price')),self.convertToDecimal(data.get('change_price')),self.convertToDecimal(data.get('change_rate')),self.convertToDecimal(data.get('converted_trade_price'))))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
 
@@ -147,7 +148,7 @@ class Trade():
 
                 sqlParam = []
                 for data in data_json:                
-                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('first_day_of_period')))
+                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),self.convertToDecimal(data.get('opening_price')),self.convertToDecimal(data.get('high_price')),self.convertToDecimal(data.get('low_price')),self.convertToDecimal(data.get('trade_price')),data.get('timestamp'),self.convertToDecimal(data.get('candle_acc_trade_price')),self.convertToDecimal(data.get('candle_acc_trade_volume')),data.get('first_day_of_period')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
 
@@ -186,7 +187,7 @@ class Trade():
 
                 sqlParam = []
                 for data in data_json:                
-                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),data.get('opening_price'),data.get('high_price'),data.get('low_price'),data.get('trade_price'),data.get('timestamp'),data.get('candle_acc_trade_price'),data.get('candle_acc_trade_volume'),data.get('first_day_of_period')))
+                    sqlParam.append((data.get('market'),data.get('candle_date_time_utc'),data.get('candle_date_time_kst'),self.convertToDecimal(data.get('opening_price')),self.convertToDecimal(data.get('high_price')),self.convertToDecimal(data.get('low_price')),self.convertToDecimal(data.get('trade_price')),data.get('timestamp'),self.convertToDecimal(data.get('candle_acc_trade_price')),self.convertToDecimal(data.get('candle_acc_trade_volume')),data.get('first_day_of_period')))
 
                 comm.executeTxDB(conn, sqlText, sqlParam)
 
@@ -197,6 +198,12 @@ class Trade():
         finally:
             if conn is not None:
                 conn.close()     
+
+    def convertToDecimal(self,value):
+        if value is not None:
+            return decimal.Decimal(str(value))
+        else:
+            return value
 
     def test(self):
         pass
