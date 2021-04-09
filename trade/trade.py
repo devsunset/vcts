@@ -207,7 +207,7 @@ class Trade():
 
     def convertToDecimal(self,value):
         if value is not None:
-            return decimal.Decimal(str(value))
+            return str(decimal.Decimal(str(value)))
         else:
             return value
 
