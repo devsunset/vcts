@@ -205,20 +205,27 @@ class MarketMonthWeekDayData():
                 conn.close()     
 
     def test(self):
-        sql = '''
+        sqlText = '''
         		SELECT  
-		 a.market, a.korean_name
-		, b.opening_price,c.opening_price, d.opening_price, e.opening_price ,f.opening_price, g.opening_price
-		, b.trade_price, c.trade_price, d.trade_price, e.trade_price, f.trade_price, g.trade_price
-		FROM
-		 vcts_meta a
-		LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2020-11-01') b ON b.market = a.market
-		LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2020-12-01') c ON c.market = a.market
-		LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-01-01') d ON d.market = a.market
-		LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-02-01') e ON e.market = a.market
-		LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-03-01') f ON f.market = a.market
-		LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-04-01') g ON g.market = a.market
-		where  (c.opening_price > b.opening_price and d.opening_price > c.opening_price and e.opening_price > d.opening_price and f.opening_price > e.opening_price and g.opening_price > f.opening_price)
-		and (c.trade_price > b.trade_price and d.trade_price > c.trade_price and e.trade_price > d.trade_price and f.trade_price > e.trade_price and g.trade_price > f.trade_price)
+                a.market, a.korean_name
+                , b.opening_price,c.opening_price, d.opening_price, e.opening_price ,f.opening_price, g.opening_price
+                , b.trade_price, c.trade_price, d.trade_price, e.trade_price, f.trade_price, g.trade_price
+                FROM
+                vcts_meta a
+                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2020-11-01') b ON b.market = a.market
+                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2020-12-01') c ON c.market = a.market
+                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-01-01') d ON d.market = a.market
+                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-02-01') e ON e.market = a.market
+                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-03-01') f ON f.market = a.market
+                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-04-01') g ON g.market = a.market
+                where  (c.opening_price > b.opening_price and d.opening_price > c.opening_price and e.opening_price > d.opening_price and f.opening_price > e.opening_price and g.opening_price > f.opening_price)
+                and (c.trade_price > b.trade_price and d.trade_price > c.trade_price and e.trade_price > d.trade_price and f.trade_price > e.trade_price and g.trade_price > f.trade_price)
         '''
-        print(sql)
+        
+        date_info = comm.searchDB("select distinct first_day_of_period from  vcts_candles_months order by first_day_of_period asc")
+        print(date_info)
+       
+        # print(sqlText)
+
+        # for i in markets.index:
+        #     print(markets['market'][i])
