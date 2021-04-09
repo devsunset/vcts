@@ -19,7 +19,7 @@ import logging
 import logging.config
 from os import path
 
-from trade import trade
+from trade import candles_mwd_data
 
 ##################################################
 # constant
@@ -31,25 +31,22 @@ logging.config.fileConfig(log_file_path)
 # create logger
 logger = logging.getLogger('vcts')
 
-# Trade
-trade = trade.Trade()
+# candles_mwd_data
+cmwd  = candles_mwd_data.MarketMonthWeekDayData()
 
 ##################################################
 
 # main process
-def main_process():     
-  trade.getMarkets()
 
 #################################################
 # main
 if __name__ == '__main__':
-    trade.loadInit()
-    # trade.loadMarketSaveToDb()
-    # trade.loadMarketCandlesMonthsSaveToDb()
-    # trade.loadMarketCandlesWeeksSaveToDb()
-    # trade.loadMarketCandlesDaysSaveToDb()
-    
-    # trade.test()
+    # cmwd.load_candles_mwd_data()
+    # cmwd.loadMarketSaveToDb()
+    # cmwd.loadMarketCandlesMonthsSaveToDb()
+    # cmwd.loadMarketCandlesWeeksSaveToDb()
+    # cmwd.loadMarketCandlesDaysSaveToDb()
+    cmwd.test()
 
     #scheduler = BlockingScheduler()
     #scheduler.add_job(main_process, 'interval', seconds=config.INTERVAL_SECONDS)
