@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
     #scheduler = BlockingScheduler()
     #scheduler.add_job(main_process, 'interval', seconds=config.INTERVAL_SECONDS)
-    #try:
+    #try:d
     #    scheduler.start()
     #except Exception as err:
     #    logger.error(' main Exception : %s' % e)    

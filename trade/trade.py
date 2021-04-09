@@ -99,7 +99,7 @@ class Trade():
             except Exception as e:
                 logging.error(' Exception : %s' % e)
 
-            sqlText = 'create table vcts_candles_days (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price real, high_price real, low_price real, trade_price real, timestamp integer, candle_acc_trade_price real, candle_acc_trade_volume real, prev_closing_price real, change_price real,  change_rate real, converted_trade_price real)'
+            sqlText = 'create table vcts_candles_days (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price text, high_price text, low_price text, trade_price text, timestamp text, candle_acc_trade_price text, candle_acc_trade_volume text, prev_closing_price text, change_price text,  change_rate text, converted_trade_price text)'
             comm.executeTxDB(conn, sqlText)
 
             logger.warn('loadMarketCandlesDaysSaveToDb db_init')
@@ -138,7 +138,7 @@ class Trade():
             except Exception as e:
                 logging.error(' Exception : %s' % e)
 
-            sqlText = 'create table vcts_candles_weeks (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price real, high_price real, low_price real, trade_price real, timestamp integer, candle_acc_trade_price real, candle_acc_trade_volume real, first_day_of_period  real)'
+            sqlText = 'create table vcts_candles_weeks (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price text, high_price text, low_price text, trade_price text, timestamp text, candle_acc_trade_price text, candle_acc_trade_volume text, first_day_of_period  text)'
             comm.executeTxDB(conn, sqlText)
 
             logger.warn('loadMarketCandlesWeeksSaveToDb db_init')
@@ -177,7 +177,7 @@ class Trade():
             except Exception as e:
                 logging.error(' Exception : %s' % e)
 
-            sqlText = 'create table vcts_candles_months (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price real, high_price real, low_price real, trade_price real, timestamp integer, candle_acc_trade_price real, candle_acc_trade_volume real, first_day_of_period  real)'
+            sqlText = 'create table vcts_candles_months (market text, candle_date_time_utc text, candle_date_time_kst text, opening_price text, high_price text, low_price text, trade_price text, timestamp text, candle_acc_trade_price text, candle_acc_trade_volume text, first_day_of_period  text)'
             comm.executeTxDB(conn, sqlText)
 
             logger.warn('loadMarketCandlesMonthsSaveToDb db_init')
@@ -205,7 +205,7 @@ class Trade():
             if conn is not None:
                 conn.close()     
 
-    def convertToDecimal(self,value):
+    def convertToDecimal(self,value):        
         if value is not None:
             return str(decimal.Decimal(str(value)))
         else:
