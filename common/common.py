@@ -59,15 +59,13 @@ class Common():
             if sqlParam == None:
                 cur.execute(sql)
             else:
-              if str(type(sqlParam)) == "<class 'tuple'>":    
+              if str(type(sqlParam)) == "<class 'tuple'>":                    
                 cur.execute(sql, sqlParam)
               else:
                 cur.executemany(sql,sqlParam)
             columns = list(map(lambda x: x[0], cur.description))
             result = cur.fetchall()
             df = DataFrame.from_records(data=result, columns=columns)
-        except Exception as e:
-            logger.error(' searchDB Exception : %s' % e)
         finally:
           if conn is not None:
             conn.close()
@@ -87,8 +85,6 @@ class Common():
               else:
                 cur.executemany(sql,sqlParam)
           conn.commit()
-        except Exception as e:
-          logger.error(' executeDB Exception : %s' % e)
         finally:
           if conn is not None:
             conn.close()
@@ -111,8 +107,6 @@ class Common():
             columns = list(map(lambda x: x[0], cur.description))
             result = cur.fetchall()
             df = DataFrame.from_records(data=result, columns=columns)
-        except Exception as e:
-            logger.error(' searchDB Exception : %s' % e)
         return df
 
     # execute sql query - insert/update/delete
@@ -127,8 +121,6 @@ class Common():
                 cur.execute(sql, sqlParam)
              else:   
                 cur.executemany(sql,sqlParam)
-        except Exception as e:
-          logger.error(' executeDB Exception : %s' % e)
         return cur.lastrowid
 
     # telegram message send

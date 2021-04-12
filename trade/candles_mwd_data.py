@@ -228,8 +228,8 @@ class MarketMonthWeekDayData():
             target_table = " vcts_candles_days "
 
         columns = ['opening_price','high_price','low_price','trade_price','candle_acc_trade_price','candle_acc_trade_volume']
-
-        date_info = comm.searchDB("select candle_date_time_utc from( select distinct candle_date_time_utc from  "+target_table+" order by candle_date_time_utc asc limit "+recent_count +" ) order by candle_date_time_utc asc")
+        date_query = "select candle_date_time_utc from( select distinct candle_date_time_utc from  "+target_table+" order by candle_date_time_utc asc limit "+recent_count +" ) order by candle_date_time_utc asc"
+        date_info = comm.searchDB(date_query)
 
         for i in date_info.index:
             for c in columns:
