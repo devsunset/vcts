@@ -204,7 +204,7 @@ class MarketMonthWeekDayData():
             if conn is not None:
                 conn.close()     
 
-    def test(self):
+    def getContinueGrowthCoins(self, date_type="M", whereCondition=None, recent_count = "33"):
         sqlText = '''
                             SELECT  
                             a.market, a.korean_name , a.english_name, a.market_warning
@@ -217,43 +217,43 @@ class MarketMonthWeekDayData():
                         '''
         search_query =""
         join_query =""
-        where_query =""
+        where_query = ""
         
+        target_table = ""
+        if date_type == "M":
+            target_table = " vcts_candles_months "
+        elif date_type == "W":
+            target_table = " vcts_candles_weeks "
+        else:
+            target_table = " vcts_candles_days "
+
         columns = ['opening_price','high_price','low_price','trade_price','candle_acc_trade_price','candle_acc_trade_volume']
 
-        date_info = comm.searchDB("select distinct first_day_of_period from  vcts_candles_months order by first_day_of_period asc")
+        date_info = comm.searchDB("select candle_date_time_utc from( select distinct candle_date_time_utc from  "+target_table+" order by candle_date_time_utc asc limit "+recent_count +" ) order by candle_date_time_utc asc")
 
         for i in date_info.index:
-            print(i,date_info['first_day_of_period'][i])
             for c in columns:
                 search_query +=", x"+str(i)+"."+c+" "
-
-            join_query += " LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '"+date_info['first_day_of_period'][i]+"') x"+str(i)+" ON x"+str(i)+".market = a.market "
-
-
-            
+            join_query += " LEFT OUTER JOIN (select * from "+target_table+" where candle_date_time_utc = '"+date_info['candle_date_time_utc'][i]+"') x"+str(i)+" ON x"+str(i)+".market = a.market "
 
         sqlText = sqlText.replace("#__SEARCH_QUERY__#",search_query)
         sqlText = sqlText.replace("#__JOIN_QUERY__#",join_query)
+
+        if whereCondition is not None:
+            dates = list(range(0, len(date_info.index)))
+            for w in whereCondition:
+                where_query += " AND ( "
+                for  idx in dates:                    
+                    if idx < len(dates)-1:
+                        where_query += "x"+str((idx+1))+"."+w+" >  x"+str(idx)+"."+w
+                        if idx < len(dates)-2:
+                            where_query += " and "
+                where_query += " )"
+
         sqlText = sqlText.replace("#__WHERE_QUERY__#",where_query)
+        # print(sqlText)
 
-        print(sqlText)
-        # print(search_query)
-        # print(join_query)
-
-        a = '''
-        		SELECT  
-                a.market, a.korean_name, a.eng_name
-                , b.opening_price,c.opening_price, d.opening_price, e.opening_price ,f.opening_price, g.opening_price
-                , b.trade_price, c.trade_price, d.trade_price, e.trade_price, f.trade_price, g.trade_price
-                FROM
-                vcts_meta a
-                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2020-11-01') b ON b.market = a.market
-                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2020-12-01') c ON c.market = a.market
-                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-01-01') d ON d.market = a.market
-                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-02-01') e ON e.market = a.market
-                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-03-01') f ON f.market = a.market
-                LEFT OUTER JOIN (select * from vcts_candles_months where first_day_of_period = '2021-04-01') g ON g.market = a.market
-                WHERE  (c.opening_price > b.opening_price and d.opening_price > c.opening_price and e.opening_price > d.opening_price and f.opening_price > e.opening_price and g.opening_price > f.opening_price)
-                AND (c.trade_price > b.trade_price and d.trade_price > c.trade_price and e.trade_price > d.trade_price and f.trade_price > e.trade_price and g.trade_price > f.trade_price)
-        '''
+        coins = comm.searchDB(sqlText)
+        print(coins)
+        # for i in coins.index:
+        #     print(coins['market'][i])
