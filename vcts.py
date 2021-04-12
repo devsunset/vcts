@@ -41,16 +41,16 @@ cmwd  = candles_mwd_data.MarketMonthWeekDayData()
 #################################################
 # main
 if __name__ == '__main__':
-    cmwd.load_candles_mwd_data()
+    # cmwd.load_candles_mwd_data()
         # cmwd.loadMarketSaveToDb()
         # cmwd.loadMarketCandlesMonthsSaveToDb()
         # cmwd.loadMarketCandlesWeeksSaveToDb()
         # cmwd.loadMarketCandlesDaysSaveToDb()
 
     # columns = ['opening_price','high_price','low_price','trade_price','candle_acc_trade_price','candle_acc_trade_volume']
-    columns = ['opening_price']
+    columns = ['opening_price','trade_price']
     cmwd.getContinueGrowthCoins("M",columns,"3")
-    cmwd.getContinueGrowthCoins("W",columns,"4")
+    cmwd.getContinueGrowthCoins("W",columns,"3")
     cmwd.getContinueGrowthCoins("D",columns,"5")
 
     #scheduler = BlockingScheduler()

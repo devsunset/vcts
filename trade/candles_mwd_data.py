@@ -228,7 +228,7 @@ class MarketMonthWeekDayData():
             target_table = " vcts_candles_days "
 
         columns = ['opening_price','high_price','low_price','trade_price','candle_acc_trade_price','candle_acc_trade_volume']
-        date_query = "select candle_date_time_utc from( select distinct candle_date_time_utc from  "+target_table+" order by candle_date_time_utc asc limit "+recent_count +" ) order by candle_date_time_utc asc"
+        date_query = "select candle_date_time_utc from( select distinct candle_date_time_utc from  "+target_table+" order by candle_date_time_utc desc limit "+recent_count +" ) order by candle_date_time_utc asc"
         date_info = comm.searchDB(date_query)
 
         for i in date_info.index:
@@ -251,7 +251,7 @@ class MarketMonthWeekDayData():
                 where_query += " )"
 
         sqlText = sqlText.replace("#__WHERE_QUERY__#",where_query)
-        # print(sqlText)
+        print(sqlText)
 
         coins = comm.searchDB(sqlText)
         print(coins)
