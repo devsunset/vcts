@@ -41,7 +41,7 @@ cmwd  = candles_mwd_data.MarketMonthWeekDayData()
 #################################################
 # main
 if __name__ == '__main__':
-    # cmwd.load_candles_mwd_data()
+    cmwd.load_candles_mwd_data()
         # cmwd.loadMarketSaveToDb()
         # cmwd.loadMarketCandlesMonthsSaveToDb()
         # cmwd.loadMarketCandlesWeeksSaveToDb()
