@@ -94,32 +94,29 @@ class Common():
     def searchTxDB(self, conn, sqlText, sqlParam=None):
         columns = []
         result = []
-        try:
-            cur = conn.cursor()
-            sql = sqlText
-            if sqlParam == None:
-                cur.execute(sql)
+        cur = conn.cursor()
+        sql = sqlText
+        if sqlParam == None:
+            cur.execute(sql)
+        else:
+            if str(type(sqlParam)) == "<class 'tuple'>":    
+                cur.execute(sql, sqlParam)
             else:
-                if str(type(sqlParam)) == "<class 'tuple'>":    
-                    cur.execute(sql, sqlParam)
-                else:
-                    cur.executemany(sql,sqlParam)
-            columns = list(map(lambda x: x[0], cur.description))
-            result = cur.fetchall()
-            df = DataFrame.from_records(data=result, columns=columns)
-        return df
+                cur.executemany(sql,sqlParam)
+        columns = list(map(lambda x: x[0], cur.description))
+        result = cur.fetchall()
+        return DataFrame.from_records(data=result, columns=columns)
 
     # execute sql query - insert/update/delete
     def executeTxDB(self, conn, sqlText, sqlParam=None):
-        try:
-          cur = conn.cursor()
-          sql = sqlText
-          if sqlParam == None:
-              cur.execute(sql)
-          else:
-             if str(type(sqlParam)) == "<class 'tuple'>":    
+        cur = conn.cursor()
+        sql = sqlText
+        if sqlParam == None:
+            cur.execute(sql)
+        else:
+            if str(type(sqlParam)) == "<class 'tuple'>":    
                 cur.execute(sql, sqlParam)
-             else:   
+            else:   
                 cur.executemany(sql,sqlParam)
         return cur.lastrowid
 
