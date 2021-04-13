@@ -251,7 +251,6 @@ class MarketMonthWeekDayData():
                 where_query += " )"
 
         sqlText = sqlText.replace("#__WHERE_QUERY__#",where_query)
-        print(sqlText)
 
         coins = comm.searchDB(sqlText)
         print(coins)
