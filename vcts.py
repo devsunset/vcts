@@ -37,38 +37,6 @@ cmwd  = candles_mwd_data.MarketMonthWeekDayData()
 ##################################################
 # biz function
 
-def getGrowsCoins(m=2,w=2,d=2,count=1):
-    # columns = ['opening_price','high_price','low_price','trade_price','candle_acc_trade_price','candle_acc_trade_volume']
-    columns = ['opening_price','trade_price']
-    coinsMonth = cmwd.getContinueGrowthCoins("M",columns,str(m))
-    coinsWeek = cmwd.getContinueGrowthCoins("W",columns,str(w))
-    coinsDay = cmwd.getContinueGrowthCoins("D",columns,str(d))
-
-    coins = {}
-
-    for i in coinsMonth.index:
-        coins[coinsMonth['market'][i]] = 1
-    for i in coinsWeek.index:
-        key = coinsWeek['market'][i]
-        if key not in coins:
-            coins[coinsWeek['market'][i]] = 1
-        else:
-            coins[coinsWeek['market'][i]] = 1 + int(coins[coinsWeek['market'][i]])
-    for i in coinsDay.index:
-        key = coinsDay['market'][i]
-        if key not in coins:
-            coins[coinsDay['market'][i]] = 1
-        else:
-            coins[coinsDay['market'][i]] = 1 + int(coins[coinsDay['market'][i]])
-
-    best = []
-    if len(coins) > 0 :
-        for c in coins.keys():
-            if coins[c] >= count:
-                best.append(c)
-
-    return best
-
 #################################################
 # main
 if __name__ == '__main__':
@@ -76,9 +44,10 @@ if __name__ == '__main__':
     # cmwd.load_candles_mwd_data()
     
     # 2.get continue grows coins
-    best = getGrowsCoins(3,3,3,3)
+    # columns = ['opening_price','high_price','low_price','trade_price','candle_acc_trade_price','candle_acc_trade_volume']
+    columns = ['opening_price','trade_price']
+    best = cmwd.getChoiceGrowsCoins(columns,3,3,3,3)
 
-    # 3. get candles detail data
     for b in best:
         print(b)
 
