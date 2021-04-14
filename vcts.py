@@ -58,7 +58,6 @@ if __name__ == '__main__':
         print('-----------------------')
         time.sleep(1) 
 
-
     #scheduler = BlockingScheduler()
     #scheduler.add_job(main_process, 'interval', seconds=config.INTERVAL_SECONDS)
     #try:
