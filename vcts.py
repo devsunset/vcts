@@ -19,6 +19,7 @@ import logging
 import logging.config
 from os import path
 import time
+import json
 
 from trade import candles_mwd_data
 
@@ -47,16 +48,20 @@ if __name__ == '__main__':
     # 2.get continue grows coins
     # columns = ['opening_price','high_price','low_price','trade_price','candle_acc_trade_price','candle_acc_trade_volume']
     columns = ['opening_price','trade_price']
-    best = cmwd.getChoiceGrowsMarkets(columns,3,3,3,3)
+    best = cmwd.getChoiceGrowsMarkets(columns,2,2,2,3)
     # for b in best:
     #     print(b)
 
     while True:
         data_json =  cmwd.getTickerMarkets(best)
+        print(data_json)
         for data in data_json:   
-            print(data.get('market'),data.get('trade_date_kst'),data.get('trade_time_kst'),data.get('change'),data.get('trade_price'),data.get('change_price'))
+            print(json.dumps(data, indent=4, sort_keys=True))
+            break
+            # print(data.get('market'),data.get('trade_date_kst'),data.get('trade_time_kst'),data.get('change'),data.get('trade_price'),data.get('change_price'))
         print('-----------------------')
-        time.sleep(1) 
+        break
+        time.sleep(3) 
 
     #scheduler = BlockingScheduler()
     #scheduler.add_job(main_process, 'interval', seconds=config.INTERVAL_SECONDS)
