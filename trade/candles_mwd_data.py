@@ -204,7 +204,7 @@ class MarketMonthWeekDayData():
             if conn is not None:
                 conn.close()     
 
-    def getContinueGrowthCoins(self, date_type="M", whereCondition=None, recent_count = "33"):
+    def getContinueGrowthMarkets(self, date_type="M", whereCondition=None, recent_count = "33"):
         sqlText = '''
                             SELECT  
                             a.market, a.korean_name , a.english_name, a.market_warning
@@ -257,10 +257,10 @@ class MarketMonthWeekDayData():
         return coins
 
 
-    def getChoiceGrowsCoins(self,columns,m=2,w=2,d=2,count=1):
-        coinsMonth = self.getContinueGrowthCoins("M",columns,str(m))
-        coinsWeek = self.getContinueGrowthCoins("W",columns,str(w))
-        coinsDay = self.getContinueGrowthCoins("D",columns,str(d))
+    def getChoiceGrowsMarkets(self,columns,m=2,w=2,d=2,count=1):
+        coinsMonth = self.getContinueGrowthMarkets("M",columns,str(m))
+        coinsWeek = self.getContinueGrowthMarkets("W",columns,str(w))
+        coinsDay = self.getContinueGrowthMarkets("D",columns,str(d))
 
         coins = {}
 
@@ -287,3 +287,7 @@ class MarketMonthWeekDayData():
                     best.append(c)
 
         return best
+
+    def getTickerMarkets(self,markets):
+        return upbitapi.getQuotationTicker(markets)
+
