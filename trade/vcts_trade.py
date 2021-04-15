@@ -37,8 +37,21 @@ upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY, config.SECRET)
 ##################################################
 # biz function
 
-class MarketMonthWeekDayData():
-    def load_candles_mwd_data(self):
+class VctsTrade():
+    # get market date info
+    def getMarkets(self):        
+        markets = comm.searchDB("SELECT * FROM VCTS_META")
+        # print(markets)
+        # for i in markets.index:
+        #     print(markets['market'][i])
+        return markets
+
+    # get ticker markets
+    def getTickerMarkets(self,markets):
+        return upbitapi.getQuotationTicker(markets)
+
+    #  get markets candles mwd data save to db
+    def loadMarketsCandlesMwdData(self):
         self.loadMarketSaveToDb()
         self.loadMarketCandlesMonthsSaveToDb()
         self.loadMarketCandlesWeeksSaveToDb()
@@ -77,15 +90,6 @@ class MarketMonthWeekDayData():
         finally:
             if conn is not None:
                 conn.close()
-
-    # get market date info
-    def getMarkets(self):        
-        markets = comm.searchDB("SELECT * FROM VCTS_META")
-        # print(markets)
-
-        # for i in markets.index:
-        #     print(markets['market'][i])
-        return markets
 
     # load market candles day info save to db (vcts_candles_day table).
     def loadMarketCandlesDaysSaveToDb(self):
@@ -204,7 +208,8 @@ class MarketMonthWeekDayData():
             if conn is not None:
                 conn.close()     
 
-    def getContinueGrowthMarkets(self, date_type="M", whereCondition=None, recent_count = "33"):
+    # query continue growth markets
+    def queryContinueGrowsMarkets(self, date_type="M", whereCondition=None, recent_count = "33"):
         sqlText = '''
                             SELECT  
                             a.market, a.korean_name , a.english_name, a.market_warning
@@ -256,11 +261,11 @@ class MarketMonthWeekDayData():
 
         return coins
 
-
+    # get choice growths markets
     def getChoiceGrowsMarkets(self,columns,m=2,w=2,d=2,count=1):
-        coinsMonth = self.getContinueGrowthMarkets("M",columns,str(m))
-        coinsWeek = self.getContinueGrowthMarkets("W",columns,str(w))
-        coinsDay = self.getContinueGrowthMarkets("D",columns,str(d))
+        coinsMonth = self.queryContinueGrowsMarkets("M",columns,str(m))
+        coinsWeek = self.queryContinueGrowsMarkets("W",columns,str(w))
+        coinsDay = self.queryContinueGrowsMarkets("D",columns,str(d))
 
         coins = {}
 
@@ -288,6 +293,5 @@ class MarketMonthWeekDayData():
 
         return best
 
-    def getTickerMarkets(self,markets):
-        return upbitapi.getQuotationTicker(markets)
+
 
