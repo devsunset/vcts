@@ -46,15 +46,42 @@ def continueGrowsChoice():
     best = vctstrade.getChoiceGrowsMarkets(columns,2,3,3,3)
     # for b in best:
     #     print(b)
+    
+    # print(vctstrade.getMarkets())
 
     while True:
         data_json =  vctstrade.getTickerMarkets(best)
         for data in data_json:   
             # print(json.dumps(data, indent=4, sort_keys=True))
-            print(data.get('market'),data.get('trade_date_kst'),data.get('trade_time_kst'),data.get('change'),data.get('trade_price'),data.get('change_price'))
+            print('%10s' % data.get('market'),'market-name',data.get('trade_time_kst'),data.get('change'),data.get('trade_price'),data.get('change_price'))            
         print('-----------------------')
+        break
         time.sleep(3) 
-
+        # market	종목 구분 코드	String
+        # trade_date	최근 거래 일자(UTC)	String
+        # trade_time	최근 거래 시각(UTC)	String
+        # trade_date_kst	최근 거래 일자(KST)	String
+        # trade_time_kst	최근 거래 시각(KST)	String
+        # opening_price	시가	Double
+        # high_price	고가	Double
+        # low_price	저가	Double
+        # trade_price	종가	Double
+        # prev_closing_price	전일 종가	Double
+        # change	EVEN : 보합  RISE : 상승  FALL : 하락	String
+        # change_price	변화액의 절대값	Double
+        # change_rate	변화율의 절대값	Double
+        # signed_change_price	부호가 있는 변화액	Double
+        # signed_change_rate	부호가 있는 변화율	Double
+        # trade_volume	가장 최근 거래량	Double
+        # acc_trade_price	누적 거래대금(UTC 0시 기준)	Double
+        # acc_trade_price_24h	24시간 누적 거래대금	Double
+        # acc_trade_volume	누적 거래량(UTC 0시 기준)	Double
+        # acc_trade_volume_24h	24시간 누적 거래량	Double
+        # highest_52_week_price	52주 신고가	Double
+        # highest_52_week_date	52주 신고가 달성일	String
+        # lowest_52_week_price	52주 신저가	Double
+        # lowest_52_week_date	52주 신저가 달성일	String
+        # timestamp	타임스탬프	Long
 
     # "acc_trade_price": 79.84965309725581,
     # "acc_trade_price_24h": 82.44701511,
@@ -75,15 +102,10 @@ def continueGrowsChoice():
     # "signed_change_price": 2.7e-07,
     # "signed_change_rate": 0.1050583658,
     # "timestamp": 1618440819083,
-    # "trade_date": "20210414",
     # "trade_date_kst": "20210415",
     # "trade_price": 2.84e-06,
-    # "trade_time": "225338",
     # "trade_time_kst": "075338",
-    # "trade_timestamp": 1618440818000,
     # "trade_volume": 2339.80503287
-
-
 
 #################################################
 # main
