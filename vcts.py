@@ -50,22 +50,25 @@ def monitorCoins():
     #     print(b)
     
     ### TYPE TWO
-    # markets = vctstrade.getMarkets()
-    # for i in markets.index:
-    #     # logger.warn(markets['market'][i]+" : "+markets['korean_name'][i])
-    #     best.append(markets['market'][i])
+    markets = vctstrade.getMarkets()
+    for i in markets.index:
+        # logger.warn(markets['market'][i]+" : "+markets['korean_name'][i])
+        best.append(markets['market'][i])
 
-    best.append('KRW-DOGE')
+    # TYPE THREE 
+    # best.append('KRW-DOGE')
+
+    ###########################################################################################
 
     df = vctstrade.getTickerMarkets(best).sort_values(by='signed_change_rate', ascending=False)
-    # print(df)
+
     while True:
         print('--------------------------------------------------------------------------------------------------------------------------------------------------------------')
         print('%15s' % 'market'                
                 ,'%7s' % 'change'
-                ,'%13s' % '종가'
-                ,'%11s' % '변화액'
-                ,'%8s' % '변화율'
+                ,'%12s' % '종가'
+                ,'%13s' % '변화액'
+                ,'%6s' % '변화율'
                 # ,'%10s' % '전일 종가'
                 ,'%13s' % '시가'
                 ,'%13s' % '저가'
@@ -77,9 +80,8 @@ def monitorCoins():
                 # ,'%15s' % '신저가'
                 )
         print('--------------------------------------------------------------------------------------------------------------------------------------------------------------')
-        # vctstrade.getMarketName(data['market')
         for x in df.index:
-            if df['change'][x] != 'RISE':
+            if df['change'][x] != 'RISE' or str(df['market'][x])[0:4] != 'KRW-':
                 continue
 
             print('%15s' % df['market'][x]
@@ -98,7 +100,10 @@ def monitorCoins():
                 # ,'%15f' % df['lowest_52_week_price'][x]
                 )
         break
-        time.sleep(3) 
+        # time.sleep(5) 
+
+    ###########################################################################################
+
 
 #################################################
 # main

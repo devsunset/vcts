@@ -40,10 +40,9 @@ MARKETS  = {}
 ##################################################
 # biz function
 
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 300)
-pd.set_option('display.expand_frame_repr', False)
+pd.set_option('display.max_rows', 1000)
+pd.set_option('display.max_columns', 200)
+pd.set_option('display.width', 200)
 
 class VctsTrade():
     def __init__(self):
