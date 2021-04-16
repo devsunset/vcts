@@ -41,9 +41,9 @@ MARKETS  = {}
 # biz function
 
 # pd.set_option('display.max_row', 1000)
-# pd.set_option('display.max_columns', 25)
+pd.set_option('display.max_columns', 30)
 pd.set_option('display.html.table_schema', True)
-
+pd.set_option('display.float_format', None)
 
 
 class VctsTrade():
