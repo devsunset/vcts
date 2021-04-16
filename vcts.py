@@ -40,59 +40,73 @@ vctstrade  = vcts_trade.VctsTrade()
 # biz function
 
 def monitorCoins():
-     # get continue grows coins
+    best = []
+    ### TYPE ONE
+    # get continue grows coins
     # columns = ['opening_price','high_price','low_price','trade_price','candle_acc_trade_price','candle_acc_trade_volume']
-    columns = ['opening_price','trade_price']
-    best = vctstrade.getChoiceGrowsMarkets(columns,2,3,3,3)
+    # columns = ['opening_price','trade_price']
+    # best = vctstrade.getChoiceGrowsMarkets(columns,2,3,3,3)
     # for b in best:
     #     print(b)
-    # print(vctstrade.getMarkets())
-        
-    print(vctstrade.getTickerMarkets(best).sort_values(by='signed_change_rate', ascending=False))
-#     while True:
-#         data_json =  vctstrade.getTickerMarkets(best)
-#         print('--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
-#         print('%15s' % 'market-name'                
-#                 ,'%20s' % 'change'
-#                 ,'%13s' % '종가'
-#                 ,'%10s' % '변화액'
-#                 ,'%10s' % '변화율'
-#                 ,'%10s' % '전일 종가'
-#                 ,'%13s' % '시가'
-#                 ,'%13s' % '저가'
-#                 ,'%13s' % '고가'
-#                 ,'%7s' % '신고일'
-#                 ,'%15s' % '신고가'
-#                 ,'% 7s' % '신저일'
-#                 ,'%15s' % '신저가'
-#                 )
-#         print('--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
-#         # vctstrade.getMarketName(data.get('market')
-#         for data in data_json:   
-#             # print(json.dumps(data, indent=4, sort_keys=True))
-#             print('%10s' % data.get('market')
-#                 #,'% 1s' % vctstrade.getMarketName(data.get('market'))
-#                 ,'%10s' % data.get('change')
-#                 ,'%15f' % data.get('trade_price')
-#                 ,'%15f' % data.get('signed_change_price')
-#                 ,'%10f' % data.get('signed_change_rate')
-#                 ,'%15f' % data.get('prev_closing_price')
-#                 ,'%15f' % data.get('opening_price')
-#                 ,'%15f' % data.get('low_price')
-#                 ,'%15f' % data.get('high_price')
-#                 ,'%10s' % data.get('highest_52_week_date')
-#                 ,'%15f' % data.get('highest_52_week_price')
-#                 ,'%10s' % data.get('lowest_52_week_date')
-#                 ,'%15f' % data.get('lowest_52_week_price')
-#                 )
-#         time.sleep(10) 
+    
+    ### TYPE TWO
+    # markets = vctstrade.getMarkets()
+    # for i in markets.index:
+    #     # logger.warn(markets['market'][i]+" : "+markets['korean_name'][i])
+    #     best.append(markets['market'][i])
+
+    best.append('KRW-DOGE')
+
+    df = vctstrade.getTickerMarkets(best).sort_values(by='signed_change_rate', ascending=False)
+    # print(df)
+    while True:
+        print('--------------------------------------------------------------------------------------------------------------------------------------------------------------')
+        print('%15s' % 'market'                
+                ,'%7s' % 'change'
+                ,'%13s' % '종가'
+                ,'%11s' % '변화액'
+                ,'%8s' % '변화율'
+                # ,'%10s' % '전일 종가'
+                ,'%13s' % '시가'
+                ,'%13s' % '저가'
+                ,'%13s' % '고가'
+                ,'%20s' %  'market'
+                # ,'%7s' % '신고일'
+                # ,'%15s' % '신고가'
+                # ,'% 7s' % '신저일'
+                # ,'%15s' % '신저가'
+                )
+        print('--------------------------------------------------------------------------------------------------------------------------------------------------------------')
+        # vctstrade.getMarketName(data['market')
+        for x in df.index:
+            if df['change'][x] != 'RISE':
+                continue
+
+            print('%15s' % df['market'][x]
+                ,'%6s' % df['change'][x]
+                ,'%15f' % df['trade_price'][x]
+                ,'%15f' % df['signed_change_price'][x]
+                ,'%10f' % df['signed_change_rate'][x]
+                # ,'%15f' % df['prev_closing_price'][x]
+                ,'%15f' % df['opening_price'][x]
+                ,'%15f' % df['low_price'][x]
+                ,'%15f' % df['high_price'][x]
+                ,'%20s' % vctstrade.getMarketName(df['market'][x])
+                # ,'%10s' % df['highest_52_week_date'][x]
+                # ,'%15f' % df['highest_52_week_price'][x]
+                # ,'%10s' % df['lowest_52_week_date'][x]
+                # ,'%15f' % df['lowest_52_week_price'][x]
+                )
+        break
+        time.sleep(3) 
 
 #################################################
 # main
 if __name__ == '__main__':
-       # get candles chart data &  save to db
+    # get candles chart data &  save to db
     # vctstrade.loadMarketsCandlesMwdData()
 
+    
     monitorCoins()
 
     #scheduler = BlockingScheduler()
