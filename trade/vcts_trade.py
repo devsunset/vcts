@@ -8,6 +8,7 @@
 ##################################################
 # import
 from pandas import DataFrame
+import pandas as pd
 import logging
 import logging.config
 from os import path
@@ -34,28 +35,20 @@ logger = logging.getLogger('vcts')
 comm = common.Common()
 upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY, config.SECRET)
 
+MARKETS  = {}
+
 ##################################################
 # biz function
 
+# pd.set_option('display.max_row', 1000)
+# pd.set_option('display.max_columns', 25)
+pd.set_option('display.html.table_schema', True)
+
+
+
 class VctsTrade():
-    # get market date info
-    def getMarkets(self):        
-        markets = comm.searchDB("SELECT * FROM VCTS_META")
-        # print(markets)
-        # for i in markets.index:
-        #     print(markets['market'][i])
-        return markets
-
-    # get ticker markets
-    def getTickerMarkets(self,markets):
-        return upbitapi.getQuotationTicker(markets)
-
-    #  get markets candles mwd data save to db
-    def loadMarketsCandlesMwdData(self):
+    def __init__(self):
         self.loadMarketSaveToDb()
-        self.loadMarketCandlesMonthsSaveToDb()
-        self.loadMarketCandlesWeeksSaveToDb()
-        self.loadMarketCandlesDaysSaveToDb()
 
     # load market info save to db (vcts_meta table).
     def loadMarketSaveToDb(self):
@@ -81,6 +74,7 @@ class VctsTrade():
             for data in data_json:       
                 data.setdefault('market_warning', '')         
                 sqlParam.append((data.get('market'),data.get('korean_name'),data.get('english_name'),data.get('market_warning')))
+                MARKETS[data['market']] =  data['korean_name']
 
             comm.executeTxDB(conn, sqlText, sqlParam)
             conn.commit()
@@ -90,6 +84,27 @@ class VctsTrade():
         finally:
             if conn is not None:
                 conn.close()
+
+    # get market name  info
+    def getMarketName(self,market):        
+        return MARKETS[market]
+
+    # get markets info
+    def getMarkets(self):        
+        markets = comm.searchDB("SELECT * FROM VCTS_META")
+        return markets
+
+    # get ticker markets
+    def getTickerMarkets(self,markets):
+        return pd.DataFrame(upbitapi.getQuotationTicker(markets))
+
+    ##########################################################
+
+    #  get markets candles mwd data save to db
+    def loadMarketsCandlesMwdData(self):
+        self.loadMarketCandlesMonthsSaveToDb()
+        self.loadMarketCandlesWeeksSaveToDb()
+        self.loadMarketCandlesDaysSaveToDb()
 
     # load market candles day info save to db (vcts_candles_day table).
     def loadMarketCandlesDaysSaveToDb(self):
