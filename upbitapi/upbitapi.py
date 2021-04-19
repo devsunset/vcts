@@ -786,7 +786,7 @@ class UpbitApi():
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, self.secret_key)
+        jwt_token = jwt.encode(payload, self.secret)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1041,7 +1041,7 @@ class UpbitApi():
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, self.secret_key)
+        jwt_token = jwt.encode(payload, self.secret)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1331,7 +1331,7 @@ class UpbitApi():
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, self.secret_key)
+        jwt_token = jwt.encode(payload, self.secret)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
