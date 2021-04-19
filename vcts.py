@@ -22,10 +22,6 @@ import time
 import json
 
 from trade import vcts_trade
-from common import config
-from common import common
-from upbitapi import upbitapi
-
 
 ##################################################
 # constant
@@ -173,7 +169,7 @@ if __name__ == '__main__':
     
     # monitorCoins()
 
-    # monitorConditionCoins()
+    monitorConditionCoins()
 
     #scheduler = BlockingScheduler()
     #scheduler.add_job(daemon_process, 'interval', seconds=config.INTERVAL_SECONDS)
@@ -183,49 +179,7 @@ if __name__ == '__main__':
     #    logger.error(' main Exception : %s' % e)
 
 
-    # upbitapi  API TEST
-    ###############################################################
-    # upbitapi = upbitapi.UpbitApi()
-    upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
 
-    # EXCHANGE API TEST (TO-DO)
-    ###############################################################
-
-
-
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 리스트 조회 : getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids)')
-    # print(upbitapi.getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids))
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeWithdraw(uuid, txid, currency)')
-    # print(upbitapi.getExchangeWithdraw(uuid, txid, currency))
-
-    print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeWithdrawsChance("BTC")')
-    print(upbitapi.getExchangeWithdrawsChance('KRW'))
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 코인 출금하기 : postExchangeWithdrawsCoin(currency, amount, address)')
-    # print(upbitapi.postExchangeWithdrawsCoin(currency, amount, address))
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 원화 출금하기 : postExchangeWithdrawsKrw(amount)')
-    # print(upbitapi.postExchangeWithdrawsKrw(amount))
-
-
-
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 리스트 조회 : getExchangeDeposits(currency, state, page , order_by, limit, uuids, txids)')
-    # print(upbitapi.getExchangeDeposits(currency, state, page , order_by, limit, uuids, txids))
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 조회 : getExchangeDeposit(uuid, txid, currency)')
-    # print(upbitapi.getExchangeDeposit(uuid, txid, currency))
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 주소 생성 요청 : postExchangeDepositsGenerate_coin_address(currency)')
-    # print(upbitapi.postExchangeDepositsGenerate_coin_address(currency))
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회 : getExchangeDepositsCoin_address(currency)')
-    # print(upbitapi.getExchangeDepositsCoin_address('KRW-AERGO'))
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 원화 입금하기 : postExchangeDepositsKrw(currency)')
-    # print(upbitapi.postExchangeDepositsKrw(currency))
 
 
     
