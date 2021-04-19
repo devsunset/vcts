@@ -14,6 +14,8 @@
 ##################################################
 # import
 
+from pandas import DataFrame
+import pandas as pd
 from apscheduler.schedulers.blocking import BlockingScheduler
 import logging
 import logging.config
@@ -35,6 +37,9 @@ logger = logging.getLogger('vcts')
 
 # vcts_trade,VctsTrade
 vctstrade  = vcts_trade.VctsTrade()
+
+
+pre_df = pd.DataFrame()
 
 ##################################################
 # biz function
@@ -61,6 +66,12 @@ def monitorCoins(loop=False,looptime=3,sort='signed_change_rate',change=None, ma
 
     while True:
         df = vctstrade.getTickerMarkets(best).sort_values(by=sort, ascending=False)
+
+        global pre_df
+        if len(pre_df) > 0:
+            print('------------- compare')
+   
+
         print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
         print('%15s' % 'market'                
                 ,'%7s' % 'change'
@@ -112,6 +123,9 @@ def monitorCoins(loop=False,looptime=3,sort='signed_change_rate',change=None, ma
                 # ,'%15f' % df['lowest_52_week_price'][x]
                 ,'%20s' % vctstrade.getMarketName(df['market'][x])
                 )
+
+        pre_df = df
+                
         if(loop == True):
             time.sleep(looptime)
         else:
