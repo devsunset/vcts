@@ -750,13 +750,13 @@ class UpbitApi():
         }
 
         if state is not None:
-            query['state'] = query
+            query['state'] = state
 
         print('------------------------')
         print(query)
         print('------------------------')
 
-        query_string = urlencode(query)
+        query_string = urlencode(query).encode()
 
         print('------------------------')
         print(query_string)
