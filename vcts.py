@@ -22,9 +22,10 @@ import time
 import json
 
 from trade import vcts_trade
-from upbitapi import upbitapi
 from common import config
 from common import common
+from upbitapi import upbitapi
+
 
 ##################################################
 # constant
@@ -182,6 +183,8 @@ if __name__ == '__main__':
     #    logger.error(' main Exception : %s' % e)
 
 
+    # upbitapi  API TEST
+    ###############################################################
     # upbitapi = upbitapi.UpbitApi()
     upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
 
@@ -190,8 +193,8 @@ if __name__ == '__main__':
     print('■■■■■■■■■■ - EXCHANGE API - 자산 - 전체 계좌 조회 : getExchangeAccounts()')
     print(upbitapi.getExchangeAccounts())
 
-    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
-    # print(upbitapi.getExchangeOrdersChance('KRW-BTC'))
+    print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
+    print(upbitapi.getExchangeOrdersChance('KRW-AERGO'))
 
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
     # print(upbitapi.getExchangeOrder(uuid))
@@ -238,11 +241,11 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 원화 입금하기 : postExchangeDepositsKrw(currency)')
     # print(upbitapi.postExchangeDepositsKrw(currency))
 
-    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황 : getExchangeStatusWallet()')
-    # print(upbitapi.getExchangeStatusWallet())
+    print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황 : getExchangeStatusWallet()')
+    print(upbitapi.getExchangeStatusWallet())
 
-    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회 : getExchangeApiKeys()')
-    # print(upbitapi.getExchangeApiKeys())
+    print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회 : getExchangeApiKeys()')
+    print(upbitapi.getExchangeApiKeys())
 
     
 
