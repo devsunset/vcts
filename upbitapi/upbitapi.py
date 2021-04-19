@@ -1462,7 +1462,7 @@ class UpbitApi():
         return self.__get(URL, self.__get_headers(data), data)
 
     # EXCHANGE API - 입금 - 원화 입금하기
-    def postExchangeDepositsKrw(self, currency):
+    def postExchangeDepositsKrw(self, amount):
         '''
         EXCHANGE API - 입금 - 원화 입금하기\n       
         원화 입금을 요청한다.\n         
