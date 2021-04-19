@@ -22,6 +22,9 @@ import time
 import json
 
 from trade import vcts_trade
+from upbitapi import upbitapi
+from common import config
+from common import common
 
 ##################################################
 # constant
@@ -108,7 +111,7 @@ def monitorConditionCoins():
 
     # TYPE THREE 
     best.append('KRW-AERGO')
-    # best.append('KRW-DOGE')
+    best.append('KRW-DOGE')
 
     ###########################################################################################
 
@@ -169,7 +172,7 @@ if __name__ == '__main__':
     
     # monitorCoins()
 
-    monitorConditionCoins()
+    # monitorConditionCoins()
 
     #scheduler = BlockingScheduler()
     #scheduler.add_job(daemon_process, 'interval', seconds=config.INTERVAL_SECONDS)
@@ -177,6 +180,69 @@ if __name__ == '__main__':
     #    scheduler.start()
     #except Exception as err:
     #    logger.error(' main Exception : %s' % e)
+
+
+    # upbitapi = upbitapi.UpbitApi()
+    upbitapi = upbitapi.UpbitApi(config.ACCESS_KEY,config.SECRET)
+
+    # EXCHANGE API TEST (TO-DO)
+    ###############################################################
+    print('■■■■■■■■■■ - EXCHANGE API - 자산 - 전체 계좌 조회 : getExchangeAccounts()')
+    print(upbitapi.getExchangeAccounts())
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
+    # print(upbitapi.getExchangeOrdersChance('KRW-BTC'))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
+    # print(upbitapi.getExchangeOrder(uuid))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders(market, state, page ,order_by)')
+    # print(upbitapi.getExchangeOrders(market, state, page ,order_by))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 취소 접수 : deleteExchangeOrder(uuid)')
+    # print(upbitapi.deleteExchangeOrder(uuid))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문하기 : postExchangeOrder(market, side, volume, price, ord_type)')
+    # print(upbitapi.postExchangeOrder(market, side, volume, price, ord_type))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 리스트 조회 : getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids)')
+    # print(upbitapi.getExchangeWithdraws(currency, state, page , order_by, limit, uuids, txids))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeWithdraw(uuid, txid, currency)')
+    # print(upbitapi.getExchangeWithdraw(uuid, txid, currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeWithdrawsChance("BTC")')
+    # print(upbitapi.getExchangeWithdrawsChance('BTC'))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 코인 출금하기 : postExchangeWithdrawsCoin(currency, amount, address)')
+    # print(upbitapi.postExchangeWithdrawsCoin(currency, amount, address))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 원화 출금하기 : postExchangeWithdrawsKrw(amount)')
+    # print(upbitapi.postExchangeWithdrawsKrw(amount))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 리스트 조회 : getExchangeDeposits(currency, state, page , order_by, limit, uuids, txids)')
+    # print(upbitapi.getExchangeDeposits(currency, state, page , order_by, limit, uuids, txids))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 조회 : getExchangeDeposit(uuid, txid, currency)')
+    # print(upbitapi.getExchangeDeposit(uuid, txid, currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 주소 생성 요청 : postExchangeDepositsGenerate_coin_address(currency)')
+    # print(upbitapi.postExchangeDepositsGenerate_coin_address(currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회 : getExchangeDepositsCoin_addresses()')
+    # print(upbitapi.getExchangeDepositsCoin_addresses())
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회 : getExchangeDepositsCoin_address(currency)')
+    # print(upbitapi.getExchangeDepositsCoin_address(currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 원화 입금하기 : postExchangeDepositsKrw(currency)')
+    # print(upbitapi.postExchangeDepositsKrw(currency))
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황 : getExchangeStatusWallet()')
+    # print(upbitapi.getExchangeStatusWallet())
+
+    # print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회 : getExchangeApiKeys()')
+    # print(upbitapi.getExchangeApiKeys())
 
     
 
