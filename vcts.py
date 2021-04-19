@@ -194,7 +194,7 @@ if __name__ == '__main__':
     # print(upbitapi.getExchangeOrder(uuid))
 
     print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders(market, state, page ,order_by)')
-    print(upbitapi.getExchangeOrders('KRW-AERGO', ['wait'], 1 ,'desc'))
+    print(upbitapi.getExchangeOrders('KRW-AERGO', 'wait', 1 ,'desc'))
 
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 취소 접수 : deleteExchangeOrder(uuid)')
     # print(upbitapi.deleteExchangeOrder(uuid))
