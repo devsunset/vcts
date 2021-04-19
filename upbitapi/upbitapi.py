@@ -785,7 +785,7 @@ class UpbitApi():
 
         jwt_token = jwt.encode(payload, self.secret)
         authorize_token = 'Bearer {}'.format(jwt_token)
-        headers = {"Authorization": authorize_token}
+        headers = {"Authorization": authorize_token.decode('utf-8')}
 
         return self.__get(URL, headers, query)
 
