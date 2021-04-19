@@ -752,7 +752,7 @@ class UpbitApi():
         if state is not None:
             query['state'] = query
 
-        query_string = urlencode(query)
+        query_string = urlencode(query).encode()
 
         if states is not None:
             states_query_string = '&'.join(
@@ -1011,7 +1011,7 @@ class UpbitApi():
             'order_by': order_by
         }
 
-        query_string = urlencode(query)
+        query_string = urlencode(query).encode()
 
         if uuids is not None:
             uuids_query_string = '&'.join(
@@ -1299,7 +1299,7 @@ class UpbitApi():
             'order_by': order_by
         }
 
-        query_string = urlencode(query)
+        query_string = urlencode(query).encode()
 
         if uuids is not None:
             uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
