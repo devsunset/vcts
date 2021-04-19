@@ -752,28 +752,26 @@ class UpbitApi():
         if state is not None:
             query['state'] = query
 
+        query_string = urlencode(query)
+
         if states is not None:
             states_query_string = '&'.join(
                 ["states[]={}".format(state_temp) for state_temp in states])
             query['states[]'] = states
-            query_string = "{0}&{1}".format(
-                query_string, states_query_string).encode()
+            query_string = "{0}&{1}".format(query_string, states_query_string).encode()
 
         if uuids is not None:
             uuids_query_string = '&'.join(
                 ["uuids[]={}".format(uuid) for uuid in uuids])
             query['uuids[]'] = uuids
-            query_string = "{0}&{1}".format(
-                query_string, uuids_query_string).encode()
+            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
 
         if identifiers is not None:
             identifiers_query_string = '&'.join(
                 ["identifiers[]={}".format(identifier) for uuid in identifiers])
             query['identifiers[]'] = identifiers
-            query_string = "{0}&{1}".format(
-                query_string, identifiers_query_string).encode()
+            query_string = "{0}&{1}".format(query_string, identifiers_query_string).encode()
 
-        query_string = urlencode(query).encode()
         m = hashlib.sha512()
         m.update(query_string)
         query_hash = m.hexdigest()
@@ -1013,21 +1011,20 @@ class UpbitApi():
             'order_by': order_by
         }
 
+        query_string = urlencode(query)
+
         if uuids is not None:
             uuids_query_string = '&'.join(
                 ["uuids[]={}".format(uuid) for uuid in uuids])
             query['uuids[]'] = uuids
-            query_string = "{0}&{1}".format(
-                query_string, uuids_query_string).encode()
+            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
 
         if txids is not None:
             txids_query_string = '&'.join(
                 ["txids[]={}".format(txid) for txid in txids])
             query['txids[]'] = txids
-            query_string = "{0}&{1}".format(
-                query_string, txids_query_string).encode()
+            query_string = "{0}&{1}".format(query_string, txids_query_string).encode()
 
-        query_string = urlencode(query).encode()
         m = hashlib.sha512()
         m.update(query_string)
         query_hash = m.hexdigest()
@@ -1302,21 +1299,18 @@ class UpbitApi():
             'order_by': order_by
         }
 
+        query_string = urlencode(query)
+
         if uuids is not None:
-            uuids_query_string = '&'.join(
-                ["uuids[]={}".format(uuid) for uuid in uuids])
+            uuids_query_string = '&'.join(["uuids[]={}".format(uuid) for uuid in uuids])
             query['uuids[]'] = uuids
-            query_string = "{0}&{1}".format(
-                query_string, uuids_query_string).encode()
+            query_string = "{0}&{1}".format(query_string, uuids_query_string).encode()
 
         if txids is not None:
-            txids_query_string = '&'.join(
-                ["txids[]={}".format(txid) for txid in txids])
+            txids_query_string = '&'.join(["txids[]={}".format(txid) for txid in txids])
             query['txids[]'] = txids
-            query_string = "{0}&{1}".format(
-                query_string, txids_query_string).encode()
+            query_string = "{0}&{1}".format(query_string, txids_query_string).encode()
 
-        query_string = urlencode(query).encode()
         m = hashlib.sha512()
         m.update(query_string)
         query_hash = m.hexdigest()
