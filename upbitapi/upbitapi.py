@@ -754,6 +754,8 @@ class UpbitApi():
 
         query_string = urlencode(query).encode()
 
+        print(query_string)
+
         if states is not None:
             states_query_string = '&'.join(
                 ["states[]={}".format(state_temp) for state_temp in states])
