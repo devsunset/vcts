@@ -113,7 +113,7 @@ class UpbitApi():
         if query is not None:
             query_string = urlencode(query).encode()
             m = hashlib.sha512()
-            m.update(query_string.encode('utf-8'))
+            m.update(query_string)
             query_hash = m.hexdigest()
             payload = {
                 'access_key': self.access_key,
