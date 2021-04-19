@@ -190,11 +190,10 @@ if __name__ == '__main__':
 
     # EXCHANGE API TEST (TO-DO)
     ###############################################################
-    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
-    # print(upbitapi.getExchangeOrder(uuid))
+    print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
+    print(upbitapi.getExchangeOrder('1537e3c5-d8af-4a89-ab11-9ef1aa47f65e'))
 
-    print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 리스트 조회 : getExchangeOrders(market, state, page ,order_by)')
-    print(upbitapi.getExchangeOrders('KRW-AERGO', 'wait', 1 ,'desc'))
+
 
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 취소 접수 : deleteExchangeOrder(uuid)')
     # print(upbitapi.deleteExchangeOrder(uuid))
