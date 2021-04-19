@@ -772,8 +772,6 @@ class UpbitApi():
             query['identifiers[]'] = identifiers
             query_string = "{0}&{1}".format(query_string, identifiers_query_string).encode()
 
-        print(query_string)
-
         m = hashlib.sha512()
         m.update(query_string)
         query_hash = m.hexdigest()
