@@ -190,16 +190,7 @@ if __name__ == '__main__':
 
     # EXCHANGE API TEST (TO-DO)
     ###############################################################
-    print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
-    print(upbitapi.getExchangeOrder('1537e3c5-d8af-4a89-ab11-9ef1aa47f65e'))
 
-
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 취소 접수 : deleteExchangeOrder(uuid)')
-    # print(upbitapi.deleteExchangeOrder(uuid))
-
-    # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문하기 : postExchangeOrder(market, side, volume, price, ord_type)')
-    # print(upbitapi.postExchangeOrder(market, side, volume, price, ord_type))
 
 
 
@@ -209,8 +200,8 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 개별 출금 조회 : getExchangeWithdraw(uuid, txid, currency)')
     # print(upbitapi.getExchangeWithdraw(uuid, txid, currency))
 
-    # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeWithdrawsChance("BTC")')
-    # print(upbitapi.getExchangeWithdrawsChance('BTC'))
+    print('■■■■■■■■■■ - EXCHANGE API - 출금 - 출금 가능 정보 : getExchangeWithdrawsChance("BTC")')
+    print(upbitapi.getExchangeWithdrawsChance('KRW'))
 
     # print('■■■■■■■■■■ - EXCHANGE API - 출금 - 코인 출금하기 : postExchangeWithdrawsCoin(currency, amount, address)')
     # print(upbitapi.postExchangeWithdrawsCoin(currency, amount, address))
