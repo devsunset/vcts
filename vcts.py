@@ -190,12 +190,6 @@ if __name__ == '__main__':
 
     # EXCHANGE API TEST (TO-DO)
     ###############################################################
-    print('■■■■■■■■■■ - EXCHANGE API - 자산 - 전체 계좌 조회 : getExchangeAccounts()')
-    print(upbitapi.getExchangeAccounts())
-
-    print('■■■■■■■■■■ - EXCHANGE API - 주문 - 주문 가능 정보 : getExchangeOrdersChance()')
-    print(upbitapi.getExchangeOrdersChance('KRW-AERGO'))
-
     # print('■■■■■■■■■■ - EXCHANGE API - 주문 - 개별 주문 조회 : getExchangeOrder(uuid)')
     # print(upbitapi.getExchangeOrder(uuid))
 
@@ -232,20 +226,15 @@ if __name__ == '__main__':
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 입금 주소 생성 요청 : postExchangeDepositsGenerate_coin_address(currency)')
     # print(upbitapi.postExchangeDepositsGenerate_coin_address(currency))
 
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회 : getExchangeDepositsCoin_addresses()')
-    # print(upbitapi.getExchangeDepositsCoin_addresses())
+    print('■■■■■■■■■■ - EXCHANGE API - 입금 - 전체 입금 주소 조회 : getExchangeDepositsCoin_addresses()')
+    print(upbitapi.getExchangeDepositsCoin_addresses())
 
-    # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회 : getExchangeDepositsCoin_address(currency)')
-    # print(upbitapi.getExchangeDepositsCoin_address(currency))
+    print('■■■■■■■■■■ - EXCHANGE API - 입금 - 개별 입금 주소 조회 : getExchangeDepositsCoin_address(currency)')
+    print(upbitapi.getExchangeDepositsCoin_address('KRW'))
 
     # print('■■■■■■■■■■ - EXCHANGE API - 입금 - 원화 입금하기 : postExchangeDepositsKrw(currency)')
     # print(upbitapi.postExchangeDepositsKrw(currency))
 
-    print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - 입출금 현황 : getExchangeStatusWallet()')
-    print(upbitapi.getExchangeStatusWallet())
-
-    print('■■■■■■■■■■ - EXCHANGE API - 서비스 정보 - API 키 리스트 조회 : getExchangeApiKeys()')
-    print(upbitapi.getExchangeApiKeys())
 
     
 
