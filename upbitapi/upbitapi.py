@@ -113,7 +113,7 @@ class UpbitApi():
         if query is not None:
             query_string = urlencode(query).encode()
             m = hashlib.sha512()
-            m.update(query_string)
+            m.update(query_string.encode('utf-8'))
             query_hash = m.hexdigest()
             payload = {
                 'access_key': self.access_key,
@@ -776,7 +776,7 @@ class UpbitApi():
                 query_string, identifiers_query_string).encode()
 
         m = hashlib.sha512()
-        m.update(query_string)
+        m.update(query_string.encode('utf-8'))
         query_hash = m.hexdigest()
 
         payload = {
@@ -1031,7 +1031,7 @@ class UpbitApi():
                 query_string, txids_query_string).encode()
 
         m = hashlib.sha512()
-        m.update(query_string)
+        m.update(query_string.encode('utf-8'))
         query_hash = m.hexdigest()
 
         payload = {
@@ -1321,7 +1321,7 @@ class UpbitApi():
                 query_string, txids_query_string).encode()
 
         m = hashlib.sha512()
-        m.update(query_string)
+        m.update(query_string.encode('utf-8'))
         query_hash = m.hexdigest()
 
         payload = {
