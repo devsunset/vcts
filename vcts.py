@@ -201,6 +201,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
 
                     buytarget.append(tdf['market'][x])
                     amount.append(tdf['trade_price'][x])
+                    logger.warning('--- choice --->'+str(tdf['market'][x]))
 
                 if len(buytarget) > 0 :
                      while True:
