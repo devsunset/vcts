@@ -42,7 +42,7 @@ MARKETS  = {}
 
 pd.set_option('display.max_rows', 1000)
 pd.set_option('display.max_columns', 200)
-pd.set_option('display.width', 200)
+pd.set_option('display.width', 250)
 
 class VctsTrade():
     def __init__(self):
