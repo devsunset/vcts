@@ -303,7 +303,7 @@ if __name__ == '__main__':
     # monitorMarkets(loop=True,looptime=5,sort='signed_change_rate',market='KRW')
 
     # watch jump market info 
-    watchJumpMarkets(loop=True, looptime=60, period=10, market='KRW', trade_price = 1000)
+    watchJumpMarkets(loop=True, looptime=20, period=7, market='KRW', trade_price = 1000)
 
     # scheduler = BlockingScheduler()
     # scheduler.add_job(daemon_process, 'interval', seconds=config.INTERVAL_SECONDS)
