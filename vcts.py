@@ -184,10 +184,11 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                         if int(tdf['trade_price'][x]) > 1000 :
                             continue
                     
-                    if float(tdf['rate_1'][x]) < 2.5 :
+                    if float(tdf['rate_1'][x]) < -1 :
                             continue
-
-                    if float(tdf['rate_'+str(period-3)][x]) < 0.5 :
+                    if float(tdf['rate_2'][x]) < -0.5 :
+                            continue
+                    if float(tdf['rate_'+str(period-3)][x]) < 0.1 :
                             continue
                     
                     # print('%15s' % tdf['market'][x]
@@ -201,7 +202,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
 
                     buytarget.append(tdf['market'][x])
                     amount.append(tdf['trade_price'][x])
-                    logger.warning('--- choice --->'+str(tdf['market'][x]))
+                    logger.warning('--- choice --->  '+str(tdf['market'][x]))
 
                 if len(buytarget) > 0 :
                      while True:
@@ -210,7 +211,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                         buy_cnt = fund_amount/float(amount[0])
                         buy_amount = buy_cnt * float(amount[0])
 
-                        print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+                        print('------------------------------------------------------------------------------------------------------------------')
                         print('%15s' % 'market'                
                                 ,'%7s' % 'change'
                                 ,'%12s' % '종가'
@@ -221,7 +222,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                                 ,'%17s' % 'amount'
                                 ,'%23s' %  'market'
                                 )
-                        print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+                        print('------------------------------------------------------------------------------------------------------------------')
                         for x in df.index:
                             print('%15s' % df['market'][x]
                                 ,'%6s' % df['change'][x]
@@ -234,7 +235,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                                 ,'%20s' % vctstrade.getMarketName(df['market'][x])
                                 )
 
-                        if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) > 3.55:
+                        if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) > 2.55:
                             fund_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ( (float(df['trade_price'][x]) * buy_cnt) * 0.05 )   
                             print('### ___SELL_PLUS___',fund_amout)
                             buytarget = []
@@ -243,7 +244,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                             buy_amount = 0
                             break
 
-                        if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) < -2.55:
+                        if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) < -1.55:
                             fund_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ( (float(df['trade_price'][x]) * buy_cnt) * 0.05 )   
                             print('### ___SELL_MINUS___',fund_amout)
                             buytarget = []
@@ -278,7 +279,7 @@ if __name__ == '__main__':
     # monitorMarkets(loop=True,looptime=5,sort='signed_change_rate',market='KRW')
 
     # watch jump market info 
-    watchJumpMarkets(loop=True, looptime=20, period=7, market='KRW', trade_price = 1000)
+    watchJumpMarkets(loop=True, looptime=10, period=7, market='KRW', trade_price = 1000)
 
     # scheduler = BlockingScheduler()
     # scheduler.add_job(daemon_process, 'interval', seconds=config.INTERVAL_SECONDS)
