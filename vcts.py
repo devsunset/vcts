@@ -171,7 +171,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                 
                 tdf = analysis_df.sort_values(by='rate_'+str(period-3), ascending=False)
 
-                print('--->')
+                logger.warning('--->')
 
                 buytarget = []
                 amount = []
@@ -236,7 +236,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                                     )
 
                             fund_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ( (float(df['trade_price'][x]) * buy_cnt) * 0.05 )   
-                            print('### ___SELL_PLUS___',fund_amout)
+                            logger.warning('### ___SELL_PLUS___',fund_amout)
                             buytarget = []
                             amount = []
                             buy_cnt = 0
@@ -268,7 +268,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                                     ,'%20s' % vctstrade.getMarketName(df['market'][x])
                                     )
                             fund_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ( (float(df['trade_price'][x]) * buy_cnt) * 0.05 )   
-                            print('### ___SELL_MINUS___',fund_amout)
+                            logger.warning('### ___SELL_MINUS___',fund_amout)
                             buytarget = []
                             amount = []
                             buy_cnt = 0
