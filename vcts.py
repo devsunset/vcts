@@ -123,8 +123,9 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
         idx=0
         history_df =  pd.DataFrame()
         best = []
-        buytarget = []
         # best.append('KRW-DOGE')
+
+        fund_amount = 300000
 
         while True:
             if len(best) == 0:
@@ -168,9 +169,12 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                 for i in range(period-3):
                     analysis_df['rate_'+str(i+1)] =  (analysis_df['diff_'+str(i+1)] / history_df[history_df.columns.tolist()[1]]) * 100
                 
-                tdf = analysis_df.sort_values(by='rate_1', ascending=False)
+                tdf = analysis_df.sort_values(by='rate_'+str(period-3), ascending=False)
 
-                print('--------------------------------------')
+                print('--->')
+
+                buytarget = []
+                amount = []
                 for x in tdf.index:
                     if market is not None:
                         tmp = tdf['market'][x]
@@ -181,10 +185,10 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                         if int(tdf['trade_price'][x]) > 1000 :
                             continue
                     
-                    if float(tdf['rate_1'][x]) < 0.5 :
+                    if float(tdf['rate_1'][x]) < 4.5 :
                             continue
 
-                    if float(tdf['rate_'+str(period-3)][x]) < 0.15 :
+                    if float(tdf['rate_'+str(period-3)][x]) < 0.5 :
                             continue
                     
                     # print('%15s' % tdf['market'][x]
@@ -197,11 +201,81 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                     # )
 
                     buytarget.append(tdf['market'][x])
+                    amount.append(tdf['trade_price'][x])
 
                 if len(buytarget) > 0 :
-                    watchJumpMarketsMonitor(market=buytarget[0])
+                     while True:
+                        choice = buytarget[0:1]
+                        df = vctstrade.getTickerMarkets(choice).sort_values(by='signed_change_rate', ascending=False)
+                        buy_cnt = fund_amount/float(amount[0])
+                        buy_amount = buy_cnt * float(amount[0])
 
-                # print (analysis_df)
+                        if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) > 5.55:
+                            print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+                            print('%15s' % 'market'                
+                                    ,'%7s' % 'change'
+                                    ,'%12s' % '종가'
+                                    ,'%12s' % '시가'
+                                    ,'%13s' % '변화액'
+                                    ,'%6s' % '변화율'
+                                    ,'%12s' % 'buy_cnt'
+                                    ,'%17s' % 'amount'
+                                    ,'%23s' %  'market'
+                                    )
+                            print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+                            for x in df.index:
+                                print('%15s' % df['market'][x]
+                                    ,'%6s' % df['change'][x]
+                                    ,'%15f' % df['trade_price'][x]
+                                    ,'%15f' % amount[0]
+                                    ,'%15f' % (float(df['trade_price'][x]) - float(amount[0]))
+                                    ,'%10f' % (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100)
+                                    ,'%15f' % buy_cnt
+                                    ,'%15f' % (float(df['trade_price'][x]) * buy_cnt)
+                                    ,'%20s' % vctstrade.getMarketName(df['market'][x])
+                                    )
+
+                            fund_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ( (float(df['trade_price'][x]) * buy_cnt) * 0.05 )   
+                            print('### ___SELL_PLUS___',fund_amout)
+                            buytarget = []
+                            amount = []
+                            buy_cnt = 0
+                            buy_amount = 0
+                            break
+
+                        if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) < -3.35:
+                            print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+                            print('%15s' % 'market'                
+                                    ,'%7s' % 'change'
+                                    ,'%12s' % '종가'
+                                    ,'%12s' % '시가'
+                                    ,'%13s' % '변화액'
+                                    ,'%6s' % '변화율'
+                                    ,'%12s' % 'buy_cnt'
+                                    ,'%17s' % 'amount'
+                                    ,'%23s' %  'market'
+                                    )
+                            print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+                            for x in df.index:
+                                print('%15s' % df['market'][x]
+                                    ,'%6s' % df['change'][x]
+                                    ,'%15f' % df['trade_price'][x]
+                                    ,'%15f' % amount[0]
+                                    ,'%15f' % (float(df['trade_price'][x]) - float(amount[0]))
+                                    ,'%10f' % (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100)
+                                    ,'%15f' % buy_cnt
+                                    ,'%15f' % (float(df['trade_price'][x]) * buy_cnt)
+                                    ,'%20s' % vctstrade.getMarketName(df['market'][x])
+                                    )
+                            fund_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ( (float(df['trade_price'][x]) * buy_cnt) * 0.05 )   
+                            print('### ___SELL_MINUS___',fund_amout)
+                            buytarget = []
+                            amount = []
+                            buy_cnt = 0
+                            buy_amount = 0
+                            break
+
+                        time.sleep(1)
             else:
                 print('stand by...')
             
@@ -210,46 +284,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
             else:
                 break
 
-def watchJumpMarketsMonitor(loop=False, looptime=1, market=None):
-        idx=0
-        best = []
-        best.append(market)
-
-        while True:
-            df = vctstrade.getTickerMarkets(best).sort_values(by='signed_change_rate', ascending=False)
-            print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
-            print('%15s' % 'market'                
-                    ,'%7s' % 'change'
-                    ,'%12s' % '종가'
-                    ,'%13s' % '변화액'
-                    ,'%6s' % '변화율'
-                    ,'%11s' % '고가-종가'
-                    ,'%11s' % '고가-시가'
-                    ,'%11s' % '고가-저가'
-                    ,'%13s' % '시가'
-                    ,'%13s' % '저가'
-                    ,'%13s' % '고가'
-                    ,'%23s' %  'market'
-                    )
-            print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
-            for x in df.index:
-                print('%15s' % df['market'][x]
-                    ,'%6s' % df['change'][x]
-                    ,'%15f' % df['trade_price'][x]
-                    ,'%15f' % df['signed_change_price'][x]
-                    ,'%10f' % df['signed_change_rate'][x]
-                    ,'%15f' % (float(df['high_price'][x]) - float(df['trade_price'][x])) 
-                    ,'%15f' % (float(df['high_price'][x]) - float(df['opening_price'][x])) 
-                    ,'%15f' % (float(df['high_price'][x]) - float(df['low_price'][x])) 
-                    ,'%15f' % df['opening_price'][x]
-                    ,'%15f' % df['low_price'][x]
-                    ,'%15f' % df['high_price'][x]
-                    ,'%20s' % vctstrade.getMarketName(df['market'][x])
-                    )
-            if(loop == True):
-                time.sleep(looptime)
-            else:
-                break      
+       
 
 #################################################
 # main
@@ -268,7 +303,7 @@ if __name__ == '__main__':
     # monitorMarkets(loop=True,looptime=5,sort='signed_change_rate',market='KRW')
 
     # watch jump market info 
-    watchJumpMarkets(loop=True, looptime=5, period=8, market='KRW', trade_price = 1000)
+    watchJumpMarkets(loop=True, looptime=60, period=10, market='KRW', trade_price = 1000)
 
     # scheduler = BlockingScheduler()
     # scheduler.add_job(daemon_process, 'interval', seconds=config.INTERVAL_SECONDS)
