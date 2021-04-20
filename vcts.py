@@ -123,7 +123,8 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
         idx=0
         history_df =  pd.DataFrame()
         best = []
-        best.append('KRW-DOGE')
+        buytarget = []
+        # best.append('KRW-DOGE')
 
         while True:
             if len(best) == 0:
@@ -167,8 +168,40 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                 for i in range(period-3):
                     analysis_df['rate_'+str(i+1)] =  (analysis_df['diff_'+str(i+1)] / history_df[history_df.columns.tolist()[1]]) * 100
                 
-                analysis_df.sort_values(by='rate_1', ascending=False)
-                print (analysis_df)
+                tdf = analysis_df.sort_values(by='rate_1', ascending=False)
+
+                print('--------------------------------------')
+                for x in tdf.index:
+                    if market is not None:
+                        tmp = tdf['market'][x]
+                        if tmp[:tmp.find('-')] not in market.split('|'):
+                            continue
+
+                    if trade_price is not None:
+                        if int(tdf['trade_price'][x]) > 1000 :
+                            continue
+                    
+                    if float(tdf['rate_1'][x]) < 0.5 :
+                            continue
+
+                    if float(tdf['rate_'+str(period-3)][x]) < 0.15 :
+                            continue
+                    
+                    # print('%15s' % tdf['market'][x]
+                    # ,'%15f' % tdf['trade_price'][x]
+                    # ,'%15f' % tdf['diff_1'][x]
+                    # ,'%15f' % tdf['rate_1'][x]
+                    # ,'%15f' % tdf['diff_'+str(period-3)][x]
+                    # ,'%15f' % tdf['rate_'+str(period-3)][x]
+                    # ,'%20s' % vctstrade.getMarketName(tdf['market'][x])
+                    # )
+
+                    buytarget.append(tdf['market'][x])
+
+                if len(buytarget) > 0 :
+                    watchJumpMarketsMonitor(market=buytarget[0])
+
+                # print (analysis_df)
             else:
                 print('stand by...')
             
@@ -176,6 +209,47 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                 time.sleep(looptime)
             else:
                 break
+
+def watchJumpMarketsMonitor(loop=False, looptime=1, market=None):
+        idx=0
+        best = []
+        best.append(market)
+
+        while True:
+            df = vctstrade.getTickerMarkets(best).sort_values(by='signed_change_rate', ascending=False)
+            print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+            print('%15s' % 'market'                
+                    ,'%7s' % 'change'
+                    ,'%12s' % '종가'
+                    ,'%13s' % '변화액'
+                    ,'%6s' % '변화율'
+                    ,'%11s' % '고가-종가'
+                    ,'%11s' % '고가-시가'
+                    ,'%11s' % '고가-저가'
+                    ,'%13s' % '시가'
+                    ,'%13s' % '저가'
+                    ,'%13s' % '고가'
+                    ,'%23s' %  'market'
+                    )
+            print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+            for x in df.index:
+                print('%15s' % df['market'][x]
+                    ,'%6s' % df['change'][x]
+                    ,'%15f' % df['trade_price'][x]
+                    ,'%15f' % df['signed_change_price'][x]
+                    ,'%10f' % df['signed_change_rate'][x]
+                    ,'%15f' % (float(df['high_price'][x]) - float(df['trade_price'][x])) 
+                    ,'%15f' % (float(df['high_price'][x]) - float(df['opening_price'][x])) 
+                    ,'%15f' % (float(df['high_price'][x]) - float(df['low_price'][x])) 
+                    ,'%15f' % df['opening_price'][x]
+                    ,'%15f' % df['low_price'][x]
+                    ,'%15f' % df['high_price'][x]
+                    ,'%20s' % vctstrade.getMarketName(df['market'][x])
+                    )
+            if(loop == True):
+                time.sleep(looptime)
+            else:
+                break      
 
 #################################################
 # main
@@ -194,7 +268,7 @@ if __name__ == '__main__':
     # monitorMarkets(loop=True,looptime=5,sort='signed_change_rate',market='KRW')
 
     # watch jump market info 
-    watchJumpMarkets(loop=True, looptime=5, period=8, market='KRW')
+    watchJumpMarkets(loop=True, looptime=5, period=8, market='KRW', trade_price = 1000)
 
     # scheduler = BlockingScheduler()
     # scheduler.add_job(daemon_process, 'interval', seconds=config.INTERVAL_SECONDS)
