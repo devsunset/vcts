@@ -132,6 +132,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                 for i in markets.index:
                     best.append(markets['market'][i])
 
+            print('x')
             stand_df = pd.DataFrame(best, columns=['market'])
 
             df = vctstrade.getTickerMarkets(best).sort_values(by='signed_change_rate', ascending=False)
