@@ -184,7 +184,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                         if int(tdf['trade_price'][x]) > 1000 :
                             continue
                     
-                    if float(tdf['rate_1'][x]) < 4.5 :
+                    if float(tdf['rate_1'][x]) < 3.5 :
                             continue
 
                     if float(tdf['rate_'+str(period-3)][x]) < 0.5 :
@@ -243,7 +243,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
                             buy_amount = 0
                             break
 
-                        if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) < -3.35:
+                        if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) < -3.5:
                             print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
                             print('%15s' % 'market'                
                                     ,'%7s' % 'change'
