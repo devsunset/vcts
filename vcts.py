@@ -236,7 +236,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
 
                         if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) > 3.55:
                             fund_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ( (float(df['trade_price'][x]) * buy_cnt) * 0.05 )   
-                            logger.warning('### ___SELL_PLUS___',fund_amout)
+                            print('### ___SELL_PLUS___',fund_amout)
                             buytarget = []
                             amount = []
                             buy_cnt = 0
@@ -245,7 +245,7 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
 
                         if  (((float(df['trade_price'][x]) - float(amount[0])) /  float(amount[0]) ) * 100) < -2.55:
                             fund_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ( (float(df['trade_price'][x]) * buy_cnt) * 0.05 )   
-                            logger.warning('### ___SELL_MINUS___',fund_amout)
+                            print('### ___SELL_MINUS___',fund_amout)
                             buytarget = []
                             amount = []
                             buy_cnt = 0
