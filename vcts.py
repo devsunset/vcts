@@ -135,7 +135,6 @@ def watchJumpMarkets(loop=False, looptime=3, period=7, market=None, trade_price=
             stand_df = pd.DataFrame(best, columns=['market'])
 
             df = vctstrade.getTickerMarkets(best).sort_values(by='signed_change_rate', ascending=False)
-            logger.warning('--- df  len :'+str(len(df)))
                         
             now_df =  pd.DataFrame(df, columns=['market','trade_price'])
             now_df[datetime.datetime.now().strftime("%H:%M:%S")] = now_df['trade_price']
