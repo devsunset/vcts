@@ -215,8 +215,6 @@ def watchJumpMarkets(looptime=10, period=7, market=None, trade_price=None):
 
                     buytarget.append(tdf['market'][x])
 
-                logger.warning('buytarget : '+str(len(buytarget)))
-
                 if len(buytarget) > 0 :
                      # signed_change_rate 변화율
                      # trade_volume	가장 최근 거래량	
@@ -234,7 +232,7 @@ def watchJumpMarkets(looptime=10, period=7, market=None, trade_price=None):
                      hold_exit = 0
 
                      while True:
-                        logger.warning('check------------------  ')
+                        logger.warning('check ------------------  ')
                         df = vctstrade.getTickerMarkets(choice).sort_values(by='signed_change_rate', ascending=False)
                         buy_amount = buy_cnt * float(amount)
                         
