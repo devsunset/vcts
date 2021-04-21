@@ -230,7 +230,6 @@ def watchJumpMarkets(looptime=10, period=7, market=None, trade_price=None):
                      fund_amount = fund_amount - (buy_cnt * float(amount))
                      up_skip = 0
                      hold_exit = 0
-                     print_cnt =  0
 
                      while True:
                         df = vctstrade.getTickerMarkets(choice).sort_values(by='signed_change_rate', ascending=False)
@@ -260,18 +259,17 @@ def watchJumpMarkets(looptime=10, period=7, market=None, trade_price=None):
                         #         ,'%20s' % vctstrade.getMarketName(df['market'][x])
                         #         )
 
-                        if print_cnt % 5 == 0:
-                            for x in df.index:
-                                print('%15s' % df['market'][x]
-                                    ,'%6s' % df['change'][x]
-                                    ,'%15f' % amount
-                                    ,'%15f' % df['trade_price'][x]
-                                    ,'%15f' % (float(df['trade_price'][x]) - float(amount))
-                                    ,'%10f' % (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100)
-                                    ,'%15f' % buy_cnt
-                                    ,'%15f' % ((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))
-                                    ,'%20s' % vctstrade.getMarketName(df['market'][x])
-                                    )
+                        for x in df.index:
+                            print('%15s' % df['market'][x]
+                                ,'%6s' % df['change'][x]
+                                ,'%15f' % amount
+                                ,'%15f' % df['trade_price'][x]
+                                ,'%15f' % (float(df['trade_price'][x]) - float(amount))
+                                ,'%10f' % (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100)
+                                ,'%15f' % buy_cnt
+                                ,'%15f' % ((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))
+                                ,'%20s' % vctstrade.getMarketName(df['market'][x])
+                                )
 
                         if up_skip > 0:
                             if  up_skip >= (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ) and (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) > SELL_UP_RATE:
@@ -330,7 +328,6 @@ def watchJumpMarkets(looptime=10, period=7, market=None, trade_price=None):
                                 break
 
                         hold_exit = hold_exit+1
-                        print_cnt = print_cnt+1
                         time.sleep(3)
             else:
                 logger.warning('ready ...')
