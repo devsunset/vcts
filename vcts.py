@@ -44,8 +44,8 @@ vctstrade  = vcts_trade.VctsTrade()
 COMMISSION = 0.005
 
 # sell up rate
-SELL_UP_RATE = 1.5
-SELL_UP_MAX_RATE = 4.5
+SELL_UP_RATE = 1.55
+SELL_UP_MAX_RATE = 4.55
 SELL_UP_SKIP_RATE = 1.75
 SELL_HOLD_UP_RATE = 0.55
 
@@ -328,7 +328,7 @@ def watchJumpMarkets(looptime=10, period=7, market=None, trade_price=None):
                                 break
 
                         hold_exit = hold_exit+1
-                        time.sleep(2)
+                        time.sleep(3)
             else:
                 logger.warning('ready ...')
 
