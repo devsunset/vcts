@@ -44,13 +44,13 @@ vctstrade  = vcts_trade.VctsTrade()
 COMMISSION = 0.005
 
 # sell up rate
-SELL_UP_RATE = 1.55
-SELL_UP_MAX_RATE = 4.55
-SELL_UP_SKIP_RATE = 1.75
+SELL_UP_RATE = 1.5
+SELL_UP_MAX_RATE = 3.0
+SELL_UP_SKIP_RATE = 1.55
 SELL_HOLD_UP_RATE = 0.55
 
 # sell down rate
-SELL_DOWN_RATE = -1.75
+SELL_DOWN_RATE = -1.45
 
 ##################################################
 # biz function
@@ -215,6 +215,8 @@ def watchJumpMarkets(looptime=10, period=7, market=None, trade_price=None):
 
                     buytarget.append(tdf['market'][x])
 
+                logger.warning('buytarget : '+str(len(buytarget)))
+
                 if len(buytarget) > 0 :
                      # signed_change_rate 변화율
                      # trade_volume	가장 최근 거래량	
@@ -232,6 +234,7 @@ def watchJumpMarkets(looptime=10, period=7, market=None, trade_price=None):
                      hold_exit = 0
 
                      while True:
+                        logger.warning('check------------------  ')
                         df = vctstrade.getTickerMarkets(choice).sort_values(by='signed_change_rate', ascending=False)
                         buy_amount = buy_cnt * float(amount)
                         
