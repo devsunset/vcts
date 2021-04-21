@@ -45,12 +45,12 @@ COMMISSION = 0.005
 
 # sell up rate
 SELL_UP_RATE = 1.5
-SELL_UP_MAX_RATE = 5
+SELL_UP_MAX_RATE = 4.5
 SELL_UP_SKIP_RATE = 1.75
 SELL_HOLD_UP_RATE = 0.55
 
 # sell down rate
-SELL_DOWN_RATE = -2.45
+SELL_DOWN_RATE = -1.75
 
 ##################################################
 # biz function
@@ -210,7 +210,7 @@ def watchJumpMarkets(looptime=10, period=7, market=None, trade_price=None):
                         if float(tdf['rate_'+str(c)][x]) > 0 :
                                 continue
 
-                    if float(tdf['rate_'+str(period-3)][x]) < 0.3 :
+                    if float(tdf['rate_'+str(period-3)][x]) < 0.15 :
                             continue
 
                     buytarget.append(tdf['market'][x])
