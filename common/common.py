@@ -122,6 +122,7 @@ class Common():
 
     # telegram message send
     def send_telegram_msg(self, msg):
+        
         try:
             # bot.deleteWebhook()
             # try:

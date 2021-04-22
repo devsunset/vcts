@@ -41,7 +41,7 @@ MARKETS  = {}
 # biz function
 
 pd.set_option('display.max_rows', 1000)
-pd.set_option('display.max_columns', 200)
+pd.set_option('display.max_columns', 50)
 pd.set_option('display.width', 250)
 
 class VctsTrade():
@@ -89,7 +89,7 @@ class VctsTrade():
 
     # get markets info
     def getMarkets(self):        
-        markets = comm.searchDB("SELECT * FROM VCTS_META")
+        markets = comm.searchDB("select market,korean_name,english_name,market_warning,substr(market,0,instr(market,'-')) as market_type from vcts_meta")
         return markets
 
     # get ticker markets
