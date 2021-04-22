@@ -44,14 +44,14 @@ comm = common.Common()
 vctstrade  = vcts_trade.VctsTrade()
 
 # buy choose up rate
-BUY_CHOOSE_UP_RATE = 2
+BUY_CHOOSE_UP_RATE = 1.35
 
 # condition rate value
-SELL_UP_RATE = 3 # minum 1.5 over value setting
+SELL_UP_RATE = 1.55 # minum 1.5 over value setting
 SELL_UP_MAX_RATE = SELL_UP_RATE*3
 SELL_UP_SKIP_RATE = (SELL_UP_RATE/2)+(SELL_UP_RATE/4)
 SELL_UP_HOLD_RATE = SELL_UP_RATE/2
-SELL_DOWN_RATE = -(SELL_UP_RATE/2)
+SELL_DOWN_RATE = -1.5 #-(SELL_UP_RATE/2)
 
 # upbit krw market commission
 COMMISSION = 0.005
@@ -223,7 +223,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                     logger.warning('monitor market ... -> sell_up_count : '+str(sell_up_count)+' sell_down_count : '+str(sell_down_count)+' sell_hold_exit_count : '+str(sell_hold_exit_count))
 
                     # choose buy market 
-                    firstCol =  tdf.columns.tolist()[2]
+                    firstCol =  tdf.columns.tolist()[2+ int((period-1)/2)]
                     lastCol =   tdf.columns.tolist()[period-1]
 
                     for x in tdf.index:
@@ -237,6 +237,15 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                         firstval = float(tdf[firstCol][x])
                         lastval = float(tdf[lastCol][x])
                         period_rate = ((lastval - firstval) / firstval ) * 100
+
+                        if float(tdf['rate_1'][x]) > 0 :
+                            continue 
+
+                        if float(tdf['rate_2'][x]) > 0 :
+                            continue 
+
+                        if float(tdf['rate_3'][x]) > 0 :
+                            continue 
            
                         if float(tdf['rate_'+str(period-3)][x]) > BUY_CHOOSE_UP_RATE :
                                 pass
@@ -269,7 +278,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
 
                         while True:
                             logger.warning('----------------------------------------------------------------------------------------------------------------------------------')
-                            df = vctstrade.getTickerMarkets(choice).sort_values(by='signed_change_rate', ascending=False)
+                            df = vctstrade.getTickerMarkets(choice).sort_values(by='trade_volume', ascending=False)
                             buy_amount = buy_cnt * float(amount)
 
                             for x in df.index:
@@ -296,7 +305,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                                         print('#######################################')
                                         print('### ___SELL_PLUS___###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ) ,' = ', sell_amout)
                                         print('#######################################')
-                                        comm.log('___SELL_PLUS___'+vctstrade.getMarketName(df['market'][x])+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))),'Y')
+                                        comm.log('___PLUS___'+vctstrade.getMarketName(df['market'][x])+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))),'Y')
                                         fund_amount = fund_amount + sell_amout
                                         buymarket = []
                                         buy_cnt = 0
@@ -310,7 +319,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                                     print('#######################################')
                                     print('### ___SELL_PLUS___###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ) ,' = ', sell_amout)
                                     print('#######################################')
-                                    comm.log('___SELL_PLUS___'+vctstrade.getMarketName(df['market'][x])+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))),'Y')
+                                    comm.log('___PLUS___'+vctstrade.getMarketName(df['market'][x])+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))),'Y')
                                     fund_amount = fund_amount + sell_amout
                                     buymarket = []
                                     buy_cnt = 0
@@ -328,7 +337,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                                     print('#######################################')
                                     print('### ___SELL_HOLD_EXIST___###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ) ,' = ', sell_amout)
                                     print('#######################################')
-                                    comm.log('___SELL_HOLD_EXIST___'+vctstrade.getMarketName(df['market'][x])+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))),'Y')
+                                    comm.log('___HOLD_EXIST___'+vctstrade.getMarketName(df['market'][x])+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))),'Y')
                                     fund_amount = fund_amount + sell_amout
                                     buymarket = []
                                     buy_cnt = 0
@@ -342,7 +351,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                                 print('#######################################')
                                 print('### ___SELL_MINUS___###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ) ,' = ', sell_amout)
                                 print('#######################################')
-                                comm.log('___SELL_MINUS___'+vctstrade.getMarketName(df['market'][x])+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))),'Y')
+                                comm.log('___MINUS___'+vctstrade.getMarketName(df['market'][x])+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))),'Y')
                                 fund_amount = fund_amount + sell_amout
                                 buymarket = []
                                 buy_cnt = 0
@@ -363,7 +372,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
 # main
 if __name__ == '__main__':
     # watch jump market info 
-    watchJumpMarkets(looptime=5, period=12, targetMarket=['KRW'])
+    watchJumpMarkets(looptime=10, period=10, targetMarket=['KRW'])
 
     # moinitor markets info
     # monitorMarkets(loop=False, looptime=5, sort='signed_change_rate', targetMarket=['KRW'])
