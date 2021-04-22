@@ -47,7 +47,7 @@ vctstrade  = vcts_trade.VctsTrade()
 BUY_CHOOSE_UP_RATE = 2
 
 # condition rate value
-SELL_UP_RATE = 4 # minum 1.5 over value setting
+SELL_UP_RATE = 3 # minum 1.5 over value setting
 SELL_UP_MAX_RATE = SELL_UP_RATE*3
 SELL_UP_SKIP_RATE = (SELL_UP_RATE/2)+(SELL_UP_RATE/4)
 SELL_UP_HOLD_RATE = SELL_UP_RATE/2
@@ -322,7 +322,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                             if  (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) > SELL_UP_RATE:
                                 up_skip = (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION )  
 
-                            if hold_exit > ((60/looptime)*90):
+                            if hold_exit > ((60/looptime)*15):
                                 if  (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) > SELL_UP_HOLD_RATE:
                                     sell_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION )   
                                     print('#######################################')
