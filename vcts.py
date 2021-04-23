@@ -47,7 +47,7 @@ vctstrade  = vcts_trade.VctsTrade()
 BUY_CHOOSE_UP_RATE = 0.25
 
 # condition rate value
-SELL_UP_RATE = 1.5 # minum 1.1 over value setting
+SELL_UP_RATE = 0.85 # minum 1.1 over value setting
 SELL_HOLD_EXIT_RATE = 0.55 #(commision - even value)
 SELL_DOWN_RATE = -1.45
 
@@ -261,8 +261,8 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
 
                     if len(buymarketTemp) > 0 :
                       for key, value in buymarketTemp.items():    
-                            # print(tabulate(vctstrade.getCandlesMinutes(unit=1,market=key,count=15), headers='keys', tablefmt='psql'))
-                            bdf = vctstrade.getCandlesMinutes(unit=1,market=key,count=15)
+                            # print(tabulate(vctstrade.getCandlesMinutes(unit=1,market=key,count=10), headers='keys', tablefmt='psql'))
+                            bdf = vctstrade.getCandlesMinutes(unit=1,market=key,count=10)
                             upValue = float(value) + ((float(value) * SELL_UP_RATE)/10)
                             downValue = float(value) + ((float(value) * SELL_DOWN_RATE)/10)
                             # print(value,upValue,downValue)
