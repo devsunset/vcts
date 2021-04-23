@@ -44,7 +44,7 @@ comm = common.Common()
 vctstrade  = vcts_trade.VctsTrade()
 
 # buy choose up rate
-BUY_CHOOSE_UP_RATE = 0.7
+BUY_CHOOSE_UP_RATE = 0.5
 
 # condition rate value
 SELL_UP_RATE = 1.1 # minum 1.1 over value setting
@@ -242,15 +242,18 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                             if float(tdf['rate_'+str(s)][x]) > 0 :
                                 pre_rate_down_check = True
                                 break
-
                         if pre_rate_down_check:
                             continue
-           
-                        if float(tdf['rate_'+str(period-3)][x]) > BUY_CHOOSE_UP_RATE :
-                                pass
+
+                        if float(tdf['rate_'+str(period-3)][x]) >= BUY_CHOOSE_UP_RATE :
+                            pass
                         else:
                             if period_rate < BUY_CHOOSE_UP_RATE:
-                                continue
+                                    continue
+                            else:
+                                if float(tdf['rate_'+str(period-3)][x]) <= 0.1 :
+                                    continue
+                                       
                         ###########################################
 
                         # buymakret add
@@ -279,18 +282,15 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                             buy_amount = buy_cnt * float(amount)
 
                             for x in df.index:
-                                print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■'
+                                print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■'
                                     ,df['market'][x] +' : '+vctstrade.getMarketName(df['market'][x])
-                                    ,'BUY_PRICE:'
+                                    ,'PRICE:'
                                     ,'%12f' % amount
-                                    ,'TRADE_PRICE:'
                                     ,'%12f' % df['trade_price'][x]
                                     ,'DIFF:'
                                     ,'%12f' % (float(df['trade_price'][x]) - float(amount))
                                     ,'RATE:'
                                     ,'% 4f' % (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100)
-                                    ,'BUY_COUNT:'
-                                    ,'% 7f' % buy_cnt
                                     ,'FUND:'
                                     ,'%12f' % ((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))
                                     )
