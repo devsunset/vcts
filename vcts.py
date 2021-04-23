@@ -44,12 +44,12 @@ comm = common.Common()
 vctstrade  = vcts_trade.VctsTrade()
 
 # buy choose up rate
-BUY_CHOOSE_UP_RATE = 0.5
+BUY_CHOOSE_UP_RATE = 0.35
 
 # condition rate value
-SELL_UP_RATE = 1.1 # minum 1.1 over value setting
+SELL_UP_RATE = 0.75 # minum 1.1 over value setting
 SELL_HOLD_EXIT_RATE = 0.55 #(commision - even value)
-SELL_DOWN_RATE = -((SELL_UP_RATE/2)+1)
+SELL_DOWN_RATE = -((SELL_UP_RATE/2)+1.5)
 
 # upbit krw market commission
 COMMISSION = 0.005
@@ -259,11 +259,13 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                         # buymakret add
                         buymarket.append(tdf['market'][x])
 
+                    # print(buymarket)
+
                     # buy market logic 
                     if len(buymarket) > 0 :
 
                         ###########################################
-                        dfx = vctstrade.getTickerMarkets(buymarket).sort_values(by='trade_volume', ascending=True)
+                        dfx = vctstrade.getTickerMarkets(buymarket)
                         ###########################################
 
                         choice = []
