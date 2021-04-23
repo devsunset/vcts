@@ -142,11 +142,11 @@ def monitorMarkets(loop=False, looptime=3, sort='signed_change_rate', targetMark
 
 # watch jump markets
 def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BTC','USDT'], trade_price=10000):
-        if looptime < 5:
-            logger.warning('looptime value invalid (minum 5 over) ...')
+        if looptime < 2:
+            logger.warning('looptime value invalid (minum 2 over) ...')
             return 
-        if period < 12:
-            logger.warning('period value invalid (minum 12 over) ...')
+        if period < 6:
+            logger.warning('period value invalid (minum 6 over) ...')
             return 
         # makret + trade_price = 2
         period = period+2
