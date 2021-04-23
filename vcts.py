@@ -279,7 +279,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                             buy_amount = buy_cnt * float(amount)
 
                             for x in df.index:
-                                print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■'
+                                print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■'
                                     ,df['market'][x] +' : '+vctstrade.getMarketName(df['market'][x])
                                     ,'BUY_PRICE:'
                                     ,'%12f' % amount
