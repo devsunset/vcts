@@ -96,6 +96,10 @@ class VctsTrade():
     def getTickerMarkets(self,markets):
         return pd.DataFrame(upbitapi.getQuotationTicker(markets))
 
+    # get candles minutes
+    def getCandlesMinutes(self, unit, market, count):
+        return pd.DataFrame(upbitapi.getQuotationCandlesMinutes(unit=unit, market=market, count=count))
+
     ##########################################################
 
     #  get markets candles mwd data save to db

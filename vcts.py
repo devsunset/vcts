@@ -44,12 +44,12 @@ comm = common.Common()
 vctstrade  = vcts_trade.VctsTrade()
 
 # buy choose up rate
-BUY_CHOOSE_UP_RATE = 0.35
+BUY_CHOOSE_UP_RATE = 0.25
 
 # condition rate value
-SELL_UP_RATE = 0.75 # minum 1.1 over value setting
+SELL_UP_RATE = 1.5 # minum 1.1 over value setting
 SELL_HOLD_EXIT_RATE = 0.55 #(commision - even value)
-SELL_DOWN_RATE = -((SELL_UP_RATE/2)+1.5)
+SELL_DOWN_RATE = -1.45
 
 # upbit krw market commission
 COMMISSION = 0.005
@@ -225,6 +225,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                     centerCol =  tdf.columns.tolist()[int((period-1)/2)]
                     lastCol =   tdf.columns.tolist()[period-1]
 
+                    buymarketTemp = {}
                     for x in tdf.index:
                         #  trade_price over skip
                         if trade_price is not None:
@@ -254,16 +255,32 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                                 if float(tdf['rate_'+str(period-3)][x]) <= 0.1 :
                                     continue
                                        
-                        ###########################################
+                        # buymarketTemp add
+                        buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
+                    # print(buymarketTemp)
 
-                        # buymakret add
-                        buymarket.append(tdf['market'][x])
+                    if len(buymarketTemp) > 0 :
+                      for key, value in buymarketTemp.items():    
+                            # print(tabulate(vctstrade.getCandlesMinutes(unit=1,market=key,count=15), headers='keys', tablefmt='psql'))
+                            bdf = vctstrade.getCandlesMinutes(unit=1,market=key,count=15)
+                            upValue = float(value) + ((float(value) * SELL_UP_RATE)/10)
+                            downValue = float(value) + ((float(value) * SELL_DOWN_RATE)/10)
+                            # print(value,upValue,downValue)
+                            upCheck = 0
+                            downCheck = 0
+                            for x in bdf.index:
+                                if float(bdf['trade_price'][x]) >= upValue :
+                                    upCheck = upCheck +1
+                                if float(bdf['trade_price'][x]) <= downValue :
+                                    downCheck = downCheck +1
 
-                    # print(buymarket)
+                            if (upCheck > 0 and downCheck == 0 ):
+                                buymarket.append(key)
+
+                    ###########################################
 
                     # buy market logic 
                     if len(buymarket) > 0 :
-
                         ###########################################
                         dfx = vctstrade.getTickerMarkets(buymarket)
                         ###########################################
@@ -311,7 +328,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                                     history_df =  pd.DataFrame()
                                     break
 
-                            if hold_exit > ((30*2) * 3):
+                            if hold_exit > ((30*2) * 10):
                                 if  (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) >= SELL_HOLD_EXIT_RATE:
                                     sell_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION )   
                                     print('#######################################')
