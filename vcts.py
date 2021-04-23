@@ -350,7 +350,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
 # main
 if __name__ == '__main__':
     # watch jump market info 
-    watchJumpMarkets(looptime=5, period=12, targetMarket=['KRW'])
+    watchJumpMarkets(looptime=5, period=6, targetMarket=['KRW'])
 
     # moinitor markets info
     # monitorMarkets(loop=False, looptime=5, sort='signed_change_rate', targetMarket=['KRW'])
