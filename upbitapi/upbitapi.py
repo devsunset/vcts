@@ -27,13 +27,20 @@ class UpbitApi():
         server_url string : server url - ex) https://api.upbit.com/v1 \n
         access_key, secret 값이 존재 해야 만 EXCHANGE API 사용 가능\n
         '''
-        self.access_key = access_key
-        self.secret = secret
-
-        if server_url is None:
-            self.server_url = 'https://api.upbit.com/v1'
+        if access_key !='' and access_key is not None:
+            self.access_key = access_key
         else:
+            self.access_key = ''
+
+        if secret !='' and secret is not None:
+            self.secret = secret
+        else:
+            self.secret = ''
+
+        if server_url !='' and server_url is not None:
             self.server_url = server_url
+        else:
+            self.server_url = 'https://api.upbit.com/v1'
 
         self.markets = self.__markets_info()
 
