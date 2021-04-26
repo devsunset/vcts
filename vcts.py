@@ -261,8 +261,8 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
 
                     if len(buymarketTemp) > 0 :
                       for key, value in buymarketTemp.items():    
-                            # print(tabulate(vctstrade.getCandlesMinutes(unit=1,market=key,count=15), headers='keys', tablefmt='psql'))
-                            bdf = vctstrade.getCandlesMinutes(unit=1,market=key,count=15)
+                            # print(tabulate(vctstrade.getCandlesMinutes(unit=1,market=key,count=5), headers='keys', tablefmt='psql'))
+                            bdf = vctstrade.getCandlesMinutes(unit=1,market=key,count=5)
                             plusValue = float(value) + ((float(value) * SELL_PLUS_RATE)/10)
                             minusValue = float(value) + ((float(value) * SELL_MINUS_RATE)/10)
                             # print(value,plusValue,minusValue)
