@@ -48,7 +48,7 @@ BUY_CHOOSE_PLUS_RATE = 0.25
 
 # condition rate value
 SELL_PLUS_RATE = 1.25 
-SELL_MINUS_RATE = -1.0
+SELL_MINUS_RATE = -1.25
 SELL_HOLD_EXIT_RATE = 0.55 #(commision - even value)
 
 # upbit krw market commission
@@ -261,8 +261,8 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
 
                     if len(buymarketTemp) > 0 :
                       for key, value in buymarketTemp.items():    
-                            # print(tabulate(vctstrade.getCandlesMinutes(unit=1,market=key,count=5), headers='keys', tablefmt='psql'))
-                            bdf = vctstrade.getCandlesMinutes(unit=1,market=key,count=5)
+                            # print(tabulate(vctstrade.getCandlesMinutes(unit=1,market=key,count=10), headers='keys', tablefmt='psql'))
+                            bdf = vctstrade.getCandlesMinutes(unit=1,market=key,count=10)
                             plusValue = float(value) + ((float(value) * SELL_PLUS_RATE)/10)
                             minusValue = float(value) + ((float(value) * SELL_MINUS_RATE)/10)
                             # print(value,plusValue,minusValue)
