@@ -219,7 +219,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                     # sort last rate value
                     tdf = analysis_df.sort_values(by='rate_'+str(period-3), ascending=False)
 
-                    logger.warning('monitor market ... -> plus : '+str(sell_up_count)+' minus : '+str(sell_down_count)+' hold : '+str(sell_hold_exit_count))+' fund : '+str(fund_amount))
+                    logger.warning('monitor market ... -> plus : '+str(sell_up_count)+' minus : '+str(sell_down_count)+' hold : '+str(sell_hold_exit_count)+' fund : '+str(fund_amount))
 
                     # choose buy market 
                     centerCol =  tdf.columns.tolist()[int((period-1)/2)]
