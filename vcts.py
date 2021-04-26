@@ -47,10 +47,9 @@ vctstrade  = vcts_trade.VctsTrade()
 BUY_CHOOSE_PLUS_RATE = 0.25
 
 # condition rate value
-SELL_PLUS_RATE = 0.9
-SELL_PLUS_MAX_RATE = 2.5
+SELL_PLUS_RATE = 0.85
 SELL_MINUS_RATE = -1.0
-SELL_MINUS_MIN_RATE = -1.35
+SELL_MINUS_MIN_RATE = -1.45
 
 # upbit krw market commission
 COMMISSION = 0.005
@@ -152,7 +151,7 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
         # makret + trade_price = 2
         period = period+2
 
-        print('SELL_PLUS_RATE:',SELL_PLUS_RATE,', SELL_PLUS_MAX_RATE:',SELL_PLUS_MAX_RATE,', SELL_MINUS_RATE:',SELL_MINUS_RATE,', SELL_MINUS_MIN_RATE:',SELL_MINUS_MIN_RATE)
+        print('SELL_PLUS_RATE:',SELL_PLUS_RATE,', SELL_MINUS_RATE:',SELL_MINUS_RATE,', SELL_MINUS_MIN_RATE:',SELL_MINUS_MIN_RATE)
 
         selectMarkets = []
         buymarket = []
@@ -326,20 +325,6 @@ def watchJumpMarkets(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                                     sell_plus_count = sell_plus_count+1
                                     history_df =  pd.DataFrame()
                                     break
-
-                                # if (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) >= SELL_PLUS_MAX_RATE:
-                                #     sell_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION )   
-                                #     print('#######################################################')
-                                #     print('### [SELL_PLUS_MAX] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ) ,' = ', sell_amout)
-                                #     print('#######################################################')
-                                #     comm.log('[PLUS] '+vctstrade.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * COMMISSION ))),'Y')
-                                #     fund_amount = fund_amount + sell_amout
-                                #     buymarket = []
-                                #     buy_cnt = 0
-                                #     buy_amount = 0
-                                #     sell_plus_count = sell_plus_count+1
-                                #     history_df =  pd.DataFrame()
-                                #     break
 
                             if (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) <= SELL_MINUS_RATE:
                                 bdf = vctstrade.getCandlesMinutes(unit=1,market=key,count=30)
