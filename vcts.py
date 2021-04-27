@@ -229,6 +229,10 @@ def automaticTrade_1(looptime=2, period=6, market=None, targetMarket=['KRW','BTC
 
                     logger.warning('monitor market ... -> plus : '+str(sell_plus_count)+' minus : '+str(sell_minus_count)+' investment : '+str(investment_amount))
 
+                      # choose buy market 
+                    centerCol =  tdf.columns.tolist()[int((period-1)/2)]
+                    lastCol =   tdf.columns.tolist()[period-1]
+
                     buymarketTemp = {}
                     for x in tdf.index:
                         #  max_trade_price over skip
