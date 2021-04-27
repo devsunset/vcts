@@ -53,17 +53,17 @@ UPBIT_KRW_COMMISSION = 0.005
 BUY_CHECK_TIME_SLEEP = 2
 
 # condition rate value
-TARGET_BUY_RATE_1 = 0.25
+TARGET_BUY_RATE_1 = 0.35
 SELL_PLUS_RATE_1 = 0.85
-SELL_MINUS_RATE_1 = -1.45
+SELL_MINUS_RATE_1 = -1.35
 
 TARGET_BUY_RATE_2 = 3.0
 SELL_PLUS_RATE_2 = 3.5
-SELL_MINUS_RATE_2 = -3.5
+SELL_MINUS_RATE_2 = -5.5
 
-TARGET_BUY_RATE_3 = 3.0
-SELL_PLUS_RATE_3 = 3.5
-SELL_MINUS_RATE_3 = -3.5
+TARGET_BUY_RATE_3 = 5.5
+SELL_PLUS_RATE_3 = 5.5
+SELL_MINUS_RATE_3 = -5.0
 
 ##################################################
 # biz function
@@ -822,7 +822,7 @@ class VctsTrade():
                 time.sleep(looptime)
 
     # automatic trade 3
-    def automaticTrade_3(self, looptime=5, period=12, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
+    def automaticTrade_3(self, looptime=5, period=24, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
             if looptime < 5:
                 logger.warning('looptime value invalid (minum 5 over) ...')
                 return 
@@ -928,8 +928,8 @@ class VctsTrade():
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
-                                    # print(tabulate(self.getCandlesMinutes(unit=5,market=key,count=36), headers='keys', tablefmt='psql'))
-                                    bdf = self.getCandlesMinutes(unit= 5,market=key,count=36)
+                                    # print(tabulate(self.getCandlesMinutes(unit=60,market=key,count=12), headers='keys', tablefmt='psql'))
+                                    bdf = self.getCandlesMinutes(unit= 60,market=key,count=12)
                                     nowValue = float(value)
                                     # print(value,plusValue,minusValue)
                                     plusCheck = 0
