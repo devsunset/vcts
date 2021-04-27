@@ -57,13 +57,13 @@ TARGET_BUY_RATE_1 = 0.25
 SELL_PLUS_RATE_1 = 0.85
 SELL_MINUS_RATE_1 = -1.45
 
-TARGET_BUY_RATE_2 = 5.0
-SELL_PLUS_RATE_2 = 7.5
-SELL_MINUS_RATE_2 = -4.5
+TARGET_BUY_RATE_2 = 3.0
+SELL_PLUS_RATE_2 = 3.5
+SELL_MINUS_RATE_2 = -3.5
 
-TARGET_BUY_RATE_3 = 5.0
-SELL_PLUS_RATE_3 = 7.5
-SELL_MINUS_RATE_3 = -4.5
+TARGET_BUY_RATE_3 = 3.0
+SELL_PLUS_RATE_3 = 3.5
+SELL_MINUS_RATE_3 = -3.5
 
 ##################################################
 # biz function
@@ -424,9 +424,9 @@ class VctsTrade():
                 break
 
     # automatic trade1
-    def automaticTrade_1(self, looptime=2, period=6, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
-            if looptime < 2:
-                logger.warning('looptime value invalid (minum 2 over) ...')
+    def automaticTrade_1(self, looptime=5, period=6, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
+            if looptime < 5:
+                logger.warning('looptime value invalid (minum 5 over) ...')
                 return 
             if period < 6:
                 logger.warning('period value invalid (minum 6 over) ...')
@@ -543,8 +543,8 @@ class VctsTrade():
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
-                                    # print(tabulate(self.getCandlesMinutes(unit=1,market=key,count=10), headers='keys', tablefmt='psql'))
-                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=10)
+                                    # print(tabulate(self.getCandlesMinutes(unit=1,market=key,count=5), headers='keys', tablefmt='psql'))
+                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=5)
                                     plusValue = float(value) + ((float(value) * SELL_PLUS_RATE_1)/10)
                                     minusValue = float(value) + ((float(value) * SELL_MINUS_RATE_1)/10)
                                     # print(value,plusValue,minusValue)
@@ -635,8 +635,8 @@ class VctsTrade():
 
     # automatic trade 2
     def automaticTrade_2(self, looptime=5, period=12, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
-            if looptime < 4:
-                logger.warning('looptime value invalid (minum 4 over) ...')
+            if looptime < 5:
+                logger.warning('looptime value invalid (minum 5 over) ...')
                 return 
             if period < 12:
                 logger.warning('period value invalid (minum 12 over) ...')
@@ -741,8 +741,8 @@ class VctsTrade():
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
-                                    # print(tabulate(self.getCandlesMinutes(unit=60,market=key,count=12), headers='keys', tablefmt='psql'))
-                                    bdf = self.getCandlesMinutes(unit= 60,market=key,count=10)
+                                    # print(tabulate(self.getCandlesMinutes(unit=5,market=key,count=36), headers='keys', tablefmt='psql'))
+                                    bdf = self.getCandlesMinutes(unit= 5,market=key,count=36)
                                     nowValue = float(value)
                                     # print(value,plusValue,minusValue)
                                     plusCheck = 0
@@ -822,9 +822,9 @@ class VctsTrade():
                 time.sleep(looptime)
 
     # automatic trade 3
-    def automaticTrade_3(self, looptime=4, period=12, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
-            if looptime < 4:
-                logger.warning('looptime value invalid (minum 4 over) ...')
+    def automaticTrade_3(self, looptime=5, period=12, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
+            if looptime < 5:
+                logger.warning('looptime value invalid (minum 5 over) ...')
                 return 
             if period < 12:
                 logger.warning('period value invalid (minum 12 over) ...')
@@ -928,8 +928,8 @@ class VctsTrade():
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
-                                    # print(tabulate(self.getCandlesMinutes(unit=60,market=key,count=10), headers='keys', tablefmt='psql'))
-                                    bdf = self.getCandlesMinutes(unit= 60,market=key,count=10)
+                                    # print(tabulate(self.getCandlesMinutes(unit=5,market=key,count=36), headers='keys', tablefmt='psql'))
+                                    bdf = self.getCandlesMinutes(unit= 5,market=key,count=36)
                                     nowValue = float(value)
                                     # print(value,plusValue,minusValue)
                                     plusCheck = 0
