@@ -60,6 +60,10 @@ if __name__ == '__main__':
         # automatic trade 2
         vctstrade.automaticTrade_2(looptime=5, period=16, targetMarket=['KRW'])
 
+    if config.EXECUTE_FUNCTION == 'automaticTrade_3':
+        # automatic trade 3
+        vctstrade.automaticTrade_3(looptime=5, period=16, targetMarket=['KRW'])
+
     ###############################################
 
     # get candles chart data &  save to db
