@@ -839,8 +839,7 @@ class VctsTrade():
             history_df =  pd.DataFrame()
             investment_amount = INIT_INVESTMENT
             idx=0
-            sell_plus_count = 0
-            sell_minus_count = 0
+            sell_count = 0
 
             # get market info data
             markets = self.getMarkets()
@@ -899,7 +898,7 @@ class VctsTrade():
                         # sort last rate value
                         tdf = analysis_df.sort_values(by='rate_'+str(period-3), ascending=False)
 
-                        logger.warning('monitor market ... -> plus : '+str(sell_plus_count)+' minus : '+str(sell_minus_count)+' investment : '+str(investment_amount))
+                        logger.warning('monitor market ... -> sell : '+str(sell_count)+' investment : '+str(investment_amount))
 
                         buymarketTemp = {}
                         for x in tdf.index:
@@ -982,7 +981,6 @@ class VctsTrade():
                                 if (((float(df['trade_price'][x]) - float(check_amount)) /  float(check_amount) ) * 100) <= SELL_MINUS_RATE_3:
                                         sell_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION )   
                                         print('#######################################################')
-                                        print('### [SELL] ###',(float(amount) * buy_cnt) ,' - ', ((float(amount) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
                                         print('### [SELL] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
                                         print('#######################################################')
                                         # comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
@@ -990,7 +988,7 @@ class VctsTrade():
                                         buymarket = []
                                         buy_cnt = 0
                                         buy_amount = 0
-                                        sell_minus_count = sell_minus_count+1
+                                        sell_count = sell_count+1
                                         history_df =  pd.DataFrame()
                                         break
 
