@@ -635,8 +635,8 @@ class VctsTrade():
 
     # automatic trade 2
     def automaticTrade_2(self, looptime=5, period=12, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
-            if looptime < 5:
-                logger.warning('looptime value invalid (minum 5 over) ...')
+            if looptime < 4:
+                logger.warning('looptime value invalid (minum 4 over) ...')
                 return 
             if period < 12:
                 logger.warning('period value invalid (minum 12 over) ...')
@@ -822,9 +822,9 @@ class VctsTrade():
                 time.sleep(looptime)
 
     # automatic trade 3
-    def automaticTrade_3(self, looptime=5, period=12, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
-            if looptime < 5:
-                logger.warning('looptime value invalid (minum 5 over) ...')
+    def automaticTrade_3(self, looptime=4, period=12, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
+            if looptime < 4:
+                logger.warning('looptime value invalid (minum 4 over) ...')
                 return 
             if period < 12:
                 logger.warning('period value invalid (minum 12 over) ...')
