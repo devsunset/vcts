@@ -59,9 +59,9 @@ TARGET_BUY_RATE_1 = 0.25
 SELL_PLUS_RATE_1 = 1.0
 SELL_MINUS_RATE_1 = -1.5
 
-TARGET_BUY_RATE_2 = 4.0
+TARGET_BUY_RATE_2 = 5.0
 SELL_PLUS_RATE_2 = 5.5
-SELL_MINUS_RATE_2 = -2.5
+SELL_MINUS_RATE_2 = -3.5
 
 ##################################################
 # biz function
@@ -494,7 +494,7 @@ def automaticTrade_2(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                             logger.warning('----------------------------------------------------------------------------------------------------------------------------------')
                             df = vctstrade.getTickerMarkets(choice)
                             buy_amount = buy_cnt * float(amount)
-
+                            
                             for x in df.index:
                                 print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■'
                                     ,df['market'][x] +' : '+vctstrade.getMarketName(df['market'][x])
@@ -509,7 +509,7 @@ def automaticTrade_2(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                                     ,'%12f' % ((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))
                                     )
 
-                            if (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) >= SELL_PLUS_RATE_2:
+                            if (((float(df['trade_price'][x]) - float(check_amount)) /  float(check_amount) ) * 100) >= SELL_PLUS_RATE_2:
                                     sell_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION )   
                                     print('#######################################################')
                                     print('### [SELL_PLUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
@@ -523,14 +523,7 @@ def automaticTrade_2(looptime=5, period=12, market=None, targetMarket=['KRW','BT
                                     history_df =  pd.DataFrame()
                                     break
 
-                            if (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) <= SELL_MINUS_RATE_2:
-                                bdf = vctstrade.getCandlesMinutes(unit=1,market=key,count=10)
-                                minusValue = float(df['trade_price'][x])
-                                minusCheck = 0
-                                for x in bdf.index:
-                                    if float(bdf['trade_price'][x]) <= minusValue :
-                                        minusCheck = minusCheck +1
-                                if (minusCheck == 0 ):                                    
+                            if (((float(df['trade_price'][x]) - float(check_amount)) /  float(check_amount) ) * 100) <= SELL_MINUS_RATE_2:
                                     sell_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION )   
                                     print('#######################################################')
                                     print('### [SELL_MINUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
@@ -562,7 +555,7 @@ if __name__ == '__main__':
 
     if config.EXECUTE_FUNCTION == 'automaticTrade_2':
         # automatic trade 2
-        automaticTrade_2(looptime=5, period=6, targetMarket=['KRW'])
+        automaticTrade_2(looptime=5, period=16, targetMarket=['KRW'])
 
 
     ###############################################
