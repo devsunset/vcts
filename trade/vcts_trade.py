@@ -55,15 +55,15 @@ BUY_CHECK_TIME_SLEEP = 2
 # condition rate value
 TARGET_BUY_RATE_1 = 0.25
 SELL_PLUS_RATE_1 = 0.85
-SELL_MINUS_RATE_1 = -1.5
+SELL_MINUS_RATE_1 = -1.45
 
-TARGET_BUY_RATE_2 = 4.5
-SELL_PLUS_RATE_2 = 5.5
-SELL_MINUS_RATE_2 = -3.5
+TARGET_BUY_RATE_2 = 5.0
+SELL_PLUS_RATE_2 = 7.5
+SELL_MINUS_RATE_2 = -4.5
 
-TARGET_BUY_RATE_3 = 4.5
-SELL_PLUS_RATE_3 = 5.5
-SELL_MINUS_RATE_3 = -3.5
+TARGET_BUY_RATE_3 = 5.0
+SELL_PLUS_RATE_3 = 7.5
+SELL_MINUS_RATE_3 = -4.5
 
 ##################################################
 # biz function
@@ -543,8 +543,8 @@ class VctsTrade():
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
-                                    # print(tabulate(self.getCandlesMinutes(unit=1,market=key,count=5), headers='keys', tablefmt='psql'))
-                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=5)
+                                    # print(tabulate(self.getCandlesMinutes(unit=1,market=key,count=10), headers='keys', tablefmt='psql'))
+                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=10)
                                     plusValue = float(value) + ((float(value) * SELL_PLUS_RATE_1)/10)
                                     minusValue = float(value) + ((float(value) * SELL_MINUS_RATE_1)/10)
                                     # print(value,plusValue,minusValue)
@@ -597,7 +597,7 @@ class VctsTrade():
                                         print('#######################################################')
                                         print('### [SELL_PLUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
                                         print('#######################################################')
-                                        # comm.log('[PLUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
+                                        comm.log('[PLUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
                                         investment_amount = investment_amount + sell_amout
                                         buymarket = []
                                         buy_cnt = 0
@@ -618,7 +618,7 @@ class VctsTrade():
                                         print('#######################################################')
                                         print('### [SELL_MINUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
                                         print('#######################################################')
-                                        # comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
+                                        comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
                                         investment_amount = investment_amount + sell_amout
                                         buymarket = []
                                         buy_cnt = 0
@@ -742,7 +742,7 @@ class VctsTrade():
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
                                     # print(tabulate(self.getCandlesMinutes(unit=60,market=key,count=12), headers='keys', tablefmt='psql'))
-                                    bdf = self.getCandlesMinutes(unit= 60,market=key,count=6)
+                                    bdf = self.getCandlesMinutes(unit= 60,market=key,count=10)
                                     nowValue = float(value)
                                     # print(value,plusValue,minusValue)
                                     plusCheck = 0
@@ -792,7 +792,7 @@ class VctsTrade():
                                         print('#######################################################')
                                         print('### [SELL_PLUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
                                         print('#######################################################')
-                                        # comm.log('[PLUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
+                                        comm.log('[PLUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
                                         investment_amount = investment_amount + sell_amout
                                         buymarket = []
                                         buy_cnt = 0
@@ -806,7 +806,7 @@ class VctsTrade():
                                         print('#######################################################')
                                         print('### [SELL_MINUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
                                         print('#######################################################')
-                                        # comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
+                                        comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
                                         investment_amount = investment_amount + sell_amout
                                         buymarket = []
                                         buy_cnt = 0
@@ -928,8 +928,8 @@ class VctsTrade():
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
-                                    # print(tabulate(self.getCandlesMinutes(unit=60,market=key,count=12), headers='keys', tablefmt='psql'))
-                                    bdf = self.getCandlesMinutes(unit= 60,market=key,count=6)
+                                    # print(tabulate(self.getCandlesMinutes(unit=60,market=key,count=10), headers='keys', tablefmt='psql'))
+                                    bdf = self.getCandlesMinutes(unit= 60,market=key,count=10)
                                     nowValue = float(value)
                                     # print(value,plusValue,minusValue)
                                     plusCheck = 0
@@ -983,7 +983,7 @@ class VctsTrade():
                                         print('#######################################################')
                                         print('### [SELL] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
                                         print('#######################################################')
-                                        # comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
+                                        comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
                                         investment_amount = investment_amount + sell_amout
                                         buymarket = []
                                         buy_cnt = 0
