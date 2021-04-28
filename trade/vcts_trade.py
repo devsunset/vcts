@@ -55,12 +55,13 @@ UPBIT_KRW_COMMISSION = 0.005
 BUY_CHECK_TIME_SLEEP = 1
 
 # condition rate value
-TARGET_BUY_RATE_1 = -1.0
+TARGET_BUY_RATE_1 = -0.5
 SELL_PLUS_RATE_1 = 1.0
 SELL_MINUS_RATE_1 = -1.0
 
 TARGET_BUY_RATE_2 = 3.0
-SELL_PLUS_RATE_2 = 3.5
+SELL_PLUS_RATE_2 = 3.0
+SELL_PLUS_HOLD_RATE_2 = 3.0
 SELL_MINUS_RATE_2 = -1.25
 
 ##################################################
@@ -328,13 +329,14 @@ class VctsTrade():
                             if pre_rate_check:
                                 continue
 
-                            # print(tdf['market'][x],tdf['rate_1'][x])
-
                             # down rate 
                             if period_rate >= TARGET_BUY_RATE_1:
                                  continue
                                         
+                            # print(tdf['market'][x],tdf['rate_1'][x])
                             buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
+
+                        # print(buymarketTemp)
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():                                        
@@ -447,7 +449,7 @@ class VctsTrade():
             # makret + trade_price = 2
             period = period+2
 
-            print('automaticTrade_2 => ','SELL_PLUS_RATE_2:',SELL_PLUS_RATE_2,', SELL_MINUS_RATE_2:',SELL_MINUS_RATE_2)
+            print('automaticTrade_2 => ','SELL_PLUS_RATE_2:',SELL_PLUS_RATE_2,'SELL_PLUS_HOLD_RATE_2:',SELL_PLUS_HOLD_RATE_2,', SELL_MINUS_RATE_2:',SELL_MINUS_RATE_2)
 
             selectMarkets = []
             buymarket = []
@@ -552,12 +554,12 @@ class VctsTrade():
                                     #         plusCheck = plusCheck +1
 
                                     # if (plusCheck == 0 ):
-                                        ask_bid = self.getTradesTicksMarket(market=key,count=30)
+                                        ask_bid = self.getTradesTicksMarket(market=key,count=15)
                                         bid_check = 0
                                         for ab in ask_bid.index:
                                             if ask_bid['ask_bid'][ab] == 'BID':
                                                 bid_check = bid_check +1
-                                        if (bid_check >=25 ):
+                                        if (bid_check >=12 ):
                                             buymarket.append(key)
                             ###########################################
                             #  CHOICE MARKET LOGIC END
@@ -574,6 +576,8 @@ class VctsTrade():
 
                             buy_cnt = investment_amount/float(amount)
                             investment_amount = investment_amount - (buy_cnt * float(amount))
+
+                            hold_cnt = 0
 
                             while True:
                                 logger.warning('----------------------------------------------------------------------------------------------------------------')
@@ -608,20 +612,39 @@ class VctsTrade():
                                         sell_plus_count = sell_plus_count+1
                                         history_df =  pd.DataFrame()
                                         break
-
-                                if (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) <= SELL_MINUS_RATE_2:
+                                
+                                if (hold_cnt > 250 and (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) >= SELL_PLUS_HOLD_RATE_2):
                                         sell_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION )   
                                         print('#######################################################')
-                                        print('### [SELL_MINUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
+                                        print('### [SELL_PLUS_HOLD] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
                                         print('#######################################################')
-                                        # comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
+                                        # comm.log('[PLUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
                                         investment_amount = investment_amount + sell_amout
                                         buymarket = []
                                         buy_cnt = 0
                                         buy_amount = 0
-                                        sell_minus_count = sell_minus_count+1
+                                        sell_plus_count = sell_plus_count+1
                                         history_df =  pd.DataFrame()
                                         break
+
+                                if (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) <= SELL_MINUS_RATE_2:
+                                        if (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) <= -3.5:
+                                            pass
+                                        else:
+                                            sell_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION )   
+                                            print('#######################################################')
+                                            print('### [SELL_MINUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
+                                            print('#######################################################')
+                                            # comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
+                                            investment_amount = investment_amount + sell_amout
+                                            buymarket = []
+                                            buy_cnt = 0
+                                            buy_amount = 0
+                                            sell_minus_count = sell_minus_count+1
+                                            history_df =  pd.DataFrame()
+                                            break
+
+                                hold_cnt = hold_cnt +1
 
                                 time.sleep(BUY_CHECK_TIME_SLEEP)
                     else:
