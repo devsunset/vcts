@@ -55,7 +55,7 @@ UPBIT_KRW_COMMISSION = 0.005
 BUY_CHECK_TIME_SLEEP = 3
 
 # condition rate value
-TARGET_BUY_RATE_1 = -0.30
+TARGET_BUY_RATE_1 = -0.75
 SELL_PLUS_RATE_1 = 1.0
 SELL_MINUS_RATE_1 = -1.0
 
@@ -332,7 +332,6 @@ class VctsTrade():
                             if period_rate >= TARGET_BUY_RATE_1:
                                  continue
 
-                            print('xxxxxxxxxxxxxxxxxx',period_rate)
                             # print(tdf['market'][x],tdf['rate_1'][x])
                             buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
 
