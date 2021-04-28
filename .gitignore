@@ -132,7 +132,7 @@ dmypy.json
 BitCatch/
 
 #db
-db/vcts.db
+db/local.db
 
 #config
 common/config.py
