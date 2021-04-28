@@ -55,7 +55,7 @@ UPBIT_KRW_COMMISSION = 0.005
 BUY_CHECK_TIME_SLEEP = 3
 
 # condition rate value
-TARGET_BUY_RATE_1 = -0.5
+TARGET_BUY_RATE_1 = -0.30
 SELL_PLUS_RATE_1 = 1.0
 SELL_MINUS_RATE_1 = -1.0
 
@@ -317,12 +317,12 @@ class VctsTrade():
                             firstval = float(tdf[firstCol][x])
                             centerval = float(tdf[centerCol][x])
                             lastval = float(tdf[lastCol][x])
-                            period_rate = ((lastval - firstval) / firstval ) * 100
+                            period_rate = ((lastval - centerval) / centerval) * 100
 
                             # temp check logic 
                             pre_rate_check = False
-                            for s in range(1,3):
-                                if float(tdf['rate_'+str(s)][x]) > 0 :
+                            for s in range(1,5):
+                                if float(tdf['rate_'+str(s)][x]) < 0 :
                                     pre_rate_check = True
                                     break
                             if pre_rate_check:
@@ -331,7 +331,8 @@ class VctsTrade():
                             # down rate 
                             if period_rate >= TARGET_BUY_RATE_1:
                                  continue
-                                        
+
+                            print('xxxxxxxxxxxxxxxxxx',period_rate)
                             # print(tdf['market'][x],tdf['rate_1'][x])
                             buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
 
@@ -340,24 +341,23 @@ class VctsTrade():
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():                                        
                                     # print(tabulate(self.getCandlesMinutes(unit=1,market=key,count=5), headers='keys', tablefmt='psql'))
-                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=3)
-                                    plusValue = float(value) + ((float(value) * SELL_PLUS_RATE_1)/10)
-                                    minusValue = float(value) + ((float(value) * (SELL_MINUS_RATE_1*1.25))/10)
-                                    plusCheck = 0
-                                    minusCheck = 0
-                                    for x in bdf.index:
-                                        if float(bdf['trade_price'][x]) >= plusValue :
-                                            plusCheck = plusCheck +1
-                                        if float(bdf['trade_price'][x]) <= minusValue :
-                                            minusCheck = minusCheck +1
-
-                                    if (plusCheck > 0 and minusCheck == 0 ):            
-                                        ask_bid = self.getTradesTicksMarket(market=key,count=15)
+                                    # bdf = self.getCandlesMinutes(unit=1,market=key,count=3)
+                                    # plusValue = float(value) + ((float(value) * SELL_PLUS_RATE_1)/10)
+                                    # minusValue = float(value) + ((float(value) * (SELL_MINUS_RATE_1*1.25))/10)
+                                    # plusCheck = 0
+                                    # minusCheck = 0
+                                    # for x in bdf.index:
+                                    #     if float(bdf['trade_price'][x]) >= plusValue :
+                                    #         plusCheck = plusCheck +1
+                                    #     if float(bdf['trade_price'][x]) <= minusValue :
+                                    #         minusCheck = minusCheck +1
+                                    # if (plusCheck > 0 and minusCheck == 0 ):            
+                                        ask_bid = self.getTradesTicksMarket(market=key,count=30)
                                         bid_check = 0
                                         for ab in ask_bid.index:
                                             if ask_bid['ask_bid'][ab] == 'BID':
                                                 bid_check = bid_check +1
-                                        if (bid_check >=12 ):
+                                        if (bid_check >=25 ):
                                             buymarket.append(key)
                             ###########################################
                             #  CHOICE MARKET LOGIC END
@@ -548,7 +548,7 @@ class VctsTrade():
                             for key, value in buymarketTemp.items():    
                                 targetValue =float(value)
                                 valueCheck = 0
-                                bdf = self.getCandlesMinutes(unit=60,market=key,count=12)
+                                bdf = self.getCandlesMinutes(unit=60,market=key,count=6)
                                 
                                 for x in bdf.index:
                                     if float(bdf['trade_price'][x]) >= targetValue :
