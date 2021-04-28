@@ -352,7 +352,7 @@ class VctsTrade():
                                         ask_bid = self.getTradesTicksMarket(market=key,count=15)
                                         bid_check = 0
                                         for ab in ask_bid.index:
-                                            if ask_bid['ask_bid'][ab] == 'ASK':
+                                            if ask_bid['ask_bid'][ab] == 'BID':
                                                 bid_check = bid_check +1
                                         if (bid_check >=12 ):
                                             buymarket.append(key)
@@ -552,7 +552,7 @@ class VctsTrade():
                                         ask_bid = self.getTradesTicksMarket(market=key,count=15)
                                         bid_check = 0
                                         for ab in ask_bid.index:
-                                            if ask_bid['ask_bid'][ab] == 'ASK':
+                                            if ask_bid['ask_bid'][ab] == 'BID':
                                                 bid_check = bid_check +1
                                         if (bid_check >=12 ):
                                             buymarket.append(key)
