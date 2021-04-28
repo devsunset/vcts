@@ -541,6 +541,8 @@ class VctsTrade():
                                         
                             buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
 
+                        print(buymarketTemp)
+
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
                                     # targetValue =float(value) + ((float(value) * SELL_PLUS_RATE_2)/10)
