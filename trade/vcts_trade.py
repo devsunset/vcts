@@ -55,12 +55,12 @@ UPBIT_KRW_COMMISSION = 0.005
 BUY_CHECK_TIME_SLEEP = 1
 
 # condition rate value
-TARGET_BUY_RATE_1 = 0.5
+TARGET_BUY_RATE_1 = -0.5
 SELL_PLUS_RATE_1 = 1.0
 SELL_MINUS_RATE_1 = -1.0
 
-TARGET_BUY_RATE_2 = 2.5
-SELL_PLUS_RATE_2 = 3.0
+TARGET_BUY_RATE_2 = 3.0
+SELL_PLUS_RATE_2 = 3.5
 SELL_MINUS_RATE_2 = -1.0
 
 ##################################################
@@ -123,6 +123,10 @@ class VctsTrade():
     # get ticker markets
     def getTickerMarkets(self,markets):
         return pd.DataFrame(upbitapi.getQuotationTicker(markets))
+
+    # get trade ticks markets
+    def getTradesTicksMarket(self,market,count):
+        return pd.DataFrame(upbitapi.getQuotationTradesTicks(market=market,count=count))
 
     # get candles minutes
     def getCandlesMinutes(self, unit, market, count):
@@ -214,12 +218,12 @@ class VctsTrade():
                 break
 
     # automatic trade1
-    def automaticTrade_1(self, looptime=3, period=8, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
-            if looptime < 3:
-                logger.warning('looptime value invalid (minum 3 over) ...')
+    def automaticTrade_1(self, looptime=5, period=12, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
+            if looptime < 5:
+                logger.warning('looptime value invalid (minum 5 over) ...')
                 return 
-            if period < 8:
-                logger.warning('period value invalid (minum 8 over) ...')
+            if period < 12:
+                logger.warning('period value invalid (minum 12 over) ...')
                 return 
             # makret + trade_price = 2
             period = period+2
@@ -248,7 +252,7 @@ class VctsTrade():
                     stand_df = pd.DataFrame(selectMarkets, columns=['market'])
 
                     # makret ticker data
-                    df = self.getTickerMarkets(selectMarkets).sort_values(by='signed_change_rate', ascending=False)
+                    df = self.getTickerMarkets(selectMarkets).sort_values(by='trade_volume', ascending=False)
 
                     # get market and trade_price value from market ticker data
                     now_df =  pd.DataFrame(df, columns=['market','trade_price'])
@@ -294,41 +298,48 @@ class VctsTrade():
                         logger.warning('monitor ... -> plus : '+str(sell_plus_count)+' minus : '+str(sell_minus_count)+' investment : '+str(investment_amount))
 
                         # choose buy market 
+                        firstCol = tdf.columns.tolist()[2]
                         centerCol =  tdf.columns.tolist()[int((period-1)/2)]
                         lastCol =   tdf.columns.tolist()[period-1]
 
                         buymarketTemp = {}
                         for x in tdf.index:
+                            ###########################################
+                            #  CHOICE MARKET LOGIC START
+                            ###########################################
+
                             #  max_trade_price over skip
                             if max_trade_price is not None:
                                 if int(tdf['trade_price'][x]) > max_trade_price :
                                     continue
-                            ###########################################
-                            #  CHOICE MARKET LOGIC START
-                            ###########################################
+                                
+                            # first up last down 
+                            firstval = float(tdf[firstCol][x])
                             centerval = float(tdf[centerCol][x])
                             lastval = float(tdf[lastCol][x])
-                            period_rate = ((lastval - centerval) / centerval ) * 100
+                            period_rate = ((lastval - firstval) / firstval ) * 100
 
+                            # temp check logic 
                             pre_rate_down_check = False
-                            for s in range(1,int((period-1)/2)):
-                                if float(tdf['rate_'+str(s)][x]) > 0 :
+                            for s in range(1,2):
+                                if float(tdf['rate_'+str(s)][x]) < 0 :
                                     pre_rate_down_check = True
                                     break
                             if pre_rate_down_check:
                                 continue
 
-                            if period_rate < TARGET_BUY_RATE_1:
+                            # down rate 
+                            if period_rate >= TARGET_BUY_RATE_1:
                                  continue
                                         
                             buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
 
                         if len(buymarketTemp) > 0 :
-                            for key, value in buymarketTemp.items():    
+                            for key, value in buymarketTemp.items():                                        
                                     # print(tabulate(self.getCandlesMinutes(unit=1,market=key,count=5), headers='keys', tablefmt='psql'))
-                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=15)
+                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=3)
                                     plusValue = float(value) + ((float(value) * SELL_PLUS_RATE_1)/10)
-                                    minusValue = float(value) + ((float(value) * SELL_MINUS_RATE_1)/10)
+                                    minusValue = float(value) + ((float(value) * (SELL_MINUS_RATE_1*2))/10)
                                     plusCheck = 0
                                     minusCheck = 0
                                     for x in bdf.index:
@@ -337,16 +348,22 @@ class VctsTrade():
                                         if float(bdf['trade_price'][x]) <= minusValue :
                                             minusCheck = minusCheck +1
 
-                                    if (plusCheck > 0 and minusCheck == 0 ):
-                                        buymarket.append(key)
-
+                                    if (plusCheck > 0 and minusCheck == 0 ):            
+                                        ask_bid = self.getTradesTicksMarket(market=key,count=15)
+                                        bid_check = 0
+                                        for ab in ask_bid.index:
+                                            if ask_bid['ask_bid'][ab] == 'ASK':
+                                                bid_check = bid_check +1
+                                        if (bid_check >=12 ):
+                                            buymarket.append(key)
                             ###########################################
                             #  CHOICE MARKET LOGIC END
                             ###########################################
 
                         # buy market logic 
                         if len(buymarket) > 0 :
-                            dfx = self.getTickerMarkets(buymarket)
+                            dfx = self.getTickerMarkets(buymarket).sort_values(by='trade_volume', ascending=False)
+
                             choice = []
                             for x in dfx.index:
                                 choice.append(dfx['market'][x])
@@ -391,7 +408,7 @@ class VctsTrade():
                                         break
 
                                 if (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) <= SELL_MINUS_RATE_1:
-                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=30)
+                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=10)
                                     minusValue = float(df['trade_price'][x])
                                     minusCheck = 0
                                     for x in bdf.index:
@@ -418,12 +435,12 @@ class VctsTrade():
                 time.sleep(looptime)
 
     # automatic trade 2
-    def automaticTrade_2(self, looptime=3, period=10, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
-            if looptime < 3:
-                logger.warning('looptime value invalid (minum 3 over) ...')
+    def automaticTrade_2(self, looptime=5, period=12, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=10000):
+            if looptime < 5:
+                logger.warning('looptime value invalid (minum 5 over) ...')
                 return 
-            if period < 10:
-                logger.warning('period value invalid (minum 10 over) ...')
+            if period < 12:
+                logger.warning('period value invalid (minum 12 over) ...')
                 return 
             # makret + trade_price = 2
             period = period+2
@@ -451,7 +468,7 @@ class VctsTrade():
                     stand_df = pd.DataFrame(selectMarkets, columns=['market'])
 
                     # makret ticker data
-                    df = self.getTickerMarkets(selectMarkets).sort_values(by='signed_change_rate', ascending=False)
+                    df = self.getTickerMarkets(selectMarkets).sort_values(by='trade_volume', ascending=False)
 
                     # get market and trade_price value from market ticker data
                     now_df =  pd.DataFrame(df, columns=['market','trade_price'])
@@ -498,20 +515,22 @@ class VctsTrade():
 
                         buymarketTemp = {}
                         for x in tdf.index:
+                            ###########################################
+                            #  CHOICE MARKET LOGIC START
+                            ###########################################
+
                             #  max_trade_price over skip
                             if max_trade_price is not None:
                                 if int(tdf['trade_price'][x]) > max_trade_price :
                                     continue
-                            ###########################################
-                            #  CHOICE MARKET LOGIC START
-                            ###########################################
-                            pre_rate_down_check = False
-                            for s in range(1,int((period-3))):
-                                if float(tdf['rate_'+str(s)][x]) < 0 :
-                                    pre_rate_down_check = True
-                                    break
-                            if pre_rate_down_check:
-                                continue
+
+                            # pre_rate_down_check = False
+                            # for s in range(1,int((period-3))):
+                            #     if float(tdf['rate_'+str(s)][x]) < 0 :
+                            #         pre_rate_down_check = True
+                            #         break
+                            # if pre_rate_down_check:
+                            #     continue
                             
                             if float(tdf['rate_1'][x]) >= TARGET_BUY_RATE_2 :
                                 pass
@@ -524,20 +543,26 @@ class VctsTrade():
                             for key, value in buymarketTemp.items():    
                                     targetValue =float(value) + ((float(value) * SELL_PLUS_RATE_2)/10)
                                     plusCheck = 0
-                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=60)
+                                    bdf = self.getCandlesMinutes(unit=15,market=key,count=12)
                                     for x in bdf.index:
                                         if float(bdf['trade_price'][x]) >= targetValue :
                                             plusCheck = plusCheck +1
 
-                                    if (plusCheck > 0 ):
-                                        buymarket.append(key)
+                                    if (plusCheck == 0 ):
+                                        ask_bid = self.getTradesTicksMarket(market=key,count=15)
+                                        bid_check = 0
+                                        for ab in ask_bid.index:
+                                            if ask_bid['ask_bid'][ab] == 'ASK':
+                                                bid_check = bid_check +1
+                                        if (bid_check >=12 ):
+                                            buymarket.append(key)
                             ###########################################
                             #  CHOICE MARKET LOGIC END
                             ###########################################
 
                         # buy market logic 
                         if len(buymarket) > 0 :
-                            dfx = self.getTickerMarkets(buymarket)
+                            dfx = self.getTickerMarkets(buymarket).sort_values(by='trade_volume', ascending=False)
                             choice = []
                             for x in dfx.index:
                                 choice.append(dfx['market'][x])
