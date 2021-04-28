@@ -320,13 +320,13 @@ class VctsTrade():
                             period_rate = ((lastval - firstval) / firstval ) * 100
 
                             # temp check logic 
-                            # pre_rate_down_check = False
-                            # for s in range(1,2):
-                            #     if float(tdf['rate_'+str(s)][x]) < 0 :
-                            #         pre_rate_down_check = True
-                            #         break
-                            # if pre_rate_down_check:
-                            #     continue
+                            pre_rate_check = False
+                            for s in range(1,3):
+                                if float(tdf['rate_'+str(s)][x]) > 0 :
+                                    pre_rate_check = True
+                                    break
+                            if pre_rate_check:
+                                continue
 
                             # down rate 
                             if period_rate >= TARGET_BUY_RATE_1:
@@ -354,6 +354,8 @@ class VctsTrade():
                                         for ab in ask_bid.index:
                                             if ask_bid['ask_bid'][ab] == 'BID':
                                                 bid_check = bid_check +1
+
+                                        print(key, 'bid_check : ', bid_check)
                                         if (bid_check >=12 ):
                                             buymarket.append(key)
                             ###########################################
@@ -554,6 +556,8 @@ class VctsTrade():
                                         for ab in ask_bid.index:
                                             if ask_bid['ask_bid'][ab] == 'BID':
                                                 bid_check = bid_check +1
+
+                                        print(key, 'bid_check : ', bid_check)
                                         if (bid_check >=12 ):
                                             buymarket.append(key)
                             ###########################################
