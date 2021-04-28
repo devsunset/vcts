@@ -55,13 +55,13 @@ UPBIT_KRW_COMMISSION = 0.005
 BUY_CHECK_TIME_SLEEP = 3
 
 # condition rate value
-TARGET_BUY_RATE_1 = -0.75
-SELL_PLUS_RATE_1 = 1.0
-SELL_MINUS_RATE_1 = -1.0
+TARGET_BUY_RATE_1 = 2.5
+SELL_PLUS_RATE_1 = 1.5
+SELL_MINUS_RATE_1 = -1.5
 
-TARGET_BUY_RATE_2 = 5.5
-SELL_PLUS_RATE_2 = 15.5
-SELL_MINUS_RATE_2 = -5.5
+TARGET_BUY_RATE_2 = 4.5
+SELL_PLUS_RATE_2 = 8.5
+SELL_MINUS_RATE_2 = -4.5
 
 ##################################################
 # biz function
@@ -317,25 +317,22 @@ class VctsTrade():
                             firstval = float(tdf[firstCol][x])
                             centerval = float(tdf[centerCol][x])
                             lastval = float(tdf[lastCol][x])
-                            period_rate = ((lastval - centerval) / centerval) * 100
+                            period_rate = ((lastval - firstval) / firstval) * 100
 
                             # temp check logic 
-                            pre_rate_check = False
-                            for s in range(1,5):
-                                if float(tdf['rate_'+str(s)][x]) < 0 :
-                                    pre_rate_check = True
-                                    break
-                            if pre_rate_check:
-                                continue
+                            # pre_rate_check = False
+                            # for s in range(1,5):
+                            #     if float(tdf['rate_'+str(s)][x]) < 0 :
+                            #         pre_rate_check = True
+                            #         break
+                            # if pre_rate_check:
+                            #     continue
 
                             # down rate 
-                            if period_rate >= TARGET_BUY_RATE_1:
+                            if period_rate  <= TARGET_BUY_RATE_1:
                                  continue
 
-                            # print(tdf['market'][x],tdf['rate_1'][x])
                             buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
-
-                        # print(buymarketTemp)
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():                                        
@@ -351,12 +348,12 @@ class VctsTrade():
                                     #     if float(bdf['trade_price'][x]) <= minusValue :
                                     #         minusCheck = minusCheck +1
                                     # if (plusCheck > 0 and minusCheck == 0 ):            
-                                        ask_bid = self.getTradesTicksMarket(market=key,count=30)
+                                        ask_bid = self.getTradesTicksMarket(market=key,count=15)
                                         bid_check = 0
                                         for ab in ask_bid.index:
                                             if ask_bid['ask_bid'][ab] == 'BID':
                                                 bid_check = bid_check +1
-                                        if (bid_check >=25 ):
+                                        if (bid_check >=12 ):
                                             buymarket.append(key)
                             ###########################################
                             #  CHOICE MARKET LOGIC END
@@ -410,25 +407,19 @@ class VctsTrade():
                                         break
 
                                 if (((float(df['trade_price'][x]) - float(amount)) /  float(amount) ) * 100) <= SELL_MINUS_RATE_1:
-                                    bdf = self.getCandlesMinutes(unit=1,market=key,count=5)
-                                    minusValue = float(df['trade_price'][x])
-                                    minusCheck = 0
-                                    for x in bdf.index:
-                                        if float(bdf['trade_price'][x]) <= minusValue :
-                                            minusCheck = minusCheck +1
-                                    if (minusCheck == 0 ):                                    
                                         sell_amout =  (float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION )   
-                                        print('#######################################################')
-                                        print('### [SELL_MINUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
-                                        print('#######################################################')
-                                        # comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
-                                        investment_amount = investment_amount + sell_amout
-                                        buymarket = []
-                                        buy_cnt = 0
-                                        buy_amount = 0
-                                        sell_minus_count = sell_minus_count+1
-                                        history_df =  pd.DataFrame()
-                                        break
+                                        print('### [MINUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
+                                        # print('#######################################################')
+                                        # print('### [SELL_MINUS] ###',(float(df['trade_price'][x]) * buy_cnt) ,' - ', ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ) ,' = ', sell_amout)
+                                        # print('#######################################################')
+                                        # # comm.log('[MINUS] '+self.getMarketName(df['market'][x])+' --- '+str(((float(df['trade_price'][x]) * buy_cnt) -  ((float(df['trade_price'][x]) * buy_cnt) * UPBIT_KRW_COMMISSION ))),'Y')
+                                        # investment_amount = investment_amount + sell_amout
+                                        # buymarket = []
+                                        # buy_cnt = 0
+                                        # buy_amount = 0
+                                        # sell_minus_count = sell_minus_count+1
+                                        # history_df =  pd.DataFrame()
+                                        # break
 
                                 time.sleep(BUY_CHECK_TIME_SLEEP)
                     else:
@@ -545,22 +536,16 @@ class VctsTrade():
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
-                                targetValue =float(value)
-                                valueCheck = 0
-                                bdf = self.getCandlesMinutes(unit=60,market=key,count=6)
+                                # targetValue =float(value)
+                                # valueCheck = 0
+                                # bdf = self.getCandlesMinutes(unit=60,market=key,count=5)
                                 
-                                for x in bdf.index:
-                                    if float(bdf['trade_price'][x]) >= targetValue :
-                                        valueCheck = valueCheck +1
+                                # for x in bdf.index:
+                                #     if float(bdf['trade_price'][x]) >= targetValue :
+                                #         valueCheck = valueCheck +1
 
-                                if (valueCheck == 0 ):
-                                    ask_bid = self.getTradesTicksMarket(market=key,count=100)
-                                    bid_check = 0
-                                    for ab in ask_bid.index:
-                                        if ask_bid['ask_bid'][ab] == 'BID':
-                                            bid_check = bid_check +1
-                                    if (bid_check >=70):
-                                        buymarket.append(key)
+                                # if (valueCheck == 0 ):
+                                    buymarket.append(key)
                             ###########################################
                             #  CHOICE MARKET LOGIC END
                             ###########################################
