@@ -533,7 +533,7 @@ class VctsTrade():
                             #         break
                             # if pre_rate_down_check:
                             #     continue
-                            
+                            print(tdf['market'][x], tdf['rate_1'][x]))
                             if float(tdf['rate_1'][x]) >= TARGET_BUY_RATE_2 :
                                 pass
                             else:
