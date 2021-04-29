@@ -54,11 +54,7 @@ if __name__ == '__main__':
 
     # automatic trade1
     if config.EXECUTE_FUNCTION == 'automaticTrade_1':
-        vctstrade.automaticTrade_1(looptime=5, period=12, targetMarket=['KRW'])
-
-    # automatic trade 2
-    if config.EXECUTE_FUNCTION == 'automaticTrade_2':
-        vctstrade.automaticTrade_2(looptime=5, period=15, targetMarket=['KRW'])
+        vctstrade.automaticTrade_1(targetMarket=['KRW'])
 
     ###############################################
 
