@@ -374,7 +374,7 @@ class VctsTrade():
                                         break
 
                                 if (((float(df['trade_price'][0]) - float(amount)) /  float(amount) ) * 100) >= config.SELL_PLUS_RATE:
-                                    ask_bid = self.getTradesTicksMarket(market=key,count=config.ASK_BID_CHECK_COUNT)
+                                    ask_bid = self.getTradesTicksMarket(market=df['market'][0],count=config.ASK_BID_CHECK_COUNT)
                                     ask_check = 0
                                     for ab in ask_bid.index:
                                         if ask_bid['ask_bid'][ab] == 'ASK':
@@ -408,7 +408,7 @@ class VctsTrade():
                                         break
                                 else:
                                         if (((float(df['trade_price'][0]) - float(amount)) /  float(amount) ) * 100) < config.SELL_MINUS_RATE:
-                                            ask_bid = self.getTradesTicksMarket(market=key,count=config.ASK_BID_CHECK_COUNT)
+                                            ask_bid = self.getTradesTicksMarket(market=df['market'][0],count=config.ASK_BID_CHECK_COUNT)
                                             ask_check = 0
                                             for ab in ask_bid.index:
                                                 if ask_bid['ask_bid'][ab] == 'ASK':
