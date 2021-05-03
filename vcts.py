@@ -53,8 +53,8 @@ if __name__ == '__main__':
     # vctstrade.monitorMarkets(loop=False, looptime=5, sort='signed_change_rate', targetMarket=['KRW'])
 
     # automatic trade1
-    if config.EXECUTE_FUNCTION == 'automaticTrade_1':
-        vctstrade.automaticTrade_1(targetMarket=['KRW'])
+    if config.EXECUTE_FUNCTION == 'automaticTrade':
+        vctstrade.automaticTrade(targetMarket=['KRW'])
 
     ###############################################
 
