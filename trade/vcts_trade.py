@@ -211,9 +211,10 @@ class VctsTrade():
             history_df =  pd.DataFrame()
             investment_amount = config.INIT_INVESTMENT
             idx=0
-            sell_target_count = 0
             sell_plus_count = 0
+            sell_plus_max_count = 0
             sell_minus_count = 0
+            sell_minus_max_count = 0
 
             # get market info data
             markets = self.getMarkets()
@@ -271,7 +272,7 @@ class VctsTrade():
                         # sort last rate value
                         tdf = analysis_df.sort_values(by='rate_'+str(period-3), ascending=False)
 
-                        logger.warning('check ... -> target : '+str(sell_plus_count)+' , plus : '+str(sell_plus_count)+' , minus : '+str(sell_minus_count)+' , investment : '+str(investment_amount))
+                        logger.warning('check ... -> plus_max : '+str(sell_plus_max_count)+' , plus : '+str(sell_plus_count)+' , minus : '+str(sell_minus_count)+' , minus_max : '+str(sell_minus_max_count)+' , investment : '+str(investment_amount))
 
                         buymarketTemp = {}
                         for x in tdf.index:
@@ -367,7 +368,7 @@ class VctsTrade():
                                         buymarket = []
                                         buy_cnt = 0
                                         buy_amount = 0
-                                        sell_target_count = sell_target_count+1
+                                        sell_plus_max_count = sell_plus_max_count+1
                                         history_df =  pd.DataFrame()
                                         time.sleep(config.SELL_STOP_SLEEP_TIME)        
                                         break
@@ -462,7 +463,7 @@ class VctsTrade():
                                                     buymarket = []
                                                     buy_cnt = 0
                                                     buy_amount = 0
-                                                    sell_minus_count = sell_minus_count+1
+                                                    sell_minus_max_count = sell_minus_max_count+1
                                                     history_df =  pd.DataFrame()
                                                     time.sleep(config.SELL_STOP_SLEEP_TIME)
                                                     break
