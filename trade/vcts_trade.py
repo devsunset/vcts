@@ -238,11 +238,11 @@ class VctsTrade():
                     selectMarkets.append(markets['market'][i])
 
             while True:
-                checkTime = True
-                if int('0859')<= int(datetime.datetime.now().strftime('%H%M')) <=int('0945'):
-                    checkTime = False
-                if checkTime:
-                   continue
+                # checkTime = True
+                # if int('0859')<= int(datetime.datetime.now().strftime('%H%M')) <=int('0945'):
+                #     checkTime = False
+                # if checkTime:
+                #    continue
 
                 # buy market exist skip 
                 if  len(buymarket) == 0:
