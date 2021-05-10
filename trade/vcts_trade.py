@@ -303,14 +303,14 @@ class VctsTrade():
                             for s in range(1,int((period-3))):
                                 if float(tdf['rate_'+str(s)][x]) >= config.TARGET_BUY_RATE :
                                     rate_check = True
-                                    logger.warning('catch ... -> one period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_'+str(s)][x])))
+                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                     break
 
                             if rate_check:
                                 pass
                             else:
                                 if float(tdf['rate_1'][x]) >= config.TARGET_BUY_RATE :
-                                    logger.warning('catch ... -> all period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_1'][x])))
+                                    logger.warning('catch ... -> All period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_1'][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                 else:
                                     continue
                                         
