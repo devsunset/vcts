@@ -586,6 +586,7 @@ class VctsTrade():
                 # buy market exist skip 
                 if  len(buymarket) == 0:
 
+                    logger.warning('check .......................................................................................................->')
                     # market order book data
                     ok = self.getOrderbook(markets=selectMarkets)
                     order_List = []
