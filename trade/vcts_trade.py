@@ -592,6 +592,9 @@ class VctsTrade():
                     for c in ok.index:
                         ou = ok['orderbook_units'][c]
                         order_List.append([ok['market'][c], float(ou[0]['bid_price']),float(ou[14]['ask_price']), (((float(ou[14]['ask_price'])- float(ou[0]['bid_price'])))/ float(ou[0]['bid_price']))*100])
+                        print('--------------------------',ok['market'][c])
+                        for z in ou:
+                           print(z)
 
                     time_col = datetime.datetime.now().strftime("%H:%M:%S")
                     now_df = DataFrame (order_List,columns=['market',time_col+'_s_price',time_col+'_e_price',time_col+'_rate'])
