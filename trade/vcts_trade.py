@@ -610,7 +610,7 @@ class VctsTrade():
                         del history_df[col_head[1]]
 
                     # print( len(history_df.columns.tolist()) )
-                    print(history_df)
+                    print(history_df.sort_values(by=history_df.columns.tolist()[len(history_df.columns.tolist())-1], ascending=False))
 
                 time.sleep(looptime)
     ##########################################################
