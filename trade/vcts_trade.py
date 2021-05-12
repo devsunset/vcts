@@ -110,6 +110,10 @@ class VctsTrade():
     def getTradesTicksMarket(self,market,count):
         return pd.DataFrame(upbitapi.getQuotationTradesTicks(market=market,count=count))
 
+    # get orderbook
+    def getOrderbook(self,markets):
+        return pd.DataFrame(upbitapi.getQuotationOrderbook(markets=markets))
+
     # get candles minutes
     def getCandlesMinutes(self, unit, market, count):
         return pd.DataFrame(upbitapi.getQuotationCandlesMinutes(unit=unit, market=market, count=count))
@@ -199,12 +203,13 @@ class VctsTrade():
             else:
                 break
 
-    # automatic trade
-    def automaticTrade(self, looptime=config.LOOPTIME, period=config.PERIOD, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=config.MAX_TRADE_PRICE):
+    # automatic trade One
+    def automaticTradeOne(self, looptime=config.LOOPTIME, period=config.PERIOD, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=config.MAX_TRADE_PRICE):
             # makret + trade_price = 2
             period = period+2
 
             print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■')
+            print('EXECUTE_FUNCTION : ',config.EXECUTE_FUNCTION)
             print('LOOPTIME : ',config.LOOPTIME)
             print('PERIOD : ',config.PERIOD)
             print('MAX_TRADE_PRICE : ',config.MAX_TRADE_PRICE)
@@ -237,18 +242,12 @@ class VctsTrade():
                 if markets['market_type'][i] in targetMarket:
                     selectMarkets.append(markets['market'][i])
 
+            # market info data
+            stand_df = pd.DataFrame(selectMarkets, columns=['market'])
+
             while True:
-                # checkTime = True
-                # if int('0859')<= int(datetime.datetime.now().strftime('%H%M')) <=int('0945'):
-                #     checkTime = False
-
-                # if checkTime:
-                #    continue
-
                 # buy market exist skip 
                 if  len(buymarket) == 0:
-                    # market info data
-                    stand_df = pd.DataFrame(selectMarkets, columns=['market'])
 
                     # makret ticker data
                     df = self.getTickerMarkets(selectMarkets).sort_values(by='trade_volume', ascending=False)
@@ -542,6 +541,78 @@ class VctsTrade():
 
                 time.sleep(looptime)
 
+    # automatic trade Two
+    def automaticTradeTwo(self, looptime=config.LOOPTIME, period=config.PERIOD, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=config.MAX_TRADE_PRICE):
+            # makret + trade_price = 2
+            period = period+2
+
+            print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■')
+            print('EXECUTE_FUNCTION : ',config.EXECUTE_FUNCTION)
+            print('LOOPTIME : ',config.LOOPTIME)
+            print('PERIOD : ',config.PERIOD)
+            print('MAX_TRADE_PRICE : ',config.MAX_TRADE_PRICE)
+            print('UPBIT_KRW_COMMISSION : ',config.UPBIT_KRW_COMMISSION)
+            print('CHECK_TIME_SLEEP : ',config.CHECK_TIME_SLEEP)
+            print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■')
+            print('INIT_FUND : ',config.INIT_FUND)
+            print('ASK_BID_CHECK_TYPE : ',config.ASK_BID_CHECK_TYPE)
+            print('ASK_BID_CHECK_COUNT : ',config.ASK_BID_CHECK_COUNT)
+            print('TARGET_BUY_RATE : ',config.TARGET_BUY_RATE)
+            print('SELL_PLUS_RATE : ',config.SELL_PLUS_RATE)
+            print('SELL_PLUS_MAX_RATE : ',config.SELL_PLUS_MAX_RATE)
+            print('SELL_MINUS_RATE : ',config.SELL_MINUS_RATE)
+            print('SELL_MINUS_MAX_RATE : ',config.SELL_MINUS_MAX_RATE)
+            print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■')
+
+            selectMarkets = []
+            buymarket = []
+            history_df =  pd.DataFrame()
+            investment_fund = config.INIT_FUND
+            idx=0
+            sell_plus_count = 0
+            sell_plus_max_count = 0
+            sell_minus_count = 0
+            sell_minus_max_count = 0
+
+            # get market info data
+            markets = self.getMarkets()
+            for i in markets.index:
+                if markets['market_type'][i] in targetMarket:
+                    selectMarkets.append(markets['market'][i])
+
+            stand_df = pd.DataFrame(selectMarkets, columns=['market'])
+
+            while True:
+                # buy market exist skip 
+                if  len(buymarket) == 0:
+
+                    # market order book data
+                    ok = self.getOrderbook(markets=selectMarkets)
+                    order_List = []
+                    for c in ok.index:
+                        ou = ok['orderbook_units'][c]
+                        order_List.append([ok['market'][c], float(ou[0]['bid_price']),float(ou[14]['ask_price']), (((float(ou[14]['ask_price'])- float(ou[0]['bid_price'])))/ float(ou[0]['bid_price']))*100])
+
+                    time_col = datetime.datetime.now().strftime("%H:%M:%S")
+                    now_df = DataFrame (order_List,columns=['market',time_col+'_s_price',time_col+'_e_price',time_col+'_rate'])
+
+                    # history_df merge now ticker data
+                    if len(history_df) == 0:
+                        history_df = pd.merge(stand_df, now_df, on = 'market')
+                    else:
+                        history_df = pd.merge(history_df, now_df, on = 'market')
+                    
+
+                    if len(history_df.columns.tolist()) == 16:
+                        col_head = history_df.columns.tolist()
+                        del history_df[col_head[3]]
+                        del history_df[col_head[2]]
+                        del history_df[col_head[1]]
+
+                    # print( len(history_df.columns.tolist()) )
+                    print(history_df)
+
+                time.sleep(looptime)
     ##########################################################
 
     #  get markets candles mwd data save to db
