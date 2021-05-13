@@ -309,11 +309,11 @@ class VctsTrade():
                             for s in range(1,int((period-3))):
                                 if float(tdf['rate_'+str(s)][x]) >= config.TARGET_BUY_RATE :
                                     rate_check = True
-                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
+                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  SKIP :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                     break
 
                             if rate_check:
-                                pass
+                                continue
                             else:
                                 if float(tdf['rate_1'][x]) >= config.TARGET_BUY_RATE :
                                     logger.warning('catch ... -> All period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_1'][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
@@ -500,6 +500,7 @@ class VctsTrade():
                                                 ,'%12f' % ((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION ))
                                                 )
                                                 print('#######################################################')
+                                                continue
                                                 # comm.log('[MINUS] '+self.getMarketName(df['market'][0])+' --- '+str(((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION )))+' Rate : '+str((((float(df['trade_price'][0]) - float(fund)) /  float(fund) ) * 100)),'Y')
                                                 investment_fund = investment_fund + sell_fund
                                                 buymarket = []
@@ -526,6 +527,7 @@ class VctsTrade():
                                                     ,'%12f' % ((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION ))
                                                     )
                                                     print('#######################################################')
+                                                    continue
                                                     # comm.log('[MINUS] '+self.getMarketName(df['market'][0])+' --- '+str(((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION )))+' Rate : '+str((((float(df['trade_price'][0]) - float(fund)) /  float(fund) ) * 100)),'Y')
                                                     investment_fund = investment_fund + sell_fund
                                                     buymarket = []
@@ -585,8 +587,6 @@ class VctsTrade():
             while True:
                 # buy market exist skip 
                 if  len(buymarket) == 0:
-
-                    logger.warning('check .......................................................................................................->')
                     # market order book data
                     ok = self.getOrderbook(markets=selectMarkets)
                     order_List = []
@@ -606,7 +606,6 @@ class VctsTrade():
                     else:
                         history_df = pd.merge(history_df, now_df, on = 'market')
                     
-
                     if len(history_df.columns.tolist()) == 16:
                         col_head = history_df.columns.tolist()
                         del history_df[col_head[3]]
