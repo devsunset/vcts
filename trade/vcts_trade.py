@@ -312,6 +312,7 @@ class VctsTrade():
                                     logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                     break
                                 elif float(tdf['rate_'+str(s)][x]) > 5.5 :
+                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  Skip :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                     continue
 
                             if rate_check:
@@ -369,6 +370,7 @@ class VctsTrade():
                             if  len(choice) > 0 :
                                 buy_cnt = investment_fund/float(fund)
                                 investment_fund = investment_fund - (buy_cnt * float(fund))
+                                # Buy coin
                             else:
                                 buymarket = []
 
