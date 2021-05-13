@@ -349,6 +349,9 @@ class VctsTrade():
                                     else:
                                         bid_count = bid_count +1
                                         bid_fund  = bid_fund + (float(ask_bid['trade_price'][ab]) * float(ask_bid['trade_volume'][ab]))
+                                        logger.warning('trade_price : '+str(dfx['trade_price'][x]))
+                                        logger.warning('trade_volume : '+str(dfx['trade_volume'][x]))
+                                        logger.warning('change_price : '+str(dfx['change_price'][x]))
                                 logger.warning(dfx['market'][x] +' : '+self.getMarketName(dfx['market'][x])+' ASK COUNT : '+str(ask_count) +' , BID COUNT : '+str(bid_count)+' ---------- ASK FUND : '+str(ask_fund) +' , BID FUND : '+str(bid_fund))
                                 if config.ASK_BID_CHECK_TYPE == 'COUNT' :
                                     if (ask_count < bid_count):
