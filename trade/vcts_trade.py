@@ -203,8 +203,8 @@ class VctsTrade():
             else:
                 break
 
-    # automatic trade One
-    def automaticTradeOne(self, looptime=config.LOOPTIME, period=config.PERIOD, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=config.MAX_TRADE_PRICE):
+    # automatic trade
+    def automaticTrade(self, looptime=config.LOOPTIME, period=config.PERIOD, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=config.MAX_TRADE_PRICE):
             # makret + trade_price = 2
             period = period+2
 
@@ -307,19 +307,21 @@ class VctsTrade():
                             # increase rate compare to TARGET_BUY_RATE
                             rate_check = False
                             for s in range(1,int((period-3))):
-                                if float(tdf['rate_'+str(s)][x]) >= config.TARGET_BUY_RATE :
+                                if float(tdf['rate_'+str(s)][x]) >= config.TARGET_BUY_RATE and float(tdf['rate_'+str(s)][x]) <= 5.5 :
                                     rate_check = True
-                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  SKIP :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
+                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                     break
+                                elif float(tdf['rate_'+str(s)][x]) > 5.5 :
+                                    continue
 
                             if rate_check:
-                                continue
+                                pass
                             else:
                                 if float(tdf['rate_1'][x]) >= config.TARGET_BUY_RATE :
                                     logger.warning('catch ... -> All period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_1'][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                 else:
                                     continue
-                                        
+
                             buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
 
                         if len(buymarketTemp) > 0 :
@@ -543,8 +545,8 @@ class VctsTrade():
 
                 time.sleep(looptime)
 
-    # automatic trade Two
-    def automaticTradeTwo(self, looptime=config.LOOPTIME, period=config.PERIOD, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=config.MAX_TRADE_PRICE):
+    # automatic trade Test
+    def automaticTradeTest(self, looptime=config.LOOPTIME, period=config.PERIOD, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=config.MAX_TRADE_PRICE):
             # makret + trade_price = 2
             period = period+2
 
