@@ -312,7 +312,7 @@ class VctsTrade():
                                     logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                     break
                                 elif float(tdf['rate_'+str(s)][x]) > 5.5 :
-                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  Skip :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
+                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  SKIP  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                     continue
 
                             if rate_check:
@@ -350,10 +350,7 @@ class VctsTrade():
                                     else:
                                         bid_count = bid_count +1
                                         bid_fund  = bid_fund + (float(ask_bid['trade_price'][ab]) * float(ask_bid['trade_volume'][ab]))
-                                        logger.warning('trade_price : '+str(dfx['trade_price'][x]))
-                                        logger.warning('trade_volume : '+str(dfx['trade_volume'][x]))
-                                        logger.warning('change_price : '+str(dfx['change_price'][x]))
-                                logger.warning(dfx['market'][x] +' : '+self.getMarketName(dfx['market'][x])+' ASK COUNT : '+str(ask_count) +' , BID COUNT : '+str(bid_count)+' ---------- ASK FUND : '+str(ask_fund) +' , BID FUND : '+str(bid_fund))
+                                # logger.warning(dfx['market'][x] +' : '+self.getMarketName(dfx['market'][x])+' ASK COUNT : '+str(ask_count) +' , BID COUNT : '+str(bid_count)+' ---------- ASK FUND : '+str(ask_fund) +' , BID FUND : '+str(bid_fund))
                                 if config.ASK_BID_CHECK_TYPE == 'COUNT' :
                                     if (ask_count < bid_count):
                                         choice.append(dfx['market'][x])
@@ -433,7 +430,7 @@ class VctsTrade():
                                         else:
                                             bid_count = bid_count +1
                                             bid_fund  = bid_fund + (float(ask_bid['trade_price'][ab]) * float(ask_bid['trade_volume'][ab]))
-                                    logger.warning('ASK COUNT : '+str(ask_count) +' , BID COUNT : '+str(bid_count)+' ---------- ASK FUND : '+str(ask_fund) +' , BID FUND : '+str(bid_fund))
+                                    # logger.warning('ASK COUNT : '+str(ask_count) +' , BID COUNT : '+str(bid_count)+' ---------- ASK FUND : '+str(ask_fund) +' , BID FUND : '+str(bid_fund))
                                     check_flag = False
                                     if config.ASK_BID_CHECK_TYPE == 'COUNT' :
                                         if (ask_count > bid_count):
@@ -481,7 +478,7 @@ class VctsTrade():
                                                 else:
                                                     bid_count = bid_count +1
                                                     bid_fund  = bid_fund + (float(ask_bid['trade_price'][ab]) * float(ask_bid['trade_volume'][ab]))
-                                            logger.warning('ASK COUNT : '+str(ask_count) +' , BID COUNT : '+str(bid_count)+' ---------- ASK FUND : '+str(ask_fund) +' , BID FUND : '+str(bid_fund))
+                                            # logger.warning('ASK COUNT : '+str(ask_count) +' , BID COUNT : '+str(bid_count)+' ---------- ASK FUND : '+str(ask_fund) +' , BID FUND : '+str(bid_fund))
                                             check_flag = False
                                             if config.ASK_BID_CHECK_TYPE == 'COUNT' :
                                                 if (ask_count > bid_count):
@@ -599,13 +596,13 @@ class VctsTrade():
                     order_List = []
                     for c in ok.index:
                         ou = ok['orderbook_units'][c]
-                        order_List.append([ok['market'][c], float(ou[0]['bid_price']),float(ou[14]['ask_price']), (((float(ou[14]['ask_price'])- float(ou[0]['bid_price'])))/ float(ou[0]['bid_price']))*100])
-                        print('--------------------------',ok['market'][c])
-                        for z in ou:
-                           print(z)
+                        order_List.append([ok['market'][c], float(ou[0]['bid_price'])])
+                        # print('--------------------------',ok['market'][c])
+                        # for z in ou:
+                        #    print(z)
 
                     time_col = datetime.datetime.now().strftime("%H:%M:%S")
-                    now_df = DataFrame (order_List,columns=['market',time_col+'_s_price',time_col+'_e_price',time_col+'_rate'])
+                    now_df = DataFrame (order_List,columns=['market',time_col+'_order_price'])
 
                     # history_df merge now ticker data
                     if len(history_df) == 0:
@@ -613,10 +610,8 @@ class VctsTrade():
                     else:
                         history_df = pd.merge(history_df, now_df, on = 'market')
                     
-                    if len(history_df.columns.tolist()) == 16:
+                    if len(history_df.columns.tolist()) == 8:
                         col_head = history_df.columns.tolist()
-                        del history_df[col_head[3]]
-                        del history_df[col_head[2]]
                         del history_df[col_head[1]]
 
                     # print( len(history_df.columns.tolist()) )
