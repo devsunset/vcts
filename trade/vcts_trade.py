@@ -311,9 +311,9 @@ class VctsTrade():
                                     rate_check = True
                                     logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
                                     break
-                                elif float(tdf['rate_'+str(s)][x]) > 5.5 :
-                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  SKIP  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
-                                    continue
+                                # elif float(tdf['rate_'+str(s)][x]) > 5.5 :
+                                #     logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  SKIP  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
+                                #     continue
 
                             if rate_check:
                                 pass
