@@ -55,6 +55,7 @@ pd.set_option('display.width', 250)
 class VctsTrade():
     def __init__(self):
         self.loadMarketSaveToDb()
+        self.createPumpMarketDb()
 
     ##########################################################
 
@@ -87,6 +88,24 @@ class VctsTrade():
             comm.executeTxDB(conn, sqlText, sqlParam)
             conn.commit()
             logger.warn('loadMarketSaveToDb db_save')
+        except Exception as e:
+            logging.error(' Exception : %s' % e)
+        finally:
+            if conn is not None:
+                conn.close()
+
+    # create table db (vcts_pump table).
+    def createPumpMarketDb(self):
+        try:
+            conn = sqlite3.connect(TARGET_DB)
+            try:
+                sqlText = 'select * from  vcts_pump limit 1'
+                comm.executeTxDB(conn, sqlText)
+            except Exception as e:
+                logging.error(' vcts_pump table init : %s' % e)
+                sqlText = 'create table vcts_pump (id integer primary key autoincrement, check_time text , market text , market_name text, trade_price text, rate text,  crt_dttm text)'
+                comm.executeTxDB(conn, sqlText)
+                conn.commit()
         except Exception as e:
             logging.error(' Exception : %s' % e)
         finally:
@@ -219,7 +238,7 @@ class VctsTrade():
             print('INIT_FUND : ',config.INIT_FUND)
             print('ASK_BID_CHECK_TYPE : ',config.ASK_BID_CHECK_TYPE)
             print('ASK_BID_CHECK_COUNT : ',config.ASK_BID_CHECK_COUNT)
-            print('TARGET_BUY_RATE : ',config.TARGET_BUY_RATE)
+            print('TARGET_PUMP_RATE : ',config.TARGET_PUMP_RATE)
             print('SELL_PLUS_RATE : ',config.SELL_PLUS_RATE)
             print('SELL_PLUS_MAX_RATE : ',config.SELL_PLUS_MAX_RATE)
             print('SELL_MINUS_RATE : ',config.SELL_MINUS_RATE)
@@ -292,7 +311,9 @@ class VctsTrade():
                         # sort last rate value
                         tdf = analysis_df.sort_values(by='rate_'+str(period-3), ascending=False)
 
-                        logger.warning('check ... -> plus_max : '+str(sell_plus_max_count)+' , plus : '+str(sell_plus_count)+' , minus : '+str(sell_minus_count)+' , minus_max : '+str(sell_minus_max_count)+' , fund : '+str(investment_fund))
+                        # logger.warning('check ... -> plus_max : '+str(sell_plus_max_count)+' , plus : '+str(sell_plus_count)+' , minus : '+str(sell_minus_count)+' , minus_max : '+str(sell_minus_max_count)+' , fund : '+str(investment_fund))
+
+                        tdfCols = tdf.columns.tolist()
 
                         buymarketTemp = {}
                         for x in tdf.index:
@@ -304,26 +325,18 @@ class VctsTrade():
                                 if int(tdf['trade_price'][x]) > max_trade_price :
                                     continue
                             
-                            # increase rate compare to TARGET_BUY_RATE
-                            rate_check = False
+                            # increase rate compare to TARGET_PUMP_RATE
+                            check = False
                             for s in range(1,int((period-3))):
-                                if float(tdf['rate_'+str(s)][x]) >= config.TARGET_BUY_RATE and float(tdf['rate_'+str(s)][x]) <= 5.5 :
-                                    rate_check = True
-                                    logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
+                                if float(tdf['rate_'+str(s)][x]) >= config.TARGET_PUMP_RATE :
+                                    check = True
+                                    logger.warning('catch ... -> One period rate up TARGET_PUMP_RATE  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
+                                    # buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
+                                    self.setPumpCoins(str(tdfCols[(s+2)]), str(tdf['market'][x]) , self.getMarketName(tdf['market'][x]), str(tdf['trade_price'][x]),  str(float(tdf['rate_'+str(s)][x])),datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                                     break
-                                # elif float(tdf['rate_'+str(s)][x]) > 5.5 :
-                                #     logger.warning('catch ... -> One period rate up TARGET_BUY_RATE  SKIP  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
-                                #     continue
 
-                            if rate_check:
-                                pass
-                            else:
-                                if float(tdf['rate_1'][x]) >= config.TARGET_BUY_RATE :
-                                    logger.warning('catch ... -> All period rate up TARGET_BUY_RATE  :' +str(float(tdf['rate_1'][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
-                                else:
-                                    continue
-
-                            buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
+                            if check:
+                                continue
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
@@ -547,6 +560,26 @@ class VctsTrade():
 
                 time.sleep(looptime)
 
+    # set vcts_pump 
+    def setPumpCoins(self, check_time, market, market_name, trade_price, rate, crt_dttm):
+        try:
+            conn = sqlite3.connect(TARGET_DB)
+
+            sqlText = "delete from vcts_pump where check_time = '"+check_time+"' and  market  = '"+market+"'"
+            comm.executeTxDB(conn, sqlText)
+
+            sqlText = 'insert into vcts_pump  (check_time, market, market_name, trade_price, rate, crt_dttm)'
+            sqlText += ' values (?, ?, ?, ?, ?, ?)'
+
+            sqlParam = (check_time, market, market_name, trade_price, rate, crt_dttm)
+            comm.executeTxDB(conn, sqlText, sqlParam)
+            conn.commit()
+        except Exception as e:
+            logging.error(' Exception : %s' % e)
+        finally:
+            if conn is not None:
+                conn.close()
+
     # automatic trade Test
     def automaticTradeTest(self, looptime=config.LOOPTIME, period=config.PERIOD, market=None, targetMarket=['KRW','BTC','USDT'], max_trade_price=config.MAX_TRADE_PRICE):
             # makret + trade_price = 2
@@ -563,7 +596,7 @@ class VctsTrade():
             print('INIT_FUND : ',config.INIT_FUND)
             print('ASK_BID_CHECK_TYPE : ',config.ASK_BID_CHECK_TYPE)
             print('ASK_BID_CHECK_COUNT : ',config.ASK_BID_CHECK_COUNT)
-            print('TARGET_BUY_RATE : ',config.TARGET_BUY_RATE)
+            print('TARGET_PUMP_RATE : ',config.TARGET_PUMP_RATE)
             print('SELL_PLUS_RATE : ',config.SELL_PLUS_RATE)
             print('SELL_PLUS_MAX_RATE : ',config.SELL_PLUS_MAX_RATE)
             print('SELL_MINUS_RATE : ',config.SELL_MINUS_RATE)
@@ -610,7 +643,7 @@ class VctsTrade():
                     else:
                         history_df = pd.merge(history_df, now_df, on = 'market')
                     
-                    if len(history_df.columns.tolist()) == 8:
+                    if len(history_df.columns.tolist()) == period:
                         col_head = history_df.columns.tolist()
                         del history_df[col_head[1]]
 

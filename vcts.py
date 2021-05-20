@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     ###############################################
 
-    # get candles chart data &  save to db
+    # get candles chart data &  save to db+---
     # vctstrade.loadMarketsCandlesMwdData()
 
     # scheduler = BlockingScheduler()
