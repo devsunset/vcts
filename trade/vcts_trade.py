@@ -331,12 +331,12 @@ class VctsTrade():
                                 if float(tdf['rate_'+str(s)][x]) >= config.TARGET_PUMP_RATE :
                                     check = True
                                     logger.warning('catch ... -> One period rate up TARGET_PUMP_RATE  :' +str(float(tdf['rate_'+str(s)][x]))+" -> "+str(tdf['market'][x])+" : "+self.getMarketName(tdf['market'][x]))
-                                    # buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
-                                    self.setPumpCoins(str(tdfCols[(s+2)]), str(tdf['market'][x]) , self.getMarketName(tdf['market'][x]), str(tdf['trade_price'][x]),  str(float(tdf['rate_'+str(s)][x])),datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-                                    break
+                                    buymarketTemp[tdf['market'][x]] = tdf['trade_price'][x]
+                                    # self.setPumpCoins(str(tdfCols[(s+2)]), str(tdf['market'][x]) , self.getMarketName(tdf['market'][x]), str(tdf['trade_price'][x]),  str(float(tdf['rate_'+str(s)][x])),datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                                    # break
 
-                            if check:
-                                continue
+                            # if check:
+                            #     continue
 
                         if len(buymarketTemp) > 0 :
                             for key, value in buymarketTemp.items():    
