@@ -517,8 +517,8 @@ class VctsTrade():
                                                 ,'%12f' % ((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION ))
                                                 )
                                                 print('#######################################################')
-                                                continue
-                                                # comm.log('[MINUS] '+self.getMarketName(df['market'][0])+' --- '+str(((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION )))+' Rate : '+str((((float(df['trade_price'][0]) - float(fund)) /  float(fund) ) * 100)),'Y')
+                                                # continue
+                                                comm.log('[MINUS] '+self.getMarketName(df['market'][0])+' --- '+str(((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION )))+' Rate : '+str((((float(df['trade_price'][0]) - float(fund)) /  float(fund) ) * 100)),'Y')
                                                 investment_fund = investment_fund + sell_fund
                                                 buymarket = []
                                                 buy_cnt = 0
@@ -544,8 +544,8 @@ class VctsTrade():
                                                     ,'%12f' % ((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION ))
                                                     )
                                                     print('#######################################################')
-                                                    continue
-                                                    # comm.log('[MINUS] '+self.getMarketName(df['market'][0])+' --- '+str(((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION )))+' Rate : '+str((((float(df['trade_price'][0]) - float(fund)) /  float(fund) ) * 100)),'Y')
+                                                    # continue
+                                                    comm.log('[MINUS] '+self.getMarketName(df['market'][0])+' --- '+str(((float(df['trade_price'][0]) * buy_cnt) -  ((float(df['trade_price'][0]) * buy_cnt) * config.UPBIT_KRW_COMMISSION )))+' Rate : '+str((((float(df['trade_price'][0]) - float(fund)) /  float(fund) ) * 100)),'Y')
                                                     investment_fund = investment_fund + sell_fund
                                                     buymarket = []
                                                     buy_cnt = 0
