@@ -235,7 +235,7 @@ class VctsTrade():
             print('UPBIT_KRW_COMMISSION : ',config.UPBIT_KRW_COMMISSION)
             print('CHECK_TIME_SLEEP : ',config.CHECK_TIME_SLEEP)
             print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■')
-            print('INIT_FUND : ',config.INIT_FUND)
+            print('INIT_INVESTMENT : ',config.INIT_INVESTMENT)
             print('ASK_BID_CHECK_TYPE : ',config.ASK_BID_CHECK_TYPE)
             print('ASK_BID_CHECK_COUNT : ',config.ASK_BID_CHECK_COUNT)
             print('TARGET_PUMP_RATE : ',config.TARGET_PUMP_RATE)
@@ -248,7 +248,7 @@ class VctsTrade():
             selectMarkets = []
             buymarket = []
             history_df =  pd.DataFrame()
-            investment_fund = config.INIT_FUND
+            investment_fund = config.INIT_INVESTMENT
             idx=0
             sell_plus_count = 0
             sell_plus_max_count = 0
@@ -593,7 +593,7 @@ class VctsTrade():
             print('UPBIT_KRW_COMMISSION : ',config.UPBIT_KRW_COMMISSION)
             print('CHECK_TIME_SLEEP : ',config.CHECK_TIME_SLEEP)
             print('■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■')
-            print('INIT_FUND : ',config.INIT_FUND)
+            print('INIT_INVESTMENT : ',config.INIT_INVESTMENT)
             print('ASK_BID_CHECK_TYPE : ',config.ASK_BID_CHECK_TYPE)
             print('ASK_BID_CHECK_COUNT : ',config.ASK_BID_CHECK_COUNT)
             print('TARGET_PUMP_RATE : ',config.TARGET_PUMP_RATE)
@@ -606,7 +606,7 @@ class VctsTrade():
             selectMarkets = []
             buymarket = []
             history_df =  pd.DataFrame()
-            investment_fund = config.INIT_FUND
+            investment_fund = config.INIT_INVESTMENT
             idx=0
             sell_plus_count = 0
             sell_plus_max_count = 0
