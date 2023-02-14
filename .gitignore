@@ -134,6 +134,3 @@ BitCatch/
 #db
 db/local.db
 
-#config
-common/config.py
-
